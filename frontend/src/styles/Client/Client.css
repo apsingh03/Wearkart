@@ -1,0 +1,143 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+:root {}
+
+.promotionContainer {
+    background-color: #29282b;
+    padding: 5px;
+    text-align: center;
+    font-family: "Lato", "Roboto Slab";
+}
+
+.promotionContainer__title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background-color: #fff;
+    font-family: "Lato", "Roboto Slab";
+}
+
+.header__1stContainer__logo {
+    font-size: 20px;
+    font-weight: 600;
+    text-decoration: none;
+    color: #000;
+    font-family: "Oswald";
+}
+
+.header__2ndContainer {
+    display: flex;
+    gap: 20px;
+}
+
+.header__2ndContainer__menu {
+    position: relative;
+}
+
+.header__2ndContainer__menu__title {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: #000;
+    cursor: pointer;
+}
+
+.header__2ndContainer__menu__children {
+    display: none;
+    position: absolute;
+    top: 100%;
+    min-width: 100px;
+    left: 0;
+    background-color: #fff;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.header__2ndContainer__menu:hover .header__2ndContainer__menu__children {
+    display: block;
+}
+
+.header__2ndContainer__menu__children__title {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: #000;
+    white-space: nowrap;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: inherit;
+}
+
+.header__2ndContainer__menu__children__title:hover {
+    background-color: #29282b;
+    color: #fff;
+}
+
+.header__3rdContainer {
+    /* position: relative; */
+}
+
+.header__3rdContainer__inputWrapper {
+    position: relative;
+    /* display: flex;
+    align-items: center; */
+}
+
+.header__3rdContainer__icons {
+    position: absolute;
+    left: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    pointer-events: none;
+}
+
+.header__3rdContainer__input {
+    width: 100%;
+    padding: 5px 5px 5px 30px;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+.header__4thContainer {
+    display: flex;
+    gap: 20px;
+}
+
+.header__4thContainer__icons {
+    width: 40px;
+    height: 40px;
+    background-color: #f0f0f0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000;
+}
+
+.header__4thContainer__icons:hover {
+    background-color: #e0e0e0;
+    cursor: pointer;
+}
+
+.header__4thContainer__icons svg {
+    width: 20px;
+    height: 20px;
+}
+
+.homePage {
+    padding: 100px;
+    background-color: #ddd;
+}
