@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { FaRegHeart, FaRegUser, FaShoppingCart } from "react-icons/fa";
 import { IoIosSearch } from "react-icons/io";
+import { IoSearch } from "react-icons/io5";
 const Header = () => {
   return (
     <>
@@ -80,7 +81,7 @@ const Header = () => {
           <div className="header__3rdContainer">
             <div className="header__3rdContainer__inputWrapper">
               <span className="header__3rdContainer__icons">
-                <IoIosSearch />
+                <IoSearch />
               </span>
               <input
                 type="text"

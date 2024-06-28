@@ -1,9 +1,12 @@
 * {
     margin: 0;
     padding: 0;
+    /* overflow: hidden; */
 }
 
-:root {}
+:root {
+    --default-font: "Lato", "Roboto Slab";
+}
 
 .promotionContainer {
     background-color: #29282b;
@@ -29,11 +32,11 @@
 }
 
 .header__1stContainer__logo {
-    font-size: 20px;
+    font-size: 25px;
     font-weight: 600;
     text-decoration: none;
     color: #000;
-    font-family: "Oswald";
+    font-family: 'Merriweather';
 }
 
 .header__2ndContainer {
@@ -51,7 +54,26 @@
     text-decoration: none;
     color: #000;
     cursor: pointer;
+    padding-bottom: 5px;
+    position: relative;
 }
+
+.header__2ndContainer__menu__title::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 2px;
+    width: 0;
+    background-color: #29282B;
+    transition: width 0.3s ease;
+}
+
+.header__2ndContainer__menu__title:hover::after {
+    width: 90%;
+}
+
+/* header__2ndContainer__menu__title-= */
 
 .header__2ndContainer__menu__children {
     display: none;
@@ -104,9 +126,13 @@
     pointer-events: none;
 }
 
+.header__3rdContainer__icons svg {
+    font-size: 20px;
+}
+
 .header__3rdContainer__input {
-    width: 100%;
-    padding: 5px 5px 5px 30px;
+    width: 300px;
+    padding: 5px 5px 5px 35px;
     box-sizing: border-box;
     font-family: inherit;
 }
@@ -138,6 +164,385 @@
 }
 
 .homePage {
-    padding: 100px;
-    background-color: #ddd;
+    background-color: #fff;
+}
+
+/* BANNER CAROUSEL HOME PAGE  */
+
+
+.bannerCarousel {
+    position: relative;
+    width: 100%;
+    /* max-width: 1200px; */
+    margin: auto;
+    overflow: hidden;
+
+}
+
+.bannerCarousel_imgBox {
+    background-color: red;
+    height: 500px;
+}
+
+.bannerCarousel_imgBox__image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+
+.bannerCarousel__btns {
+    position: absolute;
+
+    padding: 30px;
+    top: 50%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    transform: translateY(-50%);
+
+
+}
+
+.bannerCarousel__btns__prev,
+.bannerCarousel__btns__next {
+    width: 40px;
+    height: 40px;
+    background-color: #f0f0f0;
+    border-radius: 50%;
+    border: none;
+}
+
+.bannerCarousel__btns__prev:hover,
+.bannerCarousel__btns__next:hover {
+
+    background-color: #e0e0e0;
+    cursor: pointer;
+
+}
+
+.bannerCarousel__btns__prev svg,
+.bannerCarousel__btns__next svg {
+    width: 20px;
+    height: 20px;
+    color: #000;
+}
+
+.actressCarousel {
+    padding: 40px 0;
+    /* background-color: #ddd; */
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    /* width: 100px; */
+    /* margin: auto; */
+
+}
+
+.actressCarousel__card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 10px;
+
+}
+
+.actressCarousel__card__imgBox__image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+}
+
+
+.homePage__1stBox {
+    padding: 10px 10px;
+    /* background-color : red; */
+}
+
+.homePage__1stBox__card {
+    padding: 30px;
+    cursor: pointer;
+}
+
+.homePage__1stBox__card__image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+
+.homePage__2ndBox {
+    padding: 0px 0 20px 0;
+
+}
+
+.homePage__2ndBox__leftSidecard__image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+
+.homePage__2ndBox__card__locateBtn {
+    /* text-decoration: none; */
+
+}
+
+
+.homePage__2ndBox__rightSideCard {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 50px 0;
+}
+
+.homePage__2ndBox__rightSideCard>div {
+    margin-bottom: 40px;
+}
+
+.homePage__2ndBox__rightSideCard__1stTitle {
+    font-size: 35px;
+    font-weight: 300;
+    font-family: var(--default-font)
+}
+
+.homePage__2ndBox__rightSideCard__icon svg {
+    font-size: 60px;
+}
+
+.homePage__2ndBox__rightSideCard__2ndTitle {
+    font-size: 25px;
+    font-weight: 500;
+    font-family: var(--default-font)
+}
+
+.homePage__2ndBox__rightSideCard__locateBtn {
+    /* margin-top: 20px; */
+    font-size: 14px;
+    font-weight: 500;
+    font-family: var(--default-font);
+    color: #fff;
+    background-color: #222324;
+    padding: 15px 60px;
+    text-decoration: none;
+    text-transform: uppercase;
+
+}
+
+
+
+.homePage__3rdBox {
+    /* background-color: red; */
+    padding: 40px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+
+.homePage__3rdBox__title {
+    font-size: 25px;
+    font-weight: 500;
+    font-family: var(--default-font)
+}
+
+.homePage__3rdBox__productsBox {
+    margin-top: 20px;
+    /* background-color: yellow; */
+}
+
+.homePage__3rdBox__productsBox #myTab {
+    display: flex;
+    justify-content: center;
+}
+
+.homePage__3rdBox__productsBox .nav-tabs {
+    border-bottom: none;
+}
+
+.homePage__3rdBox #myTab button {
+    border-bottom: 1px solid #1c1a1a;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    color: #29282b;
+}
+
+
+.homePage__3rdBox #myTab button:hover {
+    border-bottom: 2px solid #000;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+}
+
+
+.homePage__3rdBox__wrapper {
+    /* background-color: orange; */
+    margin-top: 30px;
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+    width: 100%;
+    position: relative;
+}
+
+
+.homePage__3rdBox__productsBox__card__image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+
+}
+
+.homePage__3rdBox__wrapper__favIcon {
+    font-size: 20px;
+    position: absolute;
+    /* right: 0; */
+    top: 10px;
+
+    cursor: pointer;
+    z-index: 1;
+}
+
+.homePage__3rdBox__productsBox__card {
+    /* background-color: green; */
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.homePage__3rdBox__productsBox__card__productTitle {
+    margin-top: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    font-family: var(--default-font);
+}
+
+.homePage__3rdBox__productsBox__card__prices {
+    font-size: 12px;
+    font-weight: 500;
+    font-family: var(--default-font);
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin-top: -10px;
+}
+
+
+.homePage__3rdBox__wrapper__btns {
+    position: absolute;
+    padding: 10px;
+    top: 50%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    transform: translateY(-50%);
+
+
+}
+
+.homePage__3rdBox__wrapper__btns__prev,
+.homePage__3rdBox__wrapper__btns__next {
+    width: 50px;
+    height: 50px;
+    background-color: #f0f0f0;
+    border-radius: 50%;
+    border: none;
+}
+
+
+.homePage__3rdBox__wrapper__btns__prev:hover,
+.homePage__3rdBox__wrapper__btns__next:hover {
+    background-color: #29282b;
+    cursor: pointer;
+}
+
+.homePage__3rdBox__wrapper__btns__prev svg,
+.homePage__3rdBox__wrapper__btns__next svg {
+    width: 25px;
+    height: 25px;
+    color: #000;
+}
+
+.footer {
+    border-top: 1px solid #ddd;
+    padding: 50px 25px;
+    background-color: #fff;
+}
+
+.footer__1st {
+    padding: 0px;
+}
+
+.footer__1st__title {
+    margin-bottom: 30px;
+    font-size: 25px;
+    font-weight: 600;
+    color: #2a292b;
+    font-family: var(--default-font);
+    user-select: none;
+}
+
+/* #534e5c */
+
+.footer__1st__links>p {
+    margin-top: 20px;
+}
+
+.footer__1st__links__title {
+
+    font-size: 16px;
+    font-weight: 400;
+    color: #534e5c;
+    font-family: var(--default-font);
+    text-decoration: none;
+    user-select: none;
+}
+
+.footer__1st__links__title:hover {
+    color: #2a292b;
+}
+
+.footer__4th__logo {
+    font-size: 40px;
+    font-weight: 600;
+    color: #29282B;
+    font-family: 'Merriweather';
+}
+
+.footer__4th__copyright {
+    font-size: 14px;
+    font-weight: 400;
+    color: #29282B;
+    font-family: var(--default-font);
+}
+
+.footer__4th__contactUs {
+    font-size: 14px;
+    font-weight: 800;
+    color: #29282B;
+    font-family: var(--default-font);
+}
+
+.footer__4th__phone {
+    font-size: 14px;
+    font-weight: 500;
+    color: #29282B;
+    font-family: var(--default-font);
+}
+
+.footer__4th__address {
+    font-size: 14px;
+    font-weight: 500;
+    color: #29282B;
+    font-family: var(--default-font);
+}
+
+.footer__4th__timing {
+    font-size: 14px;
+    font-weight: 500;
+    color: #29282B;
+    font-family: var(--default-font);
 }
