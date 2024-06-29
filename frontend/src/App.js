@@ -7,6 +7,8 @@ import ProductFilterPage from "./pages/Client/ProductFilterPage";
 import ProductDetail from "./pages/Client/ProductDetail";
 import LogInPage from "./pages/Client/LogInPage";
 import SignUpPage from "./pages/Client/SignUpPage";
+import SignUpLoginPage from "./pages/Admin/SignUpLoginPage";
+import AdminDashboard from "./pages/Admin/AdminDashboard";
 function App() {
   const [cartIsHover, setcartIsHover] = useState(false);
 
@@ -29,6 +31,11 @@ function App() {
         <Route path="/product" element={<ProductDetail />} />
         <Route path="/signin" element={<LogInPage />} />
         <Route path="/signup" element={<SignUpPage />} />
+
+        {/* ADMIN Routes */}
+
+        <Route path="/admin/auth" element={<SignUpLoginPage />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
       </Routes>
     </>
   );
