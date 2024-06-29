@@ -105,6 +105,7 @@ const ProductsCarousel = () => {
                     <img
                       src="https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FFSKNTP1255BLAC_1.jpg%3Fv%3D1708679469&w=1920&q=75"
                       className="homePage__3rdBox__productsBox__card__image"
+                      alt="dress code "
                     />
                     <p className="homePage__3rdBox__productsBox__card__productTitle">
                       LivSoft Cotton T-Shirt - White and Black

@@ -54,7 +54,8 @@ const BannerCarousel = () => {
       <div className="bannerCarousel_imgBox">
         <img
           src={`${bannerImages[imageCurrentIndex]}`}
-          alt={`Banner Image Slide Index - ${imageCurrentIndex}`}
+          // alt={`Banner Image Slide Index - ${imageCurrentIndex}`}
+          alt="dsfasdfasas"
           className="bannerCarousel_imgBox__image"
         />
       </div>
