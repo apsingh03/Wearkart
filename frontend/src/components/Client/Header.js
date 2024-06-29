@@ -1,9 +1,21 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { FaRegHeart, FaRegUser, FaShoppingCart } from "react-icons/fa";
+import { FaRegHeart, FaRegUser } from "react-icons/fa";
 import { IoIosSearch } from "react-icons/io";
 import { IoSearch } from "react-icons/io5";
-const Header = () => {
+import { LiaShoppingBagSolid } from "react-icons/lia";
+
+const Header = ({ cartIsHover, setcartIsHover }) => {
+  function onClickToggleCart() {
+    if (cartIsHover) {
+      setcartIsHover(false);
+      document.body.style.overflowY = "auto";
+    } else {
+      setcartIsHover(true);
+      document.body.style.overflowY = cartIsHover ? "auto" : "hidden";
+    }
+  }
+
   return (
     <>
       <header>
@@ -92,14 +104,18 @@ const Header = () => {
           </div>
 
           <div className="header__4thContainer">
-            <div className="header__4thContainer__icons">
+            <div className="header__4thContainer__heartIcon" title="Favorites">
               <FaRegHeart />
             </div>
-            <div className="header__4thContainer__icons">
+            <div className="header__4thContainer__userIcon" title="User">
               <FaRegUser />
             </div>
-            <div className="header__4thContainer__icons">
-              <FaShoppingCart />
+            <div
+              className="header__4thContainer__cartIcon"
+              title="Cart"
+              onClick={() => onClickToggleCart()}
+            >
+              <LiaShoppingBagSolid />
             </div>
           </div>
         </div>

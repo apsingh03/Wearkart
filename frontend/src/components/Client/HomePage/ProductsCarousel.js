@@ -7,7 +7,7 @@ const ProductsCarousel = () => {
   const itemsPerPage = 4;
 
   const data = ["", "", "", "", "", "", "", "", "", "", ""]; // Replace with your actual data
-  console.log("currentIndex - ", currentIndex);
+  // console.log("currentIndex - ", currentIndex);
   const nextOnClick = () => {
     if (currentIndex + itemsPerPage < data.length) {
       setCurrentIndex(currentIndex + itemsPerPage);
@@ -21,7 +21,7 @@ const ProductsCarousel = () => {
   };
 
   const currentData = data.slice(currentIndex, currentIndex + itemsPerPage);
-  console.log("currentData  - ", currentData);
+  // console.log("currentData  - ", currentData);
 
   return (
     <>

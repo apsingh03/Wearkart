@@ -7,10 +7,14 @@ import { FaLocationDot } from "react-icons/fa6";
 import ProductsCarousel from "../../components/Client/HomePage/ProductsCarousel";
 import Footer from "../../components/Client/Footer";
 import { SlLocationPin } from "react-icons/sl";
-const HomePage = () => {
+import Cart from "../../components/Client/Cart";
+const HomePage = ({ cartIsHover, setcartIsHover }) => {
   return (
     <>
-      <Header />
+      <Header cartIsHover={cartIsHover} setcartIsHover={setcartIsHover} />
+
+      {/* <Cart /> */}
+
       <BannerCarousel />
       <div className="homePage">
         {/* <ActressCarousel /> */}
