@@ -860,6 +860,95 @@ body {
     color: #131212;
 }
 
+/* AUTHENTICATION PAGE */
+
+.authPage {
+    width: 50%;
+    padding: 50px 10px;
+
+}
+
+.authPage__header {
+    text-align: center;
+    font-family: var(--default-font);
+}
+
+.authPage__submitBtn {
+    background-color: #ddd;
+    border: none;
+    color: #fff;
+    font-size: 15px;
+    line-height: 30px;
+    padding: 5px 50px;
+    width: 100%;
+}
+
+.authPage__header__title {
+    font-size: 30px;
+    font-weight: 500;
+    color: #131212;
+
+}
+
+.form-control:focus {
+    border: none !important;
+    box-shadow: 0 0 0 .1rem #131212;
+}
+
+.authPage__header__subTitle {
+    font-size: 16px;
+    font-weight: 400;
+    color: #131212;
+    margin-top: 10px;
+}
+
+.authPage__inputContainer {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    margin-top: -10px;
+    position: relative;
+    border: 1px solid transparent;
+}
+
+.authPage__inputContainer:hover {
+    border: 1px solid #131212;
+    border-radius: 5px;
+}
+
+.authPage__inputContainer input {
+    padding-left: 40px;
+}
+
+.authPage__inputContainer__icon {
+    left: 10px;
+    position: absolute;
+}
+
+.authPage__inputFieldError {
+    color: red;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.authPage__footer {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.authPage__footer p {
+    font-size: 14px;
+    color: #131212;
+    font-weight: 500;
+
+}
+
+.authPage__footer a {
+    font-size: 14px;
+    color: #131212;
+    font-weight: 500;
+}
+
 
 
 

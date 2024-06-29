@@ -107,9 +107,13 @@ const Header = ({ cartIsHover, setcartIsHover }) => {
             <div className="header__4thContainer__heartIcon" title="Favorites">
               <FaRegHeart />
             </div>
-            <div className="header__4thContainer__userIcon" title="User">
+            <Link
+              className="header__4thContainer__userIcon"
+              title="User"
+              to="/signin"
+            >
               <FaRegUser />
-            </div>
+            </Link>
             <div
               className="header__4thContainer__cartIcon"
               title="Cart"

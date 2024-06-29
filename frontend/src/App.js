@@ -5,7 +5,8 @@ import Cart from "./components/Client/Cart";
 import { useState } from "react";
 import ProductFilterPage from "./pages/Client/ProductFilterPage";
 import ProductDetail from "./pages/Client/ProductDetail";
-
+import LogInPage from "./pages/Client/LogInPage";
+import SignUpPage from "./pages/Client/SignUpPage";
 function App() {
   const [cartIsHover, setcartIsHover] = useState(false);
 
@@ -26,6 +27,8 @@ function App() {
         <Route path="/typography" element={<Typography />} />
         <Route path="/collections" element={<ProductFilterPage />} />
         <Route path="/product" element={<ProductDetail />} />
+        <Route path="/signin" element={<LogInPage />} />
+        <Route path="/signup" element={<SignUpPage />} />
       </Routes>
     </>
   );
