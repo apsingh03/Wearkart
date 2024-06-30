@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { FaRegHeart, FaRegUser } from "react-icons/fa";
 import { IoIosSearch } from "react-icons/io";
@@ -6,8 +6,19 @@ import { IoSearch } from "react-icons/io5";
 import { LiaShoppingBagSolid } from "react-icons/lia";
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
 import { TbScreenShare } from "react-icons/tb";
+import { GiHamburgerMenu } from "react-icons/gi";
+import { AppContext } from "../../context/AppContext";
 
-const Header = ({ cartIsHover, setcartIsHover }) => {
+const Header = () => {
+  const {
+    isActiveSideBarMenu,
+    setisActiveSideBarMenu,
+    cartIsHover,
+    setcartIsHover,
+  } = useContext(AppContext);
+
+  console.log("handleToggle - ", isActiveSideBarMenu);
+
   function onClickToggleCart() {
     if (cartIsHover) {
       setcartIsHover(false);
@@ -31,6 +42,17 @@ const Header = ({ cartIsHover, setcartIsHover }) => {
               {" "}
               WebApp{" "}
             </Link>
+          </div>
+
+          <div
+            className="header__hamburger"
+            style={{ cursor: "pointer" }}
+            onClick={() => setisActiveSideBarMenu(true)}
+          >
+            <span>
+              {" "}
+              <GiHamburgerMenu />{" "}
+            </span>
           </div>
 
           <div className="header__2ndContainer">
@@ -106,7 +128,7 @@ const Header = ({ cartIsHover, setcartIsHover }) => {
           </div>
 
           <div className="header__4thContainer">
-            <Link
+            {/* <Link
               className="header__4thContainer__userIcon"
               title="Admin Auth"
               to="/admin/auth"
@@ -120,7 +142,7 @@ const Header = ({ cartIsHover, setcartIsHover }) => {
               to="/admin/"
             >
               <TbScreenShare />
-            </Link>
+            </Link> */}
 
             <div className="header__4thContainer__heartIcon" title="Favorites">
               <FaRegHeart />

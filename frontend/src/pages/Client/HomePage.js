@@ -8,10 +8,10 @@ import ProductsCarousel from "../../components/Client/HomePage/ProductsCarousel"
 import Footer from "../../components/Client/Footer";
 import { SlLocationPin } from "react-icons/sl";
 
-const HomePage = ({ cartIsHover, setcartIsHover }) => {
+const HomePage = () => {
   return (
     <>
-      <Header cartIsHover={cartIsHover} setcartIsHover={setcartIsHover} />
+      <Header />
 
       {/* <Cart /> */}
 
