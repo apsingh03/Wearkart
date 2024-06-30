@@ -117,7 +117,7 @@ const Header = ({ cartIsHover, setcartIsHover }) => {
             <Link
               className="header__4thContainer__userIcon"
               title="Admin Dashboard"
-              to="/admin/dashboard"
+              to="/admin/"
             >
               <TbScreenShare />
             </Link>
