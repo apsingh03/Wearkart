@@ -1,10 +1,38 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaRegHeart } from "react-icons/fa";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
 const ProductsCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const itemsPerPage = 4;
+  const [itemsPerPage, setitemsPerPage] = useState(4);
+
+  const [isScreenAtMd, setIsScreenAtMd] = useState(window.innerWidth < 768);
+
+  const [isScreenAtSm, setIsScreenAtSm] = useState(window.innerWidth < 576);
+
+  useEffect(() => {
+    if (isScreenAtMd) {
+      setitemsPerPage(3);
+    } else {
+      setitemsPerPage(4);
+    }
+
+    if (isScreenAtSm) {
+      setitemsPerPage(2);
+    }
+
+    const handleResize = () => {
+      setIsScreenAtMd(window.innerWidth < 768);
+      setIsScreenAtSm(window.innerWidth < 576);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup event listener on component unmount
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [isScreenAtMd, isScreenAtSm]);
 
   const data = ["", "", "", "", "", "", "", "", "", "", ""]; // Replace with your actual data
   // console.log("currentIndex - ", currentIndex);
@@ -20,7 +48,73 @@ const ProductsCarousel = () => {
     }
   };
 
-  const currentData = data.slice(currentIndex, currentIndex + itemsPerPage);
+  const productImages = [
+    {
+      id: 1,
+      url: "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FDR896ACBL_2.jpg%3Fv%3D1689061795&w=1200&q=75",
+      name: "Linen Front Overlap Panel Skort - Beige",
+      price: "",
+    },
+    {
+      id: 2,
+      url: "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2F3_c10ecf54-1853-446c-8a12-16bd3d7e1700.png%3Fv%3D1690454351&w=1920&q=75",
+      name: "Linen Front Overlap Panel Skort - Sap Green",
+      price: "",
+    },
+    {
+      id: 3,
+      url: "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FSK097BEGE_2.jpg%3Fv%3D1712125284&w=1200&q=75",
+      name: "Cotton Stretchable Pencil Skirt - Red",
+      price: "",
+    },
+    {
+      id: 4,
+      url: "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FFSSK122BEGE_2.jpg%3Fv%3D1710421368&w=1200&q=75",
+      name: "Abstract Print Satin Skort - Fuchsia",
+      price: "",
+    },
+    {
+      id: 5,
+      url: "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FFSSK121REDD_2.jpg%3Fv%3D1708158596&w=1200&q=75",
+      name: "Pleated Flared Midi Skirt - Purple",
+      price: "",
+    },
+    {
+      id: 6,
+      url: "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Fproducts%2FSK037PRPL_M2.jpg%3Fv%3D1668417736&w=1200&q=75",
+      name: "Linen Front Overlap Panel Skort - Black",
+      price: "",
+    },
+    {
+      id: 7,
+      url: "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Fproducts%2FPleated_20Flared_20Floral_20Midi_20Skirt_20-_20Black_L2.jpg%3Fv%3D1615469688&w=1200&q=75",
+      name: "Linen Front Overlap Panel Skort - Olive",
+      price: "",
+    },
+    {
+      id: 8,
+      url: "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FFSSK124BLAC_2.jpg%3Fv%3D1710422250&w=1200&q=75",
+      name: "Geometric Print A-Line Skirt - Black And Off White",
+      price: "",
+    },
+    {
+      id: 9,
+      url: "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FFSSK146BLWH_2.jpg%3Fv%3D1718367394&w=1200&q=75",
+      name: "Elasticated Striped A Line Skirt - White and Black",
+      price: "",
+    },
+    {
+      id: 10,
+      url: "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FSK063PINK_2.jpg%3Fv%3D1715337269&w=1200&q=75",
+      name: "Stretchable Pencil Skirt - Black",
+      price: "",
+    },
+  ];
+
+  const currentData = productImages.slice(
+    currentIndex,
+    currentIndex + itemsPerPage
+  );
   // console.log("currentData  - ", currentData);
 
   return (
@@ -103,12 +197,12 @@ const ProductsCarousel = () => {
                       <FaRegHeart />{" "}
                     </div>
                     <img
-                      src="https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FFSKNTP1255BLAC_1.jpg%3Fv%3D1708679469&w=1920&q=75"
+                      src={data.url}
                       className="homePage__3rdBox__productsBox__card__image"
                       alt="dress code "
                     />
                     <p className="homePage__3rdBox__productsBox__card__productTitle">
-                      LivSoft Cotton T-Shirt - White and Black
+                      {data.id} {data.name}
                     </p>
                     <div className="homePage__3rdBox__productsBox__card__prices">
                       <p> &#8377; 1,160 </p>

@@ -17,8 +17,6 @@ const Header = () => {
     setcartIsHover,
   } = useContext(AppContext);
 
-  console.log("handleToggle - ", isActiveSideBarMenu);
-
   function onClickToggleCart() {
     if (cartIsHover) {
       setcartIsHover(false);
@@ -37,22 +35,35 @@ const Header = () => {
         </div>
 
         <div className="header">
+          <div className="header__searchHamburgerIcon">
+            <div
+              className="header__hamburger  d-xl-none"
+              style={{ cursor: "pointer" }}
+              onClick={() => setisActiveSideBarMenu(true)}
+            >
+              <span>
+                {" "}
+                <GiHamburgerMenu />{" "}
+              </span>
+            </div>
+
+            <div
+              className="header__searchIcon "
+              style={{ cursor: "pointer" }}
+              onClick={() => setisActiveSideBarMenu(true)}
+            >
+              <span>
+                {" "}
+                <IoSearch />{" "}
+              </span>
+            </div>
+          </div>
+
           <div className="header__1stContainer">
             <Link to="/" className="header__1stContainer__logo">
               {" "}
               WebApp{" "}
             </Link>
-          </div>
-
-          <div
-            className="header__hamburger"
-            style={{ cursor: "pointer" }}
-            onClick={() => setisActiveSideBarMenu(true)}
-          >
-            <span>
-              {" "}
-              <GiHamburgerMenu />{" "}
-            </span>
           </div>
 
           <div className="header__2ndContainer">

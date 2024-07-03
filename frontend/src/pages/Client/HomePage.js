@@ -1,7 +1,7 @@
 import React from "react";
 import Header from "../../components/Client/Header";
 import BannerCarousel from "../../components/Client/BannerCarousel";
-// import ActressCarousel from "../../components/Client/ActressCarousel";
+import ActressCarousel from "../../components/Client/ActressCarousel";
 import { Link } from "react-router-dom";
 // import { FaLocationDot } from "react-icons/fa6";
 import ProductsCarousel from "../../components/Client/HomePage/ProductsCarousel";
@@ -9,66 +9,85 @@ import Footer from "../../components/Client/Footer";
 import { SlLocationPin } from "react-icons/sl";
 
 const HomePage = () => {
+  const modelImages = [
+    "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FbannerFile-1717565604673.png%3Fv%3D1717565609&w=1920&q=75",
+    "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FbannerFile-1717565675192.png%3Fv%3D1717565679&w=1920&q=75",
+    "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FbannerFile-1719386153935.png%3Fv%3D1719386158&w=1920&q=75",
+    "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FbannerFile-1717565705248.png%3Fv%3D1717565709&w=1920&q=75",
+    "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FbannerFile-1717565711365.png%3Fv%3D1717565715&w=1920&q=75",
+    "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FbannerFile-1719385629866.png%3Fv%3D1719385633&w=1920&q=75",
+    "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FbannerFile-1717565692946.png%3Fv%3D1717565697&w=1920&q=75",
+    "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FbannerFile-1717565711365.png%3Fv%3D1717565715&w=1920&q=75",
+    "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FbannerFile-1717565723156.png%3Fv%3D1717565727&w=1920&q=75",
+  ];
+
   return (
     <>
       <Header />
 
-      {/* <Cart /> */}
+      <section className="dressesCarouselAtlg ">
+        <div className="dressesCarouselAtlg__wrapper">
+          {modelImages &&
+            modelImages.map((data, idx) => {
+              return (
+                <div className="dressesCarouselAtlg__wrapper__card" key={idx}>
+                  <div className="dressesCarouselAtlg__wrapper__card__imgBox">
+                    <img
+                      alt="isadmfas"
+                      src={`${data}`}
+                      className="dressesCarouselAtlg__wrapper__card__imgBox__image"
+                    />
+                  </div>
+                  <p className="dressesCarouselAtlg__wrapper__card__title">
+                    Dresses{" "}
+                  </p>
+                </div>
+              );
+            })}
+        </div>
+      </section>
 
       <BannerCarousel />
       <div className="homePage">
-        {/* <ActressCarousel /> */}
+        <ActressCarousel />
 
         <section className="homePage__1stBox ">
           <div className="col-12 row">
-            <div className="col-12 col-md-6 col-lg-3">
-              <div className="homePage__1stBox__card">
-                <Link to="#">
+            {[
+              {
+                id: 1,
+                url: "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FbannerFile-1719385472333.jpg%3Fv%3D1719385475&w=1920&q=75",
+                alt: "Promotional Banner 1",
+              },
+              {
+                id: 2,
+                url: "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FbannerFile-1719385442923.jpg%3Fv%3D1719385446&w=1920&q=75",
+                alt: "Promotional Banner 1",
+              },
+              {
+                id: 3,
+                url: "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FbannerFile-1719386255068.jpg%3Fv%3D1719386259&w=1920&q=75",
+                alt: "Promotional Banner 1",
+              },
+              {
+                id: 4,
+                url: "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FbannerFile-1719385459644.jpg%3Fv%3D1719385463&w=1920&q=75",
+                alt: "Promotional Banner 1",
+              },
+            ].map((data, index) => {
+              return (
+                <Link
+                  className="col-6 col-sm-6 col-md-3 col-lg-3 mb-3 homePage__1stBox__card "
+                  key={index}
+                >
                   <img
-                    src="https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FbannerFile-1719386255068.jpg%3Fv%3D1719386259&w=1920&q=75"
+                    src={`${data.url}`}
                     className="homePage__1stBox__card__image"
-                    alt="images "
+                    alt={`${data.alt}`}
                   />
                 </Link>
-              </div>
-            </div>
-
-            <div className="col-12 col-md-6 col-lg-3">
-              <div className="homePage__1stBox__card">
-                <Link to="#">
-                  <img
-                    src="https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FbannerFile-1719385442923.jpg%3Fv%3D1719385446&w=1920&q=75"
-                    className="homePage__1stBox__card__image"
-                    alt="dsfsda"
-                  />
-                </Link>
-              </div>
-            </div>
-
-            <div className="col-12 col-md-6 col-lg-3">
-              <div className="homePage__1stBox__card">
-                <Link to="#">
-                  {" "}
-                  <img
-                    src="https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FbannerFile-1719385459644.jpg%3Fv%3D1719385463&w=1920&q=75"
-                    className="homePage__1stBox__card__image"
-                    alt="dsfsda"
-                  />{" "}
-                </Link>
-              </div>
-            </div>
-
-            <div className="col-12 col-md-6 col-lg-3">
-              <div className="homePage__1stBox__card">
-                <Link to="#">
-                  <img
-                    src="https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FbannerFile-1719385472333.jpg%3Fv%3D1719385475&w=1920&q=75"
-                    className="homePage__1stBox__card__image"
-                    alt="dsfsda"
-                  />
-                </Link>
-              </div>
-            </div>
+              );
+            })}
           </div>
         </section>
 

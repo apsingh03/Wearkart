@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import HomePage from "./pages/Client/HomePage";
 import Typography from "./components/Client/Typography";
@@ -12,6 +12,7 @@ import SignUpLoginPage from "./pages/Admin/SignUpLoginPage";
 import AdminJunction from "./pages/Admin/AdminJunction";
 import SideBarMenu from "./components/Client/SideBarMenu";
 import { AppContext } from "./context/AppContext";
+import ClientDashboard from "./pages/Client/ClientDashboard";
 
 function App() {
   const {
@@ -21,7 +22,47 @@ function App() {
     setcartIsHover,
   } = useContext(AppContext);
 
-  // const [isActiveSideBarMenu, setisActiveSideBarMenu] = useState(false);
+  const [scrollTop, setScrollTop] = useState(0);
+
+  // console.log("scrollTop - ", scrollTop);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollTop(document.scrollingElement.scrollTop);
+    };
+
+    // Set initial scroll position
+    setScrollTop(document.scrollingElement.scrollTop);
+
+    // Add event listener for scroll
+    window.addEventListener("scroll", function () {
+      setScrollTop(document.scrollingElement.scrollTop);
+    });
+
+    // if (scrollTop >= 70) {
+    //   console.log("working");
+    //   document.querySelector(".header").style.position = "fixed";
+    //   document.querySelector(".header").style.top = 0;
+    //   document.querySelector(".header").style.width = "100%";
+    //   document.querySelector(".header").style.zIndex = 1;
+    //   document.querySelector(".bannerCarousel").style.marginTop = "70px";
+    // }
+
+    // if (scrollTop <= 70) {
+    //   document.querySelector(".header").style.position = "relative";
+    //   document.querySelector(".header").style.top = 0;
+    //   document.querySelector(".header").style.width = "100%";
+    //   document.querySelector(".header").style.zIndex = 1;
+    //   document.querySelector(".bannerCarousel").style.marginTop = "0";
+    // }
+
+    // Clean up the event listener on component unmount
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [scrollTop]);
+
+  // console.log("scrollTop - ", scrollTop);
 
   return (
     <>
@@ -37,8 +78,9 @@ function App() {
         <Route path="/product" element={<ProductDetail />} />
         <Route path="/signin" element={<LogInPage />} />
         <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/account" element={<ClientDashboard />} />
 
-        {/* ADMIN Routes */}
+        {/* ADMIN Routes  */}
 
         <Route path="/admin/auth" element={<SignUpLoginPage />} />
         <Route path="/admin/*" element={<AdminJunction />} />

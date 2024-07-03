@@ -1,11 +1,9 @@
 import React, { useState } from "react";
 import { RxCross2 } from "react-icons/rx";
-import { FaExchangeAlt } from "react-icons/fa";
-import { FaRegUser } from "react-icons/fa";
 import { FaPlus, FaMinus } from "react-icons/fa6";
-
 import { Link } from "react-router-dom";
-const SideBarMenu = ({ setisActiveSideBarMenu }) => {
+
+const SideFilter = ({ setIsFilterSideBarVisible }) => {
   const [isSubMenuToggle, setisSubMenuToggle] = useState({});
 
   const handleToggle = (id) => {
@@ -57,26 +55,31 @@ const SideBarMenu = ({ setisActiveSideBarMenu }) => {
   ];
 
   return (
-    <div className="sideMenu">
-      <div className="sideMenu__header">
+    <div className="filterMenu">
+      <div className="filterMenu__header">
+        <div className="d-flex flex-row" style={{ gap: "10px" }}>
+          <h6 className="filterMenu__header__title">Filter</h6>
+          <h6 className="filterMenu__header__countingText">0</h6>
+        </div>
+
         <div
-          onClick={() => setisActiveSideBarMenu((prev) => !prev)}
+          onClick={() => setIsFilterSideBarVisible((prev) => !prev)}
           style={{ cursor: "pointer" }}
         >
           <RxCross2 />
         </div>
       </div>
-      <div className="sideMenu__body">
+      <div className="filterMenu__body">
         {menuData.map((data, idx) => {
           return (
             <div
-              className="sideMenu__body__card"
+              className="filterMenu__body__card"
               key={idx}
               onClick={() => handleToggle(data.id)}
             >
-              <div className="sideMenu__body__card__parent ">
+              <div className="filterMenu__body__card__parent ">
                 <div>
-                  <span className="sideMenu__body__card__parent__catName">
+                  <span className="filterMenu__body__card__parent__catName">
                     {data.catName}
                   </span>
                 </div>
@@ -89,7 +92,7 @@ const SideBarMenu = ({ setisActiveSideBarMenu }) => {
               </div>
 
               <div
-                className={`sideMenu__body__child  ${
+                className={`filterMenu__body__child  ${
                   isSubMenuToggle[data.id]
                     ? "subMenuActive"
                     : "subMenuNotActive"
@@ -99,7 +102,7 @@ const SideBarMenu = ({ setisActiveSideBarMenu }) => {
                   return (
                     <div
                       key={subMenuIdx}
-                      className="sideMenu__body__child__card"
+                      className="filterMenu__body__child__card"
                     >
                       {" "}
                       <Link to="#"> {subMenuData.subName} </Link>{" "}
@@ -112,25 +115,17 @@ const SideBarMenu = ({ setisActiveSideBarMenu }) => {
         })}
       </div>
 
-      <div className="sideMenu__footer">
-        <div className="sideMenu__footer__card">
-          <span>
-            {" "}
-            <FaExchangeAlt />{" "}
-          </span>
-          <p>return / exchange</p>
+      <div className="filterMenu__footer">
+        <div className="filterMenu__footer__cancelBtn">
+          <span>cancel</span>
         </div>
 
-        <div className="sideMenu__footer__card">
-          <span>
-            {" "}
-            <FaRegUser />{" "}
-          </span>
-          <p>Account</p>
+        <div className="filterMenu__footer__applyBtn">
+          <span>apply</span>
         </div>
       </div>
     </div>
   );
 };
 
-export default SideBarMenu;
+export default SideFilter;

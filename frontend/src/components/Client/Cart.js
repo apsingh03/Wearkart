@@ -53,7 +53,7 @@ const Cart = ({ setcartIsHover }) => {
         </div>
       </div>
       <div className="cart__body">
-        {[""].map((data, index) => {
+        {["", "", "", ""].map((data, index) => {
           return (
             <div className="cart__body__card" key={index}>
               <div>

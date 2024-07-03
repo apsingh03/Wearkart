@@ -5,110 +5,231 @@ import Footer from "../../components/Client/Footer";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { FaRegHeart } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import SideBarAllFilters from "../../components/Client/ProductsFilterPage/SideBarAllFilters";
 const ProductFilterPage = () => {
-  const [isFilterChildRadiosVisible, setIsFilterChildRadiosVisible] =
-    useState(false);
+  const [isFilterChildRadiosVisible, setIsFilterChildRadiosVisible] = useState(
+    {}
+  );
+  const handleFilterToggle = (id) => {
+    setIsFilterChildRadiosVisible((prevState) => ({
+      ...prevState,
+      [id]: !prevState[id],
+    }));
+  };
+
+  const filterData = [
+    {
+      id: 1,
+      catName: "Category",
+      subCatName: [
+        {
+          id: 1.1,
+          name: "Dresses",
+        },
+        {
+          id: 1.2,
+          name: "Jackets",
+        },
+        {
+          id: 1.3,
+          name: "Jeans",
+        },
+        {
+          id: 1.4,
+          name: "LivIn Pants",
+        },
+        {
+          id: 1.5,
+          name: "Shirts",
+        },
+      ],
+    },
+    {
+      id: 2,
+      catName: "Color",
+      subCatName: [
+        {
+          id: 2.1,
+          name: "Green",
+        },
+        {
+          id: 2.2,
+          name: "Black",
+        },
+        {
+          id: 2.3,
+          name: "Yellow",
+        },
+        {
+          id: 2.4,
+          name: "Orange",
+        },
+      ],
+    },
+    {
+      id: 3,
+      catName: "Fabric",
+      subCatName: [
+        {
+          id: 3.1,
+          name: "Chiffon",
+        },
+        {
+          id: 3.2,
+          name: "Cotton",
+        },
+        {
+          id: 3.3,
+          name: "Woolean",
+        },
+        {
+          id: 3.4,
+          name: "Nylon",
+        },
+        {
+          id: 3.5,
+          name: "Polyster",
+        },
+      ],
+    },
+    {
+      id: 4,
+      catName: "Category 4",
+      subCatName: [
+        {
+          id: 4.1,
+          name: "Dresses",
+        },
+        {
+          id: 4.2,
+          name: "Jackets",
+        },
+        {
+          id: 4.3,
+          name: "Jeans",
+        },
+        {
+          id: 4.4,
+          name: "LivIn Pants",
+        },
+        {
+          id: 4.5,
+          name: "Shirts",
+        },
+      ],
+    },
+    {
+      id: 5,
+      catName: "Category 5",
+      subCatName: [
+        {
+          id: 5.1,
+          name: "Dresses",
+        },
+        {
+          id: 5.2,
+          name: "Jackets",
+        },
+        {
+          id: 5.3,
+          name: "Jeans",
+        },
+        {
+          id: 5.4,
+          name: "LivIn Pants",
+        },
+        {
+          id: 5.5,
+          name: "Shirts",
+        },
+      ],
+    },
+  ];
+
   return (
     <>
       <Header />
 
       <div className="pFilterPage">
-        <div className="col-12 row">
-          <div className="col-12 col-lg-3">
+        <div className="row">
+          <div className="col-12  col-md-3 d-none d-md-block">
             <div className="pFilterPage__left">
               <div className="">
                 <h6 className="pFilterPage__left__title">Filter</h6>
               </div>
 
               <div className="pFilterPage__left__filtersBox">
-                {["", "", ""].map((data, index) => {
-                  return (
-                    <div
-                      className="pFilterPage__left__filtersBox__card"
-                      key={index}
-                    >
-                      <div
-                        className="pFilterPage__left__filtersBox__card__wrapper"
-                        onClick={() =>
-                          setIsFilterChildRadiosVisible(
-                            !isFilterChildRadiosVisible
-                          )
-                        }
-                      >
-                        <div className="pFilterPage__left__filtersBox__card__title">
-                          <p>Category</p>
-                        </div>
-                        <div className="pFilterPage__left__filtersBox__card__icon">
-                          {" "}
-                          {isFilterChildRadiosVisible ? (
-                            <IoIosArrowUp />
-                          ) : (
-                            <IoIosArrowDown />
-                          )}{" "}
-                        </div>
-                      </div>
-
-                      <div
-                        className={`pFilterPage__left__filtersBox__card__childRadios ${
-                          isFilterChildRadiosVisible ? "visible" : "hidden"
-                        } `}
-                      >
-                        <div className="pFilterPage__left__filtersBox__card__childRadios__card">
-                          {" "}
-                          <input
-                            type="checkbox"
-                            name="categoryCloth"
-                            id="categoryCloth"
-                            className="pFilterPage__left__filtersBox__card__childRadios__card__checkBox"
-                          />{" "}
-                          <label
-                            htmlFor="categoryCloth"
-                            className="pFilterPage__left__filtersBox__card__childRadios__card__label"
+                {(function () {
+                  try {
+                    return filterData.map((data, index) => {
+                      return (
+                        <div
+                          className="pFilterPage__left__filtersBox__card"
+                          key={index}
+                        >
+                          <div
+                            className="pFilterPage__left__filtersBox__card__wrapper"
+                            onClick={() => handleFilterToggle(index)}
                           >
-                            Cloths (5)
-                          </label>
-                        </div>
+                            <div className="pFilterPage__left__filtersBox__card__title">
+                              <p>{data.catName}</p>
+                            </div>
+                            <div className="pFilterPage__left__filtersBox__card__icon">
+                              {" "}
+                              {isFilterChildRadiosVisible[index] ? (
+                                <IoIosArrowUp />
+                              ) : (
+                                <IoIosArrowDown />
+                              )}{" "}
+                            </div>
+                          </div>
 
-                        <div className="pFilterPage__left__filtersBox__card__childRadios__card">
-                          {" "}
-                          <input
-                            type="checkbox"
-                            name="categoryMens"
-                            id="categoryMens"
-                            className="pFilterPage__left__filtersBox__card__childRadios__card__checkBox"
-                          />{" "}
-                          <label
-                            htmlFor="categoryMens"
-                            className="pFilterPage__left__filtersBox__card__childRadios__card__label"
+                          <div
+                            className={`pFilterPage__left__filtersBox__card__childRadios ${
+                              isFilterChildRadiosVisible[index]
+                                ? "visible"
+                                : "hidden"
+                            } `}
                           >
-                            Mens (5)
-                          </label>
+                            {data.subCatName.map((subData, subIdx) => {
+                              return (
+                                <div
+                                  className="pFilterPage__left__filtersBox__card__childRadios__card"
+                                  key={subIdx}
+                                >
+                                  {" "}
+                                  <input
+                                    type="checkbox"
+                                    name="categoryCloth"
+                                    id="categoryCloth"
+                                    className="pFilterPage__left__filtersBox__card__childRadios__card__checkBox"
+                                  />{" "}
+                                  <label
+                                    htmlFor="categoryCloth"
+                                    className="pFilterPage__left__filtersBox__card__childRadios__card__label"
+                                  >
+                                    {subData.name} (5)
+                                  </label>
+                                </div>
+                              );
+                            })}
+                          </div>
                         </div>
-
-                        <div className="pFilterPage__left__filtersBox__card__childRadios__card">
-                          {" "}
-                          <input
-                            type="checkbox"
-                            name="categorytshirt"
-                            id="categorytshirt"
-                            className="pFilterPage__left__filtersBox__card__childRadios__card__checkBox"
-                          />{" "}
-                          <label
-                            htmlFor="categorytshirt"
-                            className="pFilterPage__left__filtersBox__card__childRadios__card__label"
-                          >
-                            T - Shirt (5)
-                          </label>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
+                      );
+                    });
+                  } catch (error) {
+                    console.log("Filter Error - ", error);
+                  }
+                })()}
               </div>
             </div>
           </div>
 
-          <div className="col-12 col-lg-9">
+          <div className="col-12 d-block d-md-none">
+            <SideBarAllFilters />
+          </div>
+
+          <div className="col-12 col-md-9">
             <div className="pFilterPage__right">
               <div className="pFilterPage__right__header">
                 <div className="pFilterPage__right__header__1st">
@@ -141,70 +262,49 @@ const ProductFilterPage = () => {
               </div>
 
               <div className="pFilterPage__right__body">
-                <div className="col-12 row ">
-                  {["", "", "", "", "", ""].map((data, index) => {
-                    return (
-                      <div
-                        className="col-6 col-lg-4 col-xl-3 mb-2 p-1"
-                        // style={{ paddingLeft : "0px" }}
-                        key={index}
-                      >
-                        <div className="pFilterPage__right__body__card">
-                          <Link to="#">
-                            <div
-                              className="pFilterPage__right__body__card__favIcon"
-                              onClick={() => alert("Click on Fav Icon")}
-                            >
-                              <FaRegHeart />{" "}
-                            </div>
-                            <img
-                              src="https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FDR896ACBL_1.jpg%3Fv%3D1689061795&w=1920&q=75"
-                              className="pFilterPage__right__body__card__image"
-                              alt="dress"
-                            />
-                            <p className="pFilterPage__right__body__card__productTitle">
-                              LivSoft Cotton T-Shirt - White and Black
-                            </p>
-                            <div className="pFilterPage__right__body__card__prices">
-                              <p> &#8377; 1,160 </p>
-                              <p style={{ textDecoration: "line-through" }}>
-                                &#8377; 1,160
-                              </p>
-                              <p style={{ color: "#A10E2C" }}>17% Off</p>
-                            </div>
-                          </Link>
-                        </div>
-                      </div>
+                <div className=" row ">
+                  {(function () {
+                    try {
+                      return ["", "", "", "", "", ""].map((data, index) => {
+                        return (
+                          <div
+                            className="col-6 col-lg-4 col-xl-3 mb-2 p-1"
+                            // style={{ paddingLeft : "0px" }}
+                            key={index}
+                          >
+                            <div className="pFilterPage__right__body__card">
+                              <div
+                                className="pFilterPage__right__body__card__favIcon"
+                                onClick={() => alert("Click on Fav Icon")}
+                              >
+                                <FaRegHeart />{" "}
+                              </div>
+                              <Link to="/product">
+                                <img
+                                  src="https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FDR896ACBL_1.jpg%3Fv%3D1689061795&w=1920&q=75"
+                                  className="pFilterPage__right__body__card__image"
+                                  alt="dress"
+                                />
+                                <p className="pFilterPage__right__body__card__productTitle">
+                                  LivSoft Cotton T-Shirt - White and Black
+                                </p>
+                              </Link>
 
-                      // <div className="col-12 col-md-3 mb-2" key={index}>
-                      //   <div className="pFilterPage__right__body__card">
-                      //     <Link to="#">
-                      //       <div
-                      //         className="pFilterPage__right__body__card__favIcon"
-                      //         onClick={() => alert("Click on Fav Icon")}
-                      //       >
-                      //         <FaRegHeart />{" "}
-                      //       </div>
-                      //       <img
-                      //         src="https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FDR896ACBL_1.jpg%3Fv%3D1689061795&w=1920&q=75"
-                      //         className="pFilterPage__right__body__card__image"
-                      //         alt="dress"
-                      //       />
-                      //       <p className="pFilterPage__right__body__card__productTitle">
-                      //         LivSoft Cotton T-Shirt - White and Black
-                      //       </p>
-                      //       <div className="pFilterPage__right__body__card__prices">
-                      //         <p> &#8377; 1,160 </p>
-                      //         <p style={{ textDecoration: "line-through" }}>
-                      //           &#8377; 1,160
-                      //         </p>
-                      //         <p style={{ color: "#A10E2C" }}>17% Off</p>
-                      //       </div>
-                      //     </Link>
-                      //   </div>
-                      // </div>
-                    );
-                  })}
+                              <div className="pFilterPage__right__body__card__prices">
+                                <p> &#8377; 1,160 </p>
+                                <p style={{ textDecoration: "line-through" }}>
+                                  &#8377; 1,160
+                                </p>
+                                <p style={{ color: "#A10E2C" }}>17% Off</p>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      });
+                    } catch (error) {
+                      console.log("Error - ", error.message);
+                    }
+                  })()}
                 </div>
               </div>
             </div>
