@@ -8,8 +8,17 @@ import { MdOutlineAdminPanelSettings } from "react-icons/md";
 import { TbScreenShare } from "react-icons/tb";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { AppContext } from "../../context/AppContext";
+import { useSelector } from "react-redux";
 
 const Header = () => {
+  const clientIsLogged = useSelector(
+    (state) => state.client_auth.loggedData.isUserLogged
+  );
+
+  const adminIsLogged = useSelector(
+    (state) => state.admin_auth.loggedData.isUserLogged
+  );
+
   const {
     isActiveSideBarMenu,
     setisActiveSideBarMenu,
@@ -134,37 +143,62 @@ const Header = () => {
                 type="text"
                 className="header__3rdContainer__input"
                 placeholder="Search"
+                id="SearchBox"
               />
             </div>
           </div>
 
           <div className="header__4thContainer">
-            {/* <Link
-              className="header__4thContainer__userIcon"
-              title="Admin Auth"
-              to="/admin/auth"
-            >
-              <MdOutlineAdminPanelSettings />
-            </Link>
+            {adminIsLogged ? (
+              <Link
+                className="header__4thContainer__userIcon"
+                title="Admin Panel"
+                to="/admin/"
+              >
+                <TbScreenShare />
+              </Link>
+            ) : (
+              <Link
+                className="header__4thContainer__userIcon"
+                title="Admin Auth"
+                to="/admin/auth"
+              >
+                <MdOutlineAdminPanelSettings />
+              </Link>
+            )}
 
-            <Link
-              className="header__4thContainer__userIcon"
-              title="Admin Dashboard"
-              to="/admin/"
-            >
-              <TbScreenShare />
-            </Link> */}
+            {clientIsLogged ? (
+              <Link
+                className="header__4thContainer__userIcon"
+                title="Favorites"
+                to="/account"
+              >
+                <FaRegHeart />
+              </Link>
+            ) : (
+              <Link className="header__4thContainer__userIcon" to="/signin">
+                <FaRegHeart />
+              </Link>
+            )}
 
-            <div className="header__4thContainer__heartIcon" title="Favorites">
-              <FaRegHeart />
-            </div>
-            <Link
-              className="header__4thContainer__userIcon"
-              title="User"
-              to="/signin"
-            >
-              <FaRegUser />
-            </Link>
+            {clientIsLogged ? (
+              <Link
+                className="header__4thContainer__userIcon"
+                title="User"
+                to="/account"
+              >
+                <FaRegUser />
+              </Link>
+            ) : (
+              <Link
+                className="header__4thContainer__userIcon"
+                title="Sign In"
+                to="/signin"
+              >
+                <FaRegUser />
+              </Link>
+            )}
+
             <div
               className="header__4thContainer__cartIcon"
               title="Cart"

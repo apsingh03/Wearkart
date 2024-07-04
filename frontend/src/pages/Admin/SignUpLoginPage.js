@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import Header from "../../components/Client/Header";
 import Footer from "../../components/Client/Footer";
 import { Formik, Form, Field } from "formik";
@@ -7,29 +7,42 @@ import { toast } from "react-toastify";
 import { FaUser, FaMobile } from "react-icons/fa";
 import { MdEmail, MdPassword } from "react-icons/md";
 import { Link } from "react-router-dom";
-
+import { AppContext } from "../../context/AppContext";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  createAdminAsync,
+  loginAdminAsync,
+} from "../../Redux/AdminSlices/adminAuth";
 const SignUpLoginPage = () => {
+  const dispatch = useDispatch();
+
+  const { isLoadingTopProgress, setisLoadingTopProgress } =
+    useContext(AppContext);
+
+  const [SignUpErrors, setSignUpErrors] = useState({ email: "" });
+  const [LoginErrors, setLoginErrors] = useState({ email: "", password: "" });
+
   const SigninSchema = Yup.object().shape({
-    password: Yup.string()
+    loginPassword: Yup.string()
       .min(2, "Too Short!")
-      .max(8, "Too Long!")
+      .max(20, "Too Long!")
       .required("*Required"),
 
-    emailAddress: Yup.string().email("Invalid email").required("*Required"),
+    loginEmail: Yup.string().email("Invalid email").required("*Required"),
   });
 
   const SignupSchema = Yup.object().shape({
-    password: Yup.string()
+    signUpPassword: Yup.string()
       .min(2, "Too Short!")
-      .max(8, "Too Long!")
+      .max(20, "Too Long!")
       .required("*Required"),
 
-    fullName: Yup.string()
+    signUpFullName: Yup.string()
       .min(4, "Too Short!")
-      .max(8, "Too Long!")
+      .max(20, "Too Long!")
       .required("*Required"),
 
-    emailAddress: Yup.string().email("Invalid email").required("*Required"),
+    signUpEmail: Yup.string().email("Invalid email").required("*Required"),
   });
 
   return (
@@ -44,13 +57,52 @@ const SignUpLoginPage = () => {
             </div>
             <Formik
               initialValues={{
-                emailAddress: "",
-
-                password: "",
+                loginEmail: "",
+                loginPassword: "",
               }}
               validationSchema={SigninSchema}
               onSubmit={async (values, { setSubmitting }) => {
-                // setSubmitting(false);
+                // console.log(values);
+
+                try {
+                  // console.log("values - ", values);
+                  setisLoadingTopProgress(20);
+                  const actionResult = await dispatch(
+                    loginAdminAsync({
+                      email: values.loginEmail,
+                      password: values.loginPassword,
+                    })
+                  );
+
+                  if (actionResult.payload.msg === "Incorrect Email") {
+                    // toast.error(actionResult.payload.msg);
+                    setLoginErrors({ email: actionResult.payload.msg });
+                    values.loginEmail = "";
+                  }
+
+                  if (actionResult.payload.msg === "Password Wrong") {
+                    // toast.error(actionResult.payload.msg);
+                    setLoginErrors({ password: actionResult.payload.msg });
+                    values.loginPassword = "";
+                  }
+
+                  if (actionResult.payload.msg === "Logged In Successfull") {
+                    values.loginEmail = "";
+                    values.loginPassword = "";
+                    toast.success(actionResult.payload.msg);
+                    localStorage.setItem(
+                      "adminLoggedToken",
+                      actionResult.payload.token
+                    );
+                    window.location.replace("/admin/");
+                  }
+
+                  setisLoadingTopProgress(100);
+                  setSubmitting(false);
+                  // console.log("actionResult - ", actionResult);
+                } catch (error) {
+                  console.log("Error client login ", error.message);
+                }
               }}
             >
               {({
@@ -66,11 +118,12 @@ const SignUpLoginPage = () => {
                 <form onSubmit={handleSubmit}>
                   <div className="form-group mb-3">
                     <div className="d-flex align-items-baseline">
-                      <label htmlFor="emailAddress">Email address</label>
+                      <label htmlFor="loginEmail">Email address</label>
                       <p className="authPage__inputFieldError px-3">
-                        {errors.emailAddress &&
-                          touched.emailAddress &&
-                          errors.emailAddress}
+                        {errors.loginEmail &&
+                          touched.loginEmail &&
+                          errors.loginEmail}
+                        {LoginErrors.email && LoginErrors.email}
                       </p>
                     </div>
 
@@ -82,11 +135,12 @@ const SignUpLoginPage = () => {
                       <input
                         type="email"
                         className="form-control"
-                        id="emailAddress"
-                        name="emailAddress"
+                        id="loginEmail"
+                        name="loginEmail"
+                        onClick={() => setLoginErrors({ email: "" })}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        value={values.emailAddress}
+                        value={values.loginEmail}
                       />
                     </div>
                   </div>
@@ -94,11 +148,12 @@ const SignUpLoginPage = () => {
                   <div className="form-group mb-3">
                     <div className="d-flex align-items-baseline justify-content-between">
                       <div className="d-flex align-items-baseline">
-                        <label htmlFor="password">Password</label>
+                        <label htmlFor="loginPassword">Password</label>
                         <p className="authPage__inputFieldError px-3">
-                          {errors.password &&
-                            touched.password &&
-                            errors.password}
+                          {errors.loginPassword &&
+                            touched.loginPassword &&
+                            errors.loginPassword}
+                          {LoginErrors.password && LoginErrors.password}
                         </p>
                       </div>
 
@@ -121,11 +176,12 @@ const SignUpLoginPage = () => {
                       <input
                         type="password"
                         className="form-control"
-                        id="password"
-                        name="password"
+                        id="loginPassword"
+                        name="loginPassword"
+                        onClick={() => setLoginErrors({ password: "" })}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        value={values.password}
+                        value={values.loginPassword}
                       />
                     </div>
                   </div>
@@ -150,13 +206,44 @@ const SignUpLoginPage = () => {
             </div>
             <Formik
               initialValues={{
-                emailAddress: "",
-                fullName: "",
-                password: "",
+                signUpEmail: "",
+                signUpFullName: "",
+                signUpPassword: "",
               }}
               validationSchema={SignupSchema}
               onSubmit={async (values, { setSubmitting }) => {
-                // setSubmitting(false);
+                try {
+                  // console.log("values - ", values);
+                  setisLoadingTopProgress(20);
+                  const actionResult = await dispatch(
+                    createAdminAsync({
+                      fullName: values.signUpFullName,
+                      email: values.signUpEmail,
+                      password: values.signUpPassword,
+                    })
+                  );
+
+                  if (actionResult.payload.msg === "Sign Up Successful") {
+                    toast.success(actionResult.payload.msg);
+
+                    values.signUpFullName = "";
+                    values.signUpEmail = "";
+                    values.signUpPassword = "";
+                  }
+
+                  if (actionResult.payload.msg === "Email Already Exist") {
+                    values.signUpEmail = "";
+                    setSignUpErrors({ email: actionResult.payload.msg });
+                  }
+
+                  setSubmitting(false);
+                  setisLoadingTopProgress(100);
+
+                  // console.log("actionResult - ", actionResult);
+                } catch (error) {
+                  setisLoadingTopProgress(100);
+                  console.log("Error Admin SignUp ", error.message);
+                }
               }}
             >
               {({
@@ -167,14 +254,15 @@ const SignUpLoginPage = () => {
                 handleBlur,
                 handleSubmit,
                 isSubmitting,
-                /* and other goodies */
               }) => (
                 <form onSubmit={handleSubmit}>
                   <div className="form-group mb-3">
                     <div className="d-flex align-items-baseline">
-                      <label htmlFor="fullName">Full Name</label>
+                      <label htmlFor="signUpFullName">Full Name</label>
                       <p className="authPage__inputFieldError px-3">
-                        {errors.fullName && touched.fullName && errors.fullName}
+                        {errors.signUpFullName &&
+                          touched.signUpFullName &&
+                          errors.signUpFullName}
                       </p>
                     </div>
 
@@ -184,24 +272,25 @@ const SignUpLoginPage = () => {
                       </div>
 
                       <input
-                        type="email"
+                        type="text"
                         className="form-control"
-                        id="fullName"
-                        name="fullName"
+                        id="signUpFullName"
+                        name="signUpFullName"
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        value={values.fullName}
+                        value={values.signUpFullName}
                       />
                     </div>
                   </div>
 
                   <div className="form-group mb-3">
                     <div className="d-flex align-items-baseline">
-                      <label htmlFor="emailAddress">Email address</label>
+                      <label htmlFor="signUpEmail">Email address</label>
                       <p className="authPage__inputFieldError px-3">
-                        {errors.emailAddress &&
-                          touched.emailAddress &&
-                          errors.emailAddress}
+                        {errors.signUpEmail &&
+                          touched.signUpEmail &&
+                          errors.signUpEmail}
+                        {SignUpErrors.email && SignUpErrors.email}
                       </p>
                     </div>
 
@@ -213,11 +302,12 @@ const SignUpLoginPage = () => {
                       <input
                         type="email"
                         className="form-control"
-                        id="emailAddress"
-                        name="emailAddress"
+                        id="signUpEmail"
+                        name="signUpEmail"
+                        onClick={() => setSignUpErrors({ email: "" })}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        value={values.emailAddress}
+                        value={values.signUpEmail}
                       />
                     </div>
                   </div>
@@ -225,11 +315,11 @@ const SignUpLoginPage = () => {
                   <div className="form-group mb-3">
                     <div className="d-flex align-items-baseline justify-content-between">
                       <div className="d-flex align-items-baseline">
-                        <label htmlFor="password">Password</label>
+                        <label htmlFor="signUpPassword">Password</label>
                         <p className="authPage__inputFieldError px-3">
-                          {errors.password &&
-                            touched.password &&
-                            errors.password}
+                          {errors.signUpPassword &&
+                            touched.signUpPassword &&
+                            errors.signUpPassword}
                         </p>
                       </div>
                     </div>
@@ -242,11 +332,11 @@ const SignUpLoginPage = () => {
                       <input
                         type="password"
                         className="form-control"
-                        id="password"
-                        name="password"
+                        id="signUpPassword"
+                        name="signUpPassword"
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        value={values.password}
+                        value={values.signUpPassword}
                       />
                     </div>
                   </div>

@@ -5,7 +5,7 @@ import Typography from "./components/Client/Typography";
 import Cart from "./components/Client/Cart";
 import { useState } from "react";
 import ProductFilterPage from "./pages/Client/ProductFilterPage";
-import ProductDetail from "./pages/Client/ProductDetail";
+import ProductDetailPage from "./pages/Client/ProductDetailPage";
 import LogInPage from "./pages/Client/LogInPage";
 import SignUpPage from "./pages/Client/SignUpPage";
 import SignUpLoginPage from "./pages/Admin/SignUpLoginPage";
@@ -13,16 +13,20 @@ import AdminJunction from "./pages/Admin/AdminJunction";
 import SideBarMenu from "./components/Client/SideBarMenu";
 import { AppContext } from "./context/AppContext";
 import ClientDashboard from "./pages/Client/ClientDashboard";
-
+import LoadingBar from "react-top-loading-bar";
+import ClientProtectedRoutes from "./components/Client/ClientProtectedRoutes";
+import AdminProtectedRoutes from "./components/Admin/AdminProtectedRoutes";
 function App() {
   const {
     isActiveSideBarMenu,
     setisActiveSideBarMenu,
     cartIsHover,
     setcartIsHover,
+    isLoadingTopProgress,
+    setisLoadingTopProgress,
   } = useContext(AppContext);
 
-  const [scrollTop, setScrollTop] = useState(0);
+  const [scrollTop, setScrollTop] = useState(10);
 
   // console.log("scrollTop - ", scrollTop);
 
@@ -66,6 +70,14 @@ function App() {
 
   return (
     <>
+      <LoadingBar
+        color="red"
+        height={5}
+        progress={isLoadingTopProgress}
+        shadow={true}
+        onLoaderFinished={() => setisLoadingTopProgress(0)}
+      />
+
       {cartIsHover ? <Cart setcartIsHover={setcartIsHover} /> : null}
       {isActiveSideBarMenu ? (
         <SideBarMenu setisActiveSideBarMenu={setisActiveSideBarMenu} />
@@ -75,15 +87,22 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/typography" element={<Typography />} />
         <Route path="/collections" element={<ProductFilterPage />} />
-        <Route path="/product" element={<ProductDetail />} />
+        <Route path="/product" element={<ProductDetailPage />} />
         <Route path="/signin" element={<LogInPage />} />
         <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/account" element={<ClientDashboard />} />
+
+        {/* CLIENT PROTECTED ROUTES */}
+        <Route
+          path="/account"
+          element={<ClientProtectedRoutes element={<ClientDashboard />} />}
+        />
 
         {/* ADMIN Routes  */}
-
         <Route path="/admin/auth" element={<SignUpLoginPage />} />
-        <Route path="/admin/*" element={<AdminJunction />} />
+        <Route
+          path="/admin/*"
+          element={<AdminProtectedRoutes element={<AdminJunction />} />}
+        />
       </Routes>
     </>
   );

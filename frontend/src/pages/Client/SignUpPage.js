@@ -1,27 +1,36 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import Header from "../../components/Client/Header";
 import Footer from "../../components/Client/Footer";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
-
+import { useNavigate } from "react-router-dom";
 import { FaUser, FaMobile } from "react-icons/fa";
 import { MdEmail, MdPassword } from "react-icons/md";
 import { Link } from "react-router-dom";
+import { createClientAsync } from "../../Redux/ClientSlices/clientAuth";
+import { useSelector, useDispatch } from "react-redux";
+import { AppContext } from "../../context/AppContext";
 
 const SignUpPage = () => {
+  const [SignUpErrors, setSignUpErrors] = useState({ email: "" });
+  const { isLoadingTopProgress, setisLoadingTopProgress } =
+    useContext(AppContext);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const SignupSchema = Yup.object().shape({
     password: Yup.string()
       .min(2, "Too Short!")
-      .max(8, "Too Long!")
+      .max(20, "Too Long!")
       .required("*Required"),
 
     fullName: Yup.string()
       .min(4, "Too Short!")
-      .max(8, "Too Long!")
+      .max(20, "Too Long!")
       .required("*Required"),
 
-    emailAddress: Yup.string().email("Invalid email").required("*Required"),
+    email: Yup.string().email("Invalid email").required("*Required"),
   });
 
   return (
@@ -37,13 +46,43 @@ const SignUpPage = () => {
           </div>
           <Formik
             initialValues={{
-              emailAddress: "",
+              email: "",
               fullName: "",
               password: "",
             }}
             validationSchema={SignupSchema}
             onSubmit={async (values, { setSubmitting }) => {
-              // setSubmitting(false);
+              try {
+                // console.log("values - ", values);
+                setisLoadingTopProgress(20);
+                const actionResult = await dispatch(
+                  createClientAsync({
+                    fullName: values.fullName,
+                    email: values.email,
+                    password: values.password,
+                  })
+                );
+
+                if (actionResult.payload.msg === "Sign Up Successful") {
+                  toast.success(actionResult.payload.msg);
+                  setisLoadingTopProgress(100);
+                  setSubmitting(false);
+                  navigate("/signin");
+                }
+
+                if (actionResult.payload.msg === "Email Already Exist") {
+                  values.email = "";
+                  setSubmitting(false);
+                  setisLoadingTopProgress(100);
+                  // toast.error(actionResult.payload.msg);
+                  setSignUpErrors({ email: actionResult.payload.msg });
+                }
+
+                // console.log("actionResult - ", actionResult);
+              } catch (error) {
+                setisLoadingTopProgress(100);
+                console.log("Error client SignUp ", error.message);
+              }
             }}
           >
             {({
@@ -71,7 +110,7 @@ const SignUpPage = () => {
                     </div>
 
                     <input
-                      type="email"
+                      type="text"
                       className="form-control"
                       id="fullName"
                       name="fullName"
@@ -84,11 +123,10 @@ const SignUpPage = () => {
 
                 <div className="form-group mb-3">
                   <div className="d-flex align-items-baseline">
-                    <label htmlFor="emailAddress">Email address</label>
+                    <label htmlFor="email">Email address</label>
                     <p className="authPage__inputFieldError px-3">
-                      {errors.emailAddress &&
-                        touched.emailAddress &&
-                        errors.emailAddress}
+                      {errors.email && touched.email && errors.email}
+                      {SignUpErrors.email && SignUpErrors.email}
                     </p>
                   </div>
 
@@ -100,11 +138,12 @@ const SignUpPage = () => {
                     <input
                       type="email"
                       className="form-control"
-                      id="emailAddress"
-                      name="emailAddress"
+                      id="email"
+                      name="email"
+                      onClick={() => setSignUpErrors({ email: "" })}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      value={values.emailAddress}
+                      value={values.email}
                     />
                   </div>
                 </div>
@@ -141,7 +180,7 @@ const SignUpPage = () => {
                   className="authPage__submitBtn mt-3"
                   disabled={isSubmitting}
                 >
-                  LOGIN
+                  SIGN UP
                 </button>
               </form>
             )}

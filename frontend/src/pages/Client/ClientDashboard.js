@@ -150,7 +150,14 @@ const ClientDashboard = () => {
                   </div>
                 </div>
 
-                <div className="account__body__logoutBtn">
+                <div
+                  className="account__body__logoutBtn"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => [
+                    localStorage.removeItem("clientLoggedToken"),
+                    window.location.replace("/"),
+                  ]}
+                >
                   <span>logout</span>
                 </div>
               </>
@@ -182,7 +189,14 @@ const ClientDashboard = () => {
                   </div>
                 </div>
 
-                <div className="account__body__logoutBtn">
+                <div
+                  className="account__body__logoutBtn"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => [
+                    localStorage.removeItem("clientLoggedToken"),
+                    window.location.replace("/"),
+                  ]}
+                >
                   <span>logout</span>
                 </div>
               </div>

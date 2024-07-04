@@ -134,9 +134,15 @@ const AdminJunction = () => {
                   {" "}
                   Link 2{" "}
                 </Link>
-                <Link className="admin__header__menu__children__title">
+                <Link
+                  className="admin__header__menu__children__title"
+                  onClick={() => [
+                    localStorage.removeItem("adminLoggedToken"),
+                    window.location.replace("/"),
+                  ]}
+                >
                   {" "}
-                  Link 3{" "}
+                  Logout
                 </Link>
               </div>
             </div>

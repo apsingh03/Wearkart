@@ -5,6 +5,7 @@ export const AppContext = createContext();
 export const AppProvider = ({ children }) => {
   const [isActiveSideBarMenu, setisActiveSideBarMenu] = useState(false);
   const [cartIsHover, setcartIsHover] = useState(false);
+  const [isLoadingTopProgress, setisLoadingTopProgress] = useState(0);
   return (
     <AppContext.Provider
       value={{
@@ -12,6 +13,8 @@ export const AppProvider = ({ children }) => {
         setisActiveSideBarMenu,
         cartIsHover,
         setcartIsHover,
+        isLoadingTopProgress,
+        setisLoadingTopProgress,
       }}
     >
       {children}

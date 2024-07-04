@@ -3,7 +3,7 @@ import React from "react";
 // import modelImages from "../utils/imagesArrays"
 
 const ActressCarousel = () => {
-   const modelImages = [
+  const modelImages = [
     "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FbannerFile-1717565604673.png%3Fv%3D1717565609&w=1920&q=75",
     "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FbannerFile-1717565675192.png%3Fv%3D1717565679&w=1920&q=75",
     "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FbannerFile-1719386153935.png%3Fv%3D1719386158&w=1920&q=75",

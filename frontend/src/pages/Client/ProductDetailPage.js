@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Header from "../../components/Client/Header";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 
 import { FaRegHeart, FaWhatsapp } from "react-icons/fa";
 import { LiaUsersSolid } from "react-icons/lia";
@@ -9,7 +9,7 @@ import { LuCalendarDays } from "react-icons/lu";
 import { AiOutlineGlobal } from "react-icons/ai";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import parse from "html-react-parser";
-const ProductDetail = () => {
+const ProductDetailPage = () => {
   const [isSubMenuToggle, setisSubMenuToggle] = useState({});
 
   const [scrollTop, setScrollTop] = useState(0);
@@ -360,4 +360,4 @@ const ProductDetail = () => {
   );
 };
 
-export default ProductDetail;
+export default ProductDetailPage;

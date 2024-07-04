@@ -1,22 +1,33 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import Header from "../../components/Client/Header";
 import Footer from "../../components/Client/Footer";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
-
 import { FaUser, FaMobile } from "react-icons/fa";
 import { MdEmail, MdPassword } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { AppContext } from "../../context/AppContext";
+import { useSelector, useDispatch } from "react-redux";
+import { loginClientAsync } from "../../Redux/ClientSlices/clientAuth";
 
 const LogInPage = () => {
+  const [logInEmailError, setlogInEmailError] = useState("");
+  const [logInPasswordError, setlogInPasswordError] = useState("");
+  const { isLoadingTopProgress, setisLoadingTopProgress } =
+    useContext(AppContext);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const SignupSchema = Yup.object().shape({
     password: Yup.string()
       .min(2, "Too Short!")
-      .max(8, "Too Long!")
+      .max(20, "Too Long!")
       .required("*Required"),
 
-    emailAddress: Yup.string().email("Invalid email").required("*Required"),
+    email: Yup.string().email("Invalid email").required("*Required"),
   });
 
   return (
@@ -32,13 +43,49 @@ const LogInPage = () => {
           </div>
           <Formik
             initialValues={{
-              emailAddress: "",
-
+              email: "",
               password: "",
             }}
             validationSchema={SignupSchema}
             onSubmit={async (values, { setSubmitting }) => {
-              // setSubmitting(false);
+              try {
+                // console.log("values - ", values);
+                setisLoadingTopProgress(20);
+                const actionResult = await dispatch(
+                  loginClientAsync({
+                    email: values.email,
+                    password: values.password,
+                  })
+                );
+
+                if (actionResult.payload.msg === "Incorrect Email") {
+                  // toast.error(actionResult.payload.msg);
+                  setlogInEmailError(actionResult.payload.msg);
+                  values.email = "";
+                }
+
+                if (actionResult.payload.msg === "Password Wrong") {
+                  // toast.error(actionResult.payload.msg);
+                  setlogInPasswordError(actionResult.payload.msg);
+                  values.password = "";
+                }
+
+                if (actionResult.payload.msg === "Logged In Successfull") {
+                  values.email = "";
+                  values.password = "";
+                  toast.success(actionResult.payload.msg);
+                  localStorage.setItem(
+                    "clientLoggedToken",
+                    actionResult.payload.token
+                  );
+                  window.location.replace("/account");
+                }
+
+                setisLoadingTopProgress(100);
+                // console.log("actionResult - ", actionResult);
+              } catch (error) {
+                console.log("Error client login ", error.message);
+              }
             }}
           >
             {({
@@ -54,11 +101,10 @@ const LogInPage = () => {
               <form onSubmit={handleSubmit}>
                 <div className="form-group mb-3">
                   <div className="d-flex align-items-baseline">
-                    <label htmlFor="emailAddress">Email address</label>
+                    <label htmlFor="email">Email address</label>
                     <p className="authPage__inputFieldError px-3">
-                      {errors.emailAddress &&
-                        touched.emailAddress &&
-                        errors.emailAddress}
+                      {errors.email && touched.email && errors.email}
+                      {logInEmailError && logInEmailError}
                     </p>
                   </div>
 
@@ -70,11 +116,12 @@ const LogInPage = () => {
                     <input
                       type="email"
                       className="form-control"
-                      id="emailAddress"
-                      name="emailAddress"
+                      id="email"
+                      name="email"
+                      onClick={() => setlogInEmailError("")}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      value={values.emailAddress}
+                      value={values.email}
                     />
                   </div>
                 </div>
@@ -85,6 +132,7 @@ const LogInPage = () => {
                       <label htmlFor="password">Password</label>
                       <p className="authPage__inputFieldError px-3">
                         {errors.password && touched.password && errors.password}
+                        {logInPasswordError && logInPasswordError}
                       </p>
                     </div>
 
@@ -109,6 +157,7 @@ const LogInPage = () => {
                       className="form-control"
                       id="password"
                       name="password"
+                      onClick={() => setlogInPasswordError("")}
                       onChange={handleChange}
                       onBlur={handleBlur}
                       value={values.password}
