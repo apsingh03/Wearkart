@@ -34,7 +34,7 @@ const createParentFilter = async (req, res) => {
         include: {
           model: AdminAuth,
           required: true,
-          as: "adminParent",
+          as: "filterAdminParent",
           attributes: { exclude: ["password", "createdAt", "updatedAt"] },
         },
         where: { id: createQuery.id, admin_id: req.admin.id },
@@ -58,13 +58,13 @@ const getParentFilter = async (req, res) => {
         {
           model: AdminAuth,
           required: true,
-          as: "adminParent",
+          as: "filterAdminParent",
           attributes: { exclude: ["password", "createdAt", "updatedAt"] },
         },
         {
           model: ChildFilter,
-          required: true,
-          as: "childData",
+          required: false,
+          as: "filterChildData",
         },
       ],
       where: { admin_id: req.admin.id },

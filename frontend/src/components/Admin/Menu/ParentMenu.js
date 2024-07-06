@@ -6,26 +6,19 @@ import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { PiTextTFill } from "react-icons/pi";
 import {
-  createChildFilterAsync,
-  deleteChildFilterAsync,
-  getChildFilterAsync,
-  updateChildFilterAsync,
-} from "../../../Redux/AdminSlices/Filter/childFilterSlice";
-
-import { getParentFilterAsync } from "../../../Redux/AdminSlices/Filter/parentFilterSlice";
-
+  createParentMenuAsync,
+  deleteParentMenuAsync,
+  getParentMenuAsync,
+  updateParentMenuAsync,
+} from "../../../Redux/AdminSlices/Menu/parentMenuSlice";
 import { AppContext } from "../../../context/AppContext";
 
-const ChildFilter = () => {
-  const admin_parentFilterRedux = useSelector(
-    (state) => state.admin_parentFilter.data
+const ParentMenu = () => {
+  const admin_parentMenuRedux = useSelector(
+    (state) => state.admin_parentMenu.data
   );
 
-  const admin_childFilterRedux = useSelector(
-    (state) => state.admin_childFilter.data
-  );
-
-  // console.log("admin_childFilterRedux - ", admin_childFilterRedux.query);
+  // console.log("admin_parentMenuRedux", admin_parentMenuRedux.query);
 
   const [updateParentName, setupdateParentName] = useState("");
 
@@ -41,20 +34,13 @@ const ChildFilter = () => {
       .min(3, "Too Short!")
       .max(20, "Too Long!")
       .required("*Required"),
-
-    parentId: Yup.string().required("*Option is Required"),
   });
 
-  async function fetchFilter() {
+  async function fetchParentFilter() {
     setisLoadingTopProgress(30);
+    const actionResult = await dispatch(getParentMenuAsync());
 
-    const actionResultParent = await dispatch(getParentFilterAsync());
-    const actionResultChild = await dispatch(getChildFilterAsync());
-
-    if (
-      actionResultParent.payload.msg === "success" ||
-      actionResultChild.payload.msg === "success"
-    ) {
+    if (actionResult.payload.msg === "success") {
       setisLoadingTopProgress(100);
     }
   }
@@ -64,7 +50,7 @@ const ChildFilter = () => {
     setisLoadingTopProgress(30);
 
     if (window.confirm("Are you sure want to Delete It ?")) {
-      const actionResult = await dispatch(deleteChildFilterAsync({ id }));
+      const actionResult = await dispatch(deleteParentMenuAsync({ id }));
 
       if (actionResult.payload.msg === "success") {
         toast.success("Deleted");
@@ -84,7 +70,7 @@ const ChildFilter = () => {
 
     if (updateParentName.length >= 4) {
       const actionResult = await dispatch(
-        updateChildFilterAsync({
+        updateParentMenuAsync({
           name: updatedValue,
           id: targetId,
         })
@@ -104,7 +90,7 @@ const ChildFilter = () => {
         toast.error(actionResult.payload.msg);
       }
     } else {
-      toast.error("Please Type  ");
+      toast.error("Please Type");
     }
 
     // console.log("actionResult - ", actionResult.payload);
@@ -113,7 +99,7 @@ const ChildFilter = () => {
   }
 
   useEffect(() => {
-    fetchFilter();
+    fetchParentFilter();
   }, []);
 
   return (
@@ -123,29 +109,28 @@ const ChildFilter = () => {
           <div>
             <Formik
               initialValues={{
-                parentId: "",
                 filterName: "",
               }}
               validationSchema={validationSchema}
               onSubmit={async (values, { setSubmitting }) => {
                 try {
                   setisLoadingTopProgress(30);
-
                   const actionResult = await dispatch(
-                    createChildFilterAsync({
+                    createParentMenuAsync({
                       name: values.filterName,
-                      parent_id: values.parentId,
                     })
                   );
+
                   if (actionResult.payload.msg === "Name Already Exist") {
                     values.filterName = "";
                     toast.error(actionResult.payload.msg);
                   }
+
                   if (actionResult.payload.msg === "success") {
                     values.filterName = "";
                     toast.success(actionResult.payload.msg);
                   }
-                  // console.log("actionResult - ", actionResult);
+                  //   console.log("actionResult - ", actionResult);
                   setSubmitting(false);
                   setisLoadingTopProgress(100);
                 } catch (error) {
@@ -165,46 +150,9 @@ const ChildFilter = () => {
                 /* and other goodies */
               }) => (
                 <form onSubmit={handleSubmit}>
-                  <div className="mb-3">
-                    <div className="d-flex align-items-baseline">
-                      <label htmlFor="parentId">Select Parent Name</label>
-                      <p className="authPage__inputFieldError px-3">
-                        {errors.parentId && touched.parentId && errors.parentId}
-                      </p>
-                    </div>
-
-                    <select
-                      className="form-select"
-                      name="parentId"
-                      id="parentId"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.parentId}
-                    >
-                      <option>Please Select Parent</option>
-
-                      {(function () {
-                        try {
-                          return (
-                            admin_parentFilterRedux.query &&
-                            admin_parentFilterRedux.query.map((data, index) => {
-                              return (
-                                <option value={`${data.id}`} key={index}>
-                                  {data.name}
-                                </option>
-                              );
-                            })
-                          );
-                        } catch (error) {
-                          console.log("Error - ", error);
-                        }
-                      })()}
-                    </select>
-                  </div>
-
                   <div className="form-group mb-3">
                     <div className="d-flex align-items-baseline">
-                      <label htmlFor="filterName">Child Name</label>
+                      <label htmlFor="filterName">Parent Menu Name</label>
                       <p className="authPage__inputFieldError px-3">
                         {errors.filterName &&
                           touched.filterName &&
@@ -235,7 +183,7 @@ const ChildFilter = () => {
                     className="authPage__submitBtn mt-3"
                     disabled={isSubmitting}
                   >
-                    Create Child
+                    Create Menu
                   </button>
                 </form>
               )}
@@ -249,8 +197,7 @@ const ChildFilter = () => {
               <thead>
                 <tr>
                   <th scope="col">S.No</th>
-                  <th scope="col">Parent Name</th>
-                  <th scope="col">Child Name</th>
+                  <th scope="col">Menu Name</th>
                   <th scope="col">Actions </th>
                 </tr>
               </thead>
@@ -258,16 +205,11 @@ const ChildFilter = () => {
                 {(function () {
                   try {
                     return (
-                      admin_childFilterRedux.query &&
-                      admin_childFilterRedux.query.map((data, index) => {
+                      admin_parentMenuRedux.query &&
+                      admin_parentMenuRedux.query.map((data, index) => {
                         return (
                           <tr key={index}>
                             <th scope="row">{index + 1}</th>
-
-                            <td>
-                              {data.filterChildData &&
-                                data.filterChildData.name}
-                            </td>
 
                             <td>
                               {isUpdateData[data.id] ? (
@@ -299,18 +241,19 @@ const ChildFilter = () => {
                             <td>
                               <div
                                 className="d-flex flex-row "
-                                style={{ gap: "20px" }}
+                                style={{ gap: "10px" }}
                               >
                                 {isUpdateData[data.id] ? (
                                   <>
                                     <span
                                       className="btn btn-warning"
-                                      onClick={() =>
+                                      onClick={() => [
                                         setisUpdateData((prevState) => ({
                                           ...prevState,
                                           [data.id]: !prevState[data.id],
-                                        }))
-                                      }
+                                        })),
+                                        setupdateParentName(" "),
+                                      ]}
                                     >
                                       Cancel
                                     </span>
@@ -365,4 +308,4 @@ const ChildFilter = () => {
   );
 };
 
-export default ChildFilter;
+export default ParentMenu;

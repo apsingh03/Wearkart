@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaRegHeart, FaRegUser } from "react-icons/fa";
 import { IoIosSearch } from "react-icons/io";
@@ -7,10 +7,12 @@ import { LiaShoppingBagSolid } from "react-icons/lia";
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
 import { TbScreenShare } from "react-icons/tb";
 import { GiHamburgerMenu } from "react-icons/gi";
-import { AppContext } from "../../context/AppContext";
-import { useSelector } from "react-redux";
+import { AppContext, AppProvider } from "../../context/AppContext";
+import { useDispatch, useSelector } from "react-redux";
+import { getParentMenuAsync } from "../../Redux/AdminSlices/Menu/parentMenuSlice";
 
 const Header = () => {
+  const dispatch = useDispatch();
   const clientIsLogged = useSelector(
     (state) => state.client_auth.loggedData.isUserLogged
   );
@@ -19,11 +21,17 @@ const Header = () => {
     (state) => state.admin_auth.loggedData.isUserLogged
   );
 
+  const admin_parentMenuRedux = useSelector(
+    (state) => state.admin_parentMenu.data
+  );
+
   const {
     isActiveSideBarMenu,
     setisActiveSideBarMenu,
     cartIsHover,
     setcartIsHover,
+    isLoadingTopProgress,
+    setisLoadingTopProgress,
   } = useContext(AppContext);
 
   function onClickToggleCart() {
@@ -35,6 +43,20 @@ const Header = () => {
       document.body.style.overflowY = cartIsHover ? "auto" : "hidden";
     }
   }
+
+  async function fetchData() {
+    setisLoadingTopProgress(30);
+
+    const actionResultParent = await dispatch(getParentMenuAsync());
+
+    if (actionResultParent.payload.msg === "success") {
+      setisLoadingTopProgress(100);
+    }
+  }
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <>
@@ -76,62 +98,35 @@ const Header = () => {
           </div>
 
           <div className="header__2ndContainer">
-            <div className="header__2ndContainer__menu">
-              <Link className="header__2ndContainer__menu__title"> Shop </Link>
-              <div className="header__2ndContainer__menu__children">
-                <Link className="header__2ndContainer__menu__children__title">
-                  {" "}
-                  Link 1{" "}
-                </Link>
-                <Link className="header__2ndContainer__menu__children__title">
-                  {" "}
-                  Link 2{" "}
-                </Link>
-                <Link className="header__2ndContainer__menu__children__title">
-                  {" "}
-                  Link 3{" "}
-                </Link>
-              </div>
-            </div>
-
-            <div className="header__2ndContainer__menu">
-              <Link className="header__2ndContainer__menu__title"> Mens </Link>
-              <div className="header__2ndContainer__menu__children">
-                <Link className="header__2ndContainer__menu__children__title">
-                  {" "}
-                  Cap{" "}
-                </Link>
-                <Link className="header__2ndContainer__menu__children__title">
-                  {" "}
-                  Hat{" "}
-                </Link>
-                <Link className="header__2ndContainer__menu__children__title">
-                  {" "}
-                  Shoes{" "}
-                </Link>
-              </div>
-            </div>
-
-            <div className="header__2ndContainer__menu">
-              <Link className="header__2ndContainer__menu__title">
-                {" "}
-                Womens{" "}
-              </Link>
-              <div className="header__2ndContainer__menu__children">
-                <Link className="header__2ndContainer__menu__children__title">
-                  {" "}
-                  Trowsers{" "}
-                </Link>
-                <Link className="header__2ndContainer__menu__children__title">
-                  {" "}
-                  Tshirts{" "}
-                </Link>
-                <Link className="header__2ndContainer__menu__children__title">
-                  {" "}
-                  Pants{" "}
-                </Link>
-              </div>
-            </div>
+            {(function () {
+              try {
+                return (
+                  admin_parentMenuRedux.query &&
+                  admin_parentMenuRedux.query.map((menuData, menuIdx) => {
+                    return (
+                      <div className="header__2ndContainer__menu" key={menuIdx}>
+                        <Link className="header__2ndContainer__menu__title">
+                          {" "}
+                          {menuData.name && menuData.name}{" "}
+                        </Link>
+                        <div className="header__2ndContainer__menu__children">
+                          {menuData.menuChildData &&
+                            menuData.menuChildData.map((subMenu, subIdx) => {
+                              return (
+                                <Link className="header__2ndContainer__menu__children__title">
+                                  {subMenu.name && subMenu.name}
+                                </Link>
+                              );
+                            })}
+                        </div>
+                      </div>
+                    );
+                  })
+                );
+              } catch (error) {
+                console.log("Error Header - ", error.message);
+              }
+            })()}
           </div>
 
           <div className="header__3rdContainer">

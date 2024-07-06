@@ -6,8 +6,8 @@ import { FaRegHeart } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import SideBarAllFilters from "../../components/Client/ProductsFilterPage/SideBarAllFilters";
 import { useDispatch, useSelector } from "react-redux";
-import { getChildFilterAsync } from "../../Redux/AdminSlices/childFilterSlice";
-import { getParentFilterAsync } from "../../Redux/AdminSlices/parentFilterSlice";
+import { getChildFilterAsync } from "../../Redux/AdminSlices/Filter/childFilterSlice";
+import { getParentFilterAsync } from "../../Redux/AdminSlices/Filter/parentFilterSlice";
 import { AppContext } from "../../context/AppContext";
 
 const ProductFilterPage = () => {

@@ -1,18 +1,17 @@
-const db = require("../../../models/");
+const db = require("../../../models");
 
 // Tables
-const ParentFilter = db.parentFilter;
+const ParentMenu = db.parentMenu;
 const AdminAuth = db.adminAuth;
-const ChildFilter = db.childFilter;
+const ChildMenu = db.childMenu;
 
 const Sequelize = db.Sequelize;
 const sequelize = db.sequelize;
 
-const createChildFilter = async (req, res) => {
+const createParentMenu = async (req, res) => {
   const t = await sequelize.transaction();
   try {
-    // console.log("Req.body - ", req.body);
-    const nameAlreadyExist = await ChildFilter.findOne({
+    const nameAlreadyExist = await ParentMenu.findOne({
       where: { name: req.body.name, admin_id: req.admin.id },
       transaction: t,
     });
@@ -21,38 +20,29 @@ const createChildFilter = async (req, res) => {
       await t.rollback();
       return res.status(200).send({ msg: "Name Already Exist" });
     } else {
-      const createQuery = await ChildFilter.create(
+      const createQuery = await ParentMenu.create(
         {
           name: req.body.name,
-          parent_id: req.body.parent_id,
           createdAt: new Date(),
           admin_id: req.admin.id,
         },
         { transaction: t }
       );
 
-      const findUpdatedQuery = await ChildFilter.findOne({
-        include: [
-          {
-            model: AdminAuth,
-            required: true,
-            as: "filterAdminChild",
-            attributes: { exclude: ["password", "createdAt", "updatedAt"] },
-          },
-          {
-            model: ParentFilter,
-            required: true,
-            as: "filterChildData",
-          },
-        ],
-
+      const updatedQuery = await ParentMenu.findOne({
+        include: {
+          model: AdminAuth,
+          required: true,
+          as: "menuAdminParent",
+          attributes: { exclude: ["password", "createdAt", "updatedAt"] },
+        },
         where: { id: createQuery.id, admin_id: req.admin.id },
         order: [["id", "Asc"]],
         transaction: t,
       });
 
       await t.commit();
-      return res.status(200).send({ msg: "success", query: findUpdatedQuery });
+      return res.status(200).send({ msg: "success", query: updatedQuery });
     }
   } catch (error) {
     await t.rollback();
@@ -60,26 +50,30 @@ const createChildFilter = async (req, res) => {
   }
 };
 
-const getChildFilter = async (req, res) => {
+const getParentMenu = async (req, res) => {
   try {
-    const query = await ChildFilter.findAll({
+    console.log("getParentMenu - ");
+    // console.log("admin_id - ", req.admin.id);
+    const query = await ParentMenu.findAll({
       include: [
         {
           model: AdminAuth,
           required: true,
-          as: "filterAdminChild",
+          as: "menuAdminParent",
           attributes: { exclude: ["password", "createdAt", "updatedAt"] },
         },
         {
-          model: ParentFilter,
+          model: ChildMenu,
           required: false,
-          as: "filterChildData",
+          as: "menuChildData",
         },
       ],
-
       where: { admin_id: req.admin.id },
       order: [["id", "Asc"]],
+      // logging: console.log, // Log the generated SQL query
     });
+
+    // console.log("query - ", query);
 
     return res.status(200).send({ msg: "success", query });
   } catch (error) {
@@ -87,10 +81,10 @@ const getChildFilter = async (req, res) => {
   }
 };
 
-const updateChildFilter = async (req, res) => {
+const updateParentMenu = async (req, res) => {
   const t = await sequelize.transaction();
   try {
-    const nameAlreadyExist = await ChildFilter.findOne({
+    const nameAlreadyExist = await ParentMenu.findOne({
       where: { name: req.body.name, admin_id: req.admin.id },
       transaction: t,
     });
@@ -99,7 +93,7 @@ const updateChildFilter = async (req, res) => {
       await t.rollback();
       return res.status(200).send({ msg: "Name Already Exist" });
     } else {
-      const [updated] = await ChildFilter.update(
+      const [updated] = await ParentMenu.update(
         {
           name: req.body.name,
           updatedAt: new Date(),
@@ -113,8 +107,8 @@ const updateChildFilter = async (req, res) => {
       // Check if any rows were updated
       if (updated) {
         // Fetch the updated record
-        const query = await ChildFilter.findOne({
-          where: [{ id: req.params.id }, { admin_id: req.admin.id }],
+        const query = await ParentMenu.findOne({
+          where: { id: req.params.id, admin_id: req.admin.id },
           transaction: t,
         });
         await t.commit();
@@ -129,10 +123,10 @@ const updateChildFilter = async (req, res) => {
   }
 };
 
-const deleteChildFilter = async (req, res) => {
+const deleteParentMenu = async (req, res) => {
   const t = await sequelize.transaction();
   try {
-    const query = await ChildFilter.destroy({
+    const query = await ParentMenu.destroy({
       where: { id: req.params.id, admin_id: req.admin.id },
       transaction: t,
     });
@@ -152,8 +146,8 @@ const deleteChildFilter = async (req, res) => {
 };
 
 module.exports = {
-  createChildFilter,
-  getChildFilter,
-  updateChildFilter,
-  deleteChildFilter,
+  createParentMenu,
+  getParentMenu,
+  updateParentMenu,
+  deleteParentMenu,
 };

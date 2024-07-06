@@ -3,7 +3,7 @@ import { RxCross2 } from "react-icons/rx";
 import { FaPlus, FaMinus } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import { AppContext } from "../../../context/AppContext";
-import { getParentFilterAsync } from "../../../Redux/AdminSlices/parentFilterSlice";
+import { getParentFilterAsync } from "../../../Redux/AdminSlices/Filter/parentFilterSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 const SideFilter = ({ setIsFilterSideBarVisible }) => {

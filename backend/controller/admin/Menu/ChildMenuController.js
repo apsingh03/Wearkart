@@ -1,18 +1,18 @@
-const db = require("../../../models/");
+const db = require("../../../models");
 
 // Tables
-const ParentFilter = db.parentFilter;
+const ParentMenu = db.parentMenu;
 const AdminAuth = db.adminAuth;
-const ChildFilter = db.childFilter;
+const ChildMenu = db.childMenu;
 
 const Sequelize = db.Sequelize;
 const sequelize = db.sequelize;
 
-const createChildFilter = async (req, res) => {
+const createChildMenu = async (req, res) => {
   const t = await sequelize.transaction();
   try {
     // console.log("Req.body - ", req.body);
-    const nameAlreadyExist = await ChildFilter.findOne({
+    const nameAlreadyExist = await ChildMenu.findOne({
       where: { name: req.body.name, admin_id: req.admin.id },
       transaction: t,
     });
@@ -21,7 +21,7 @@ const createChildFilter = async (req, res) => {
       await t.rollback();
       return res.status(200).send({ msg: "Name Already Exist" });
     } else {
-      const createQuery = await ChildFilter.create(
+      const createQuery = await ChildMenu.create(
         {
           name: req.body.name,
           parent_id: req.body.parent_id,
@@ -31,18 +31,18 @@ const createChildFilter = async (req, res) => {
         { transaction: t }
       );
 
-      const findUpdatedQuery = await ChildFilter.findOne({
+      const findUpdatedQuery = await ChildMenu.findOne({
         include: [
           {
             model: AdminAuth,
             required: true,
-            as: "filterAdminChild",
+            as: "menuAdminChild",
             attributes: { exclude: ["password", "createdAt", "updatedAt"] },
           },
           {
-            model: ParentFilter,
+            model: ParentMenu,
             required: true,
-            as: "filterChildData",
+            as: "menuChildData",
           },
         ],
 
@@ -60,20 +60,21 @@ const createChildFilter = async (req, res) => {
   }
 };
 
-const getChildFilter = async (req, res) => {
+const getChildMenu = async (req, res) => {
   try {
-    const query = await ChildFilter.findAll({
+    // console.log("------- getChildMenu");
+    const query = await ChildMenu.findAll({
       include: [
         {
           model: AdminAuth,
           required: true,
-          as: "filterAdminChild",
+          as: "menuAdminChild",
           attributes: { exclude: ["password", "createdAt", "updatedAt"] },
         },
         {
-          model: ParentFilter,
+          model: ParentMenu,
           required: false,
-          as: "filterChildData",
+          as: "menuChildData",
         },
       ],
 
@@ -87,10 +88,10 @@ const getChildFilter = async (req, res) => {
   }
 };
 
-const updateChildFilter = async (req, res) => {
+const updateChildMenu = async (req, res) => {
   const t = await sequelize.transaction();
   try {
-    const nameAlreadyExist = await ChildFilter.findOne({
+    const nameAlreadyExist = await ChildMenu.findOne({
       where: { name: req.body.name, admin_id: req.admin.id },
       transaction: t,
     });
@@ -99,7 +100,7 @@ const updateChildFilter = async (req, res) => {
       await t.rollback();
       return res.status(200).send({ msg: "Name Already Exist" });
     } else {
-      const [updated] = await ChildFilter.update(
+      const [updated] = await ChildMenu.update(
         {
           name: req.body.name,
           updatedAt: new Date(),
@@ -113,7 +114,7 @@ const updateChildFilter = async (req, res) => {
       // Check if any rows were updated
       if (updated) {
         // Fetch the updated record
-        const query = await ChildFilter.findOne({
+        const query = await ChildMenu.findOne({
           where: [{ id: req.params.id }, { admin_id: req.admin.id }],
           transaction: t,
         });
@@ -129,10 +130,10 @@ const updateChildFilter = async (req, res) => {
   }
 };
 
-const deleteChildFilter = async (req, res) => {
+const deleteChildMenu = async (req, res) => {
   const t = await sequelize.transaction();
   try {
-    const query = await ChildFilter.destroy({
+    const query = await ChildMenu.destroy({
       where: { id: req.params.id, admin_id: req.admin.id },
       transaction: t,
     });
@@ -152,8 +153,8 @@ const deleteChildFilter = async (req, res) => {
 };
 
 module.exports = {
-  createChildFilter,
-  getChildFilter,
-  updateChildFilter,
-  deleteChildFilter,
+  createChildMenu,
+  getChildMenu,
+  updateChildMenu,
+  deleteChildMenu,
 };

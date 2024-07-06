@@ -30,40 +30,89 @@ db.sequelize = sequelize;
 db.clientAuth = require("./client/ClientAuthModel.js")(sequelize, DataTypes);
 // Admin Models
 db.adminAuth = require("./admin/AdminAuthModel.js")(sequelize, DataTypes);
-db.parentFilter = require("./admin/ParentFilterModel.js")(sequelize, DataTypes);
-db.childFilter = require("./admin/ChildFilterModel.js")(sequelize, DataTypes);
+db.parentFilter = require("./admin/Filter/ParentFilterModel.js")(
+  sequelize,
+  DataTypes
+);
+db.childFilter = require("./admin/Filter/ChildFilterModel.js")(
+  sequelize,
+  DataTypes
+);
 
-// Filter Parent Relations
+db.parentMenu = require("./admin/Menu/ParentMenuModel.js")(
+  sequelize,
+  DataTypes
+);
+db.childMenu = require("./admin/Menu/ChildMenuModel.js")(sequelize, DataTypes);
+
+// -------------------
+// --------------------------------- Filter Relations
+// -------------------
+// Admin --> ParentFilter
 db.adminAuth.hasMany(db.parentFilter, {
   foreignKey: "admin_id",
-  as: "adminParent",
+  as: "filterAdminParent",
 });
 
 db.parentFilter.belongsTo(db.adminAuth, {
   foreignKey: "admin_id",
-  as: "adminParent",
+  as: "filterAdminParent",
 });
 
-// Filter Child Relations
+// Admin --> ChildFilter
 db.adminAuth.hasMany(db.childFilter, {
   foreignKey: "admin_id",
-  as: "adminChild",
+  as: "filterAdminChild",
 });
 
 db.childFilter.belongsTo(db.adminAuth, {
   foreignKey: "admin_id",
-  as: "adminChild",
+  as: "filterAdminChild",
 });
 
-// parent relation in child
+// parentFilter --> childFilter
 db.parentFilter.hasMany(db.childFilter, {
   foreignKey: "parent_id",
-  as: "childData",
+  as: "filterChildData",
 });
 
 db.childFilter.belongsTo(db.parentFilter, {
   foreignKey: "parent_id",
-  as: "childData",
+  as: "filterChildData",
+});
+
+// -------------------
+// --------------------------------- Menu Relations
+// -------------------
+// Admin --> parentMenu
+db.adminAuth.hasMany(db.parentMenu, {
+  foreignKey: "admin_id",
+  as: "menuAdminParent",
+});
+
+db.parentMenu.belongsTo(db.adminAuth, {
+  foreignKey: "admin_id",
+  as: "menuAdminParent",
+});
+// Admin --> childMenu
+db.adminAuth.hasMany(db.childMenu, {
+  foreignKey: "admin_id",
+  as: "menuAdminChild",
+});
+
+db.childMenu.belongsTo(db.adminAuth, {
+  foreignKey: "admin_id",
+  as: "menuAdminChild",
+});
+// parentMenu --> childMenu
+db.parentMenu.hasMany(db.childMenu, {
+  foreignKey: "parent_id",
+  as: "menuChildData",
+});
+
+db.childMenu.belongsTo(db.parentMenu, {
+  foreignKey: "parent_id",
+  as: "menuChildData",
 });
 
 db.sequelize.sync({ force: false }).then(() => {

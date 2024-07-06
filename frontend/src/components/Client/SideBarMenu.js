@@ -1,12 +1,24 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { RxCross2 } from "react-icons/rx";
 import { FaExchangeAlt } from "react-icons/fa";
 import { FaRegUser } from "react-icons/fa";
 import { FaPlus, FaMinus } from "react-icons/fa6";
-
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { AppContext } from "../../context/AppContext";
+import { getParentMenuAsync } from "../../Redux/AdminSlices/Menu/parentMenuSlice";
+
 const SideBarMenu = ({ setisActiveSideBarMenu }) => {
+  const dispatch = useDispatch();
+
   const [isSubMenuToggle, setisSubMenuToggle] = useState({});
+
+  const admin_parentMenuRedux = useSelector(
+    (state) => state.admin_parentMenu.data
+  );
+  // console.log("admin_parentMenuRedux - ", admin_parentMenuRedux);
+
+  const { setisLoadingTopProgress } = useContext(AppContext);
 
   const handleToggle = (id) => {
     setisSubMenuToggle((prevState) => ({
@@ -15,46 +27,19 @@ const SideBarMenu = ({ setisActiveSideBarMenu }) => {
     }));
   };
 
-  const menuData = [
-    {
-      id: 1,
-      catName: "Category 1",
-      subMenu: [
-        { id: 1, subName: "cat 1.1", url: "" },
-        { id: 2, subName: "cat 1.2", url: "" },
-        { id: 3, subName: "cat 1.3", url: "" },
-        { id: 4, subName: "cat 1.4", url: "" },
-        { id: 5, subName: "cat 1.5", url: "" },
-        { id: 6, subName: "cat 1.6", url: "" },
-      ],
-    },
+  async function fetchData() {
+    setisLoadingTopProgress(30);
 
-    {
-      id: 2,
-      catName: "Category 2",
-      subMenu: [
-        { id: 1, subName: "cat 2.1", url: "" },
-        { id: 2, subName: "cat 2.2", url: "" },
-        { id: 3, subName: "cat 2.3", url: "" },
-        { id: 4, subName: "cat 2.4", url: "" },
-        { id: 5, subName: "cat 2.5", url: "" },
-        { id: 6, subName: "cat 2.6", url: "" },
-      ],
-    },
+    const actionResultParent = await dispatch(getParentMenuAsync());
 
-    {
-      id: 3,
-      catName: "Category 3",
-      subMenu: [
-        { id: 1, subName: "cat 3.1", url: "" },
-        { id: 2, subName: "cat 3.2", url: "" },
-        { id: 3, subName: "cat 3.3", url: "" },
-        { id: 4, subName: "cat 3.4", url: "" },
-        { id: 5, subName: "cat 3.5", url: "" },
-        { id: 6, subName: "cat 3.6", url: "" },
-      ],
-    },
-  ];
+    if (actionResultParent.payload.msg === "success") {
+      setisLoadingTopProgress(100);
+    }
+  }
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <div className="sideMenu">
@@ -67,49 +52,62 @@ const SideBarMenu = ({ setisActiveSideBarMenu }) => {
         </div>
       </div>
       <div className="sideMenu__body">
-        {menuData.map((data, idx) => {
-          return (
-            <div
-              className="sideMenu__body__card"
-              key={idx}
-              onClick={() => handleToggle(data.id)}
-            >
-              <div className="sideMenu__body__card__parent ">
-                <div>
-                  <span className="sideMenu__body__card__parent__catName">
-                    {data.catName}
-                  </span>
-                </div>
+        {(function () {
+          try {
+            return (
+              admin_parentMenuRedux.query &&
+              admin_parentMenuRedux.query.map((menuData, menuIdx) => {
+                return (
+                  <div
+                    className="sideMenu__body__card"
+                    key={menuIdx}
+                    onClick={() => handleToggle(menuData.id)}
+                  >
+                    <div className="sideMenu__body__card__parent ">
+                      <div>
+                        <span className="sideMenu__body__card__parent__catName">
+                          {menuData.name && menuData.name}
+                        </span>
+                      </div>
 
-                <div>
-                  <span>
-                    {isSubMenuToggle[data.id] ? <FaMinus /> : <FaPlus />}
-                  </span>
-                </div>
-              </div>
-
-              <div
-                className={`sideMenu__body__child  ${
-                  isSubMenuToggle[data.id]
-                    ? "subMenuActive"
-                    : "subMenuNotActive"
-                } `}
-              >
-                {data.subMenu.map((subMenuData, subMenuIdx) => {
-                  return (
-                    <div
-                      key={subMenuIdx}
-                      className="sideMenu__body__child__card"
-                    >
-                      {" "}
-                      <Link to="#"> {subMenuData.subName} </Link>{" "}
+                      <div>
+                        <span>
+                          {isSubMenuToggle[menuData.id] ? (
+                            <FaMinus />
+                          ) : (
+                            <FaPlus />
+                          )}
+                        </span>
+                      </div>
                     </div>
-                  );
-                })}
-              </div>
-            </div>
-          );
-        })}
+
+                    <div
+                      className={`sideMenu__body__child  ${
+                        isSubMenuToggle[menuData.id]
+                          ? "subMenuActive"
+                          : "subMenuNotActive"
+                      } `}
+                    >
+                      {menuData.menuChildData &&
+                        menuData.menuChildData.map((subMenu, subMenuIdx) => {
+                          return (
+                            <div
+                              key={subMenuIdx}
+                              className="sideMenu__body__child__card"
+                            >
+                              <Link to="#">{subMenu.name && subMenu.name}</Link>
+                            </div>
+                          );
+                        })}
+                    </div>
+                  </div>
+                );
+              })
+            );
+          } catch (error) {
+            console.log("Error SideBarMenu - ", error.message);
+          }
+        })()}
       </div>
 
       <div className="sideMenu__footer">

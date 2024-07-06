@@ -16,6 +16,8 @@ import AddProduct from "../../components/Admin/AddProduct";
 import AllProducts from "../../components/Admin/AllProducts";
 import ParentFilter from "../../components/Admin/Filter/ParentFilter";
 import ChildFilter from "../../components/Admin/Filter/ChildFilter";
+import ParentMenu from "../../components/Admin/Menu/ParentMenu";
+import ChildMenu from "../../components/Admin/Menu/ChildMenu";
 
 const AdminJunction = () => {
   const adminAuth = useSelector((state) => state.admin_auth.loggedData);
@@ -55,13 +57,11 @@ const AdminJunction = () => {
     },
     {
       id: 2,
-      category: "Category",
-      title: "Category ",
+      category: "Product Menu",
+      title: "Menu ",
       subMenu: [
-        { name: "Create Category", url: "" },
-        { name: "Create SubCategory", url: "" },
-        { name: "Sub Menu 2.3", url: "" },
-        { name: "Sub Menu 2.4", url: "" },
+        { name: "Create Parent", url: "parentMenu" },
+        { name: "Create Child", url: "childMenu" },
       ],
     },
     {
@@ -231,6 +231,10 @@ const AdminJunction = () => {
               {/* Filter */}
               <Route path="/parentFilter" element={<ParentFilter />} />
               <Route path="/childFilter" element={<ChildFilter />} />
+
+              {/* Menu */}
+              <Route path="/parentMenu" element={<ParentMenu />} />
+              <Route path="/childMenu" element={<ChildMenu />} />
 
               {/* Products  */}
               <Route path="/addProduct" element={<AddProduct />} />

@@ -9,10 +9,14 @@ router.get("/", (req, res) => {
 // import other admin routes
 const authRoute = require("./AdminAuthRoutes");
 const filterRoute = require("./Filter");
+const menuRoute = require("./Menu");
 
 // admin/auth/
 router.use("/auth", authRoute);
 // admin/filter/
 router.use("/filter", filterRoute);
+
+// admin/menu/
+router.use("/menu", menuRoute);
 
 module.exports = router;

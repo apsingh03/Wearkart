@@ -6,26 +6,26 @@ import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { PiTextTFill } from "react-icons/pi";
 import {
-  createChildFilterAsync,
-  deleteChildFilterAsync,
-  getChildFilterAsync,
-  updateChildFilterAsync,
-} from "../../../Redux/AdminSlices/Filter/childFilterSlice";
+  createChildMenuAsync,
+  deleteChildMenuAsync,
+  getChildMenuAsync,
+  updateChildMenuAsync,
+} from "../../../Redux/AdminSlices/Menu/childMenuSlice";
 
-import { getParentFilterAsync } from "../../../Redux/AdminSlices/Filter/parentFilterSlice";
+import { getParentMenuAsync } from "../../../Redux/AdminSlices/Menu/parentMenuSlice";
 
 import { AppContext } from "../../../context/AppContext";
 
-const ChildFilter = () => {
-  const admin_parentFilterRedux = useSelector(
-    (state) => state.admin_parentFilter.data
+const ChildMenu = () => {
+  const admin_parentMenuRedux = useSelector(
+    (state) => state.admin_parentMenu.data
   );
 
-  const admin_childFilterRedux = useSelector(
-    (state) => state.admin_childFilter.data
+  const admin_childMenuRedux = useSelector(
+    (state) => state.admin_childMenu.data
   );
 
-  // console.log("admin_childFilterRedux - ", admin_childFilterRedux.query);
+  // console.log("admin_childMenuRedux - ", admin_childMenuRedux.query);
 
   const [updateParentName, setupdateParentName] = useState("");
 
@@ -48,8 +48,8 @@ const ChildFilter = () => {
   async function fetchFilter() {
     setisLoadingTopProgress(30);
 
-    const actionResultParent = await dispatch(getParentFilterAsync());
-    const actionResultChild = await dispatch(getChildFilterAsync());
+    const actionResultParent = await dispatch(getParentMenuAsync());
+    const actionResultChild = await dispatch(getChildMenuAsync());
 
     if (
       actionResultParent.payload.msg === "success" ||
@@ -64,7 +64,7 @@ const ChildFilter = () => {
     setisLoadingTopProgress(30);
 
     if (window.confirm("Are you sure want to Delete It ?")) {
-      const actionResult = await dispatch(deleteChildFilterAsync({ id }));
+      const actionResult = await dispatch(deleteChildMenuAsync({ id }));
 
       if (actionResult.payload.msg === "success") {
         toast.success("Deleted");
@@ -84,7 +84,7 @@ const ChildFilter = () => {
 
     if (updateParentName.length >= 4) {
       const actionResult = await dispatch(
-        updateChildFilterAsync({
+        updateChildMenuAsync({
           name: updatedValue,
           id: targetId,
         })
@@ -132,7 +132,7 @@ const ChildFilter = () => {
                   setisLoadingTopProgress(30);
 
                   const actionResult = await dispatch(
-                    createChildFilterAsync({
+                    createChildMenuAsync({
                       name: values.filterName,
                       parent_id: values.parentId,
                     })
@@ -167,7 +167,7 @@ const ChildFilter = () => {
                 <form onSubmit={handleSubmit}>
                   <div className="mb-3">
                     <div className="d-flex align-items-baseline">
-                      <label htmlFor="parentId">Select Parent Name</label>
+                      <label htmlFor="parentId">Select Parent Menu Name</label>
                       <p className="authPage__inputFieldError px-3">
                         {errors.parentId && touched.parentId && errors.parentId}
                       </p>
@@ -186,8 +186,8 @@ const ChildFilter = () => {
                       {(function () {
                         try {
                           return (
-                            admin_parentFilterRedux.query &&
-                            admin_parentFilterRedux.query.map((data, index) => {
+                            admin_parentMenuRedux.query &&
+                            admin_parentMenuRedux.query.map((data, index) => {
                               return (
                                 <option value={`${data.id}`} key={index}>
                                   {data.name}
@@ -204,7 +204,7 @@ const ChildFilter = () => {
 
                   <div className="form-group mb-3">
                     <div className="d-flex align-items-baseline">
-                      <label htmlFor="filterName">Child Name</label>
+                      <label htmlFor="filterName">Child Menu Name</label>
                       <p className="authPage__inputFieldError px-3">
                         {errors.filterName &&
                           touched.filterName &&
@@ -235,7 +235,7 @@ const ChildFilter = () => {
                     className="authPage__submitBtn mt-3"
                     disabled={isSubmitting}
                   >
-                    Create Child
+                    Create Child Menu
                   </button>
                 </form>
               )}
@@ -258,15 +258,14 @@ const ChildFilter = () => {
                 {(function () {
                   try {
                     return (
-                      admin_childFilterRedux.query &&
-                      admin_childFilterRedux.query.map((data, index) => {
+                      admin_childMenuRedux.query &&
+                      admin_childMenuRedux.query.map((data, index) => {
                         return (
                           <tr key={index}>
                             <th scope="row">{index + 1}</th>
 
                             <td>
-                              {data.filterChildData &&
-                                data.filterChildData.name}
+                              {data.menuChildData && data.menuChildData.name}
                             </td>
 
                             <td>
@@ -365,4 +364,4 @@ const ChildFilter = () => {
   );
 };
 
-export default ChildFilter;
+export default ChildMenu;

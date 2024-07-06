@@ -10,7 +10,7 @@ import {
   deleteParentFilterAsync,
   getParentFilterAsync,
   updateParentFilterAsync,
-} from "../../../Redux/AdminSlices/parentFilterSlice";
+} from "../../../Redux/AdminSlices/Filter/parentFilterSlice";
 import { AppContext } from "../../../context/AppContext";
 
 const ParentFilter = () => {

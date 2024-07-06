@@ -3,8 +3,10 @@ import { configureStore } from "@reduxjs/toolkit";
 import clientAuthSlice from "./ClientSlices/clientAuth";
 // Admin
 import adminAuthSlice from "./AdminSlices/adminAuth";
-import parentFilterSlice from "./AdminSlices/parentFilterSlice";
-import childFilterSlice from "./AdminSlices/childFilterSlice";
+import parentFilterSlice from "./AdminSlices/Filter/parentFilterSlice";
+import childFilterSlice from "./AdminSlices/Filter/childFilterSlice";
+import parentMenuSlice from "./AdminSlices/Menu/parentMenuSlice";
+import childMenuSlice from "./AdminSlices/Menu/childMenuSlice";
 
 export const store = configureStore({
   reducer: {
@@ -14,5 +16,7 @@ export const store = configureStore({
     admin_auth: adminAuthSlice,
     admin_parentFilter: parentFilterSlice,
     admin_childFilter: childFilterSlice,
+    admin_parentMenu: parentMenuSlice,
+    admin_childMenu: childMenuSlice,
   },
 });
