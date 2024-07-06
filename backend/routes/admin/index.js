@@ -10,6 +10,7 @@ router.get("/", (req, res) => {
 const authRoute = require("./AdminAuthRoutes");
 const filterRoute = require("./Filter");
 const menuRoute = require("./Menu");
+const sizesRoute = require("./Sizes/SizesRoutes")
 
 // admin/auth/
 router.use("/auth", authRoute);
@@ -18,5 +19,7 @@ router.use("/filter", filterRoute);
 
 // admin/menu/
 router.use("/menu", menuRoute);
+// Sizes
+router.use("/sizes", sizesRoute);
 
 module.exports = router;

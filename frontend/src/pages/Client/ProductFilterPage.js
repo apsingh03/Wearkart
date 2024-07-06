@@ -9,16 +9,18 @@ import { useDispatch, useSelector } from "react-redux";
 import { getChildFilterAsync } from "../../Redux/AdminSlices/Filter/childFilterSlice";
 import { getParentFilterAsync } from "../../Redux/AdminSlices/Filter/parentFilterSlice";
 import { AppContext } from "../../context/AppContext";
+import { getProductSizeAsync } from "../../Redux/AdminSlices/Sizes/SizesSlice";
 
 const ProductFilterPage = () => {
   const adminParentFilterRedux = useSelector(
     (state) => state.admin_parentFilter.data
   );
 
-  const adminChildFilterRedux = useSelector(
-    (state) => state.admin_childFilter.data
+  const admin_productSizeRedux = useSelector(
+    (state) => state.admin_productSize.data
   );
 
+  // console.log("admin_productSizeRedux - ", admin_productSizeRedux);
   const { isLoadingTopProgress, setisLoadingTopProgress } =
     useContext(AppContext);
 
@@ -27,6 +29,8 @@ const ProductFilterPage = () => {
   const [isFilterChildRadiosVisible, setIsFilterChildRadiosVisible] = useState(
     {}
   );
+
+  // console.log("isFilterChildRadiosVisible - ", isFilterChildRadiosVisible);
   const handleFilterToggle = (id) => {
     setIsFilterChildRadiosVisible((prevState) => ({
       ...prevState,
@@ -167,6 +171,7 @@ const ProductFilterPage = () => {
     setisLoadingTopProgress(30);
 
     const actionResultParent = await dispatch(getParentFilterAsync());
+    await dispatch(getProductSizeAsync());
 
     if (actionResultParent.payload.msg === "success") {
       setisLoadingTopProgress(100);
@@ -224,8 +229,8 @@ const ProductFilterPage = () => {
                                   : "hidden"
                               } `}
                             >
-                              {data.childData &&
-                                data.childData.map((subData, subIdx) => {
+                              {data.filterChildData &&
+                                data.filterChildData.map((subData, subIdx) => {
                                   return (
                                     <div
                                       className="pFilterPage__left__filtersBox__card__childRadios__card"
@@ -256,6 +261,51 @@ const ProductFilterPage = () => {
                     console.log("Filter Error - ", error);
                   }
                 })()}
+
+                <div className="pFilterPage__left__filtersBox__card">
+                  <div
+                    className="pFilterPage__left__filtersBox__card__wrapper"
+                    onClick={() => handleFilterToggle("sizes")}
+                  >
+                    <div className="pFilterPage__left__filtersBox__card__title">
+                      <p> Sizes </p>
+                    </div>
+                    <div className="pFilterPage__left__filtersBox__card__icon">
+                      {" "}
+                      {isFilterChildRadiosVisible["sizes"] ? (
+                        <IoIosArrowUp />
+                      ) : (
+                        <IoIosArrowDown />
+                      )}{" "}
+                    </div>
+                  </div>
+
+                  <div
+                    className={`pFilterPage__left__filtersBox__card__sizes   ${
+                      isFilterChildRadiosVisible["sizes"] ? "visible" : "hidden"
+                    } `}
+                  >
+                    {(function () {
+                      try {
+                        return (
+                          admin_productSizeRedux.query &&
+                          admin_productSizeRedux.query.map((data, idx) => {
+                            return (
+                              <Link
+                                className="pFilterPage__left__filtersBox__card__sizes__card"
+                                key={idx}
+                              >
+                                {data.name && data.name} (000)
+                              </Link>
+                            );
+                          })
+                        );
+                      } catch (error) {
+                        console.log("Error - ", error.message);
+                      }
+                    })()}
+                  </div>
+                </div>
               </div>
             </div>
           </div>

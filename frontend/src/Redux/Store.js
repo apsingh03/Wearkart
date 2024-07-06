@@ -7,6 +7,7 @@ import parentFilterSlice from "./AdminSlices/Filter/parentFilterSlice";
 import childFilterSlice from "./AdminSlices/Filter/childFilterSlice";
 import parentMenuSlice from "./AdminSlices/Menu/parentMenuSlice";
 import childMenuSlice from "./AdminSlices/Menu/childMenuSlice";
+import productSizeSlice from "./AdminSlices/Sizes/SizesSlice";
 
 export const store = configureStore({
   reducer: {
@@ -18,5 +19,6 @@ export const store = configureStore({
     admin_childFilter: childFilterSlice,
     admin_parentMenu: parentMenuSlice,
     admin_childMenu: childMenuSlice,
+    admin_productSize: productSizeSlice,
   },
 });

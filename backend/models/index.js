@@ -44,6 +44,10 @@ db.parentMenu = require("./admin/Menu/ParentMenuModel.js")(
   DataTypes
 );
 db.childMenu = require("./admin/Menu/ChildMenuModel.js")(sequelize, DataTypes);
+db.productSizes = require("./admin/Sizes/ProductSizesModel.js")(
+  sequelize,
+  DataTypes
+);
 
 // -------------------
 // --------------------------------- Filter Relations
@@ -113,6 +117,20 @@ db.parentMenu.hasMany(db.childMenu, {
 db.childMenu.belongsTo(db.parentMenu, {
   foreignKey: "parent_id",
   as: "menuChildData",
+});
+
+// -------------------
+// --------------------------------- Sizes
+// -------------------
+
+db.adminAuth.hasMany(db.productSizes, {
+  foreignKey: "admin_id",
+  as: "sizesAdmin",
+});
+
+db.productSizes.belongsTo(db.adminAuth, {
+  foreignKey: "admin_id",
+  as: "sizesAdmin",
 });
 
 db.sequelize.sync({ force: false }).then(() => {

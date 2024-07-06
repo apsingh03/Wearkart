@@ -18,6 +18,7 @@ import ParentFilter from "../../components/Admin/Filter/ParentFilter";
 import ChildFilter from "../../components/Admin/Filter/ChildFilter";
 import ParentMenu from "../../components/Admin/Menu/ParentMenu";
 import ChildMenu from "../../components/Admin/Menu/ChildMenu";
+import Sizes from "../../components/Admin/Sizes/Sizes";
 
 const AdminJunction = () => {
   const adminAuth = useSelector((state) => state.admin_auth.loggedData);
@@ -66,18 +67,21 @@ const AdminJunction = () => {
     },
     {
       id: 3,
-      category: "Order",
-      title: "Placed Orders",
-      subMenu: [{ name: "All Orders", url: "" }],
+      category: "Product other Details",
+      title: "Product Info",
+      subMenu: [
+        { name: "Sizes", url: "sizes" },
+        { name: "Offers", url: "sizes" },
+        { name: "Coupon", url: "sizes" },
+      ],
     },
-
     {
       id: 4,
-      category: "Discount",
-      title: "Coupons",
+      category: "Frontend ",
+      title: "UI Elements",
       subMenu: [
-        { name: "Create Coupon", url: "" },
-        { name: "All Coupons", url: "" },
+        { name: "Banner Carousel", url: "" },
+        { name: "Actress Carousel", url: "" },
       ],
     },
   ];
@@ -235,6 +239,9 @@ const AdminJunction = () => {
               {/* Menu */}
               <Route path="/parentMenu" element={<ParentMenu />} />
               <Route path="/childMenu" element={<ChildMenu />} />
+
+              {/* Size */}
+              <Route path="/sizes" element={<Sizes />} />
 
               {/* Products  */}
               <Route path="/addProduct" element={<AddProduct />} />

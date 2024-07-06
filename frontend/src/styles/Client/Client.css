@@ -809,6 +809,34 @@ body {
   color: #131212;
 }
 
+.pFilterPage__left__filtersBox__card__sizes {
+  display: flex !important;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.pFilterPage__left__filtersBox__card__sizes.visible {
+  display: block;
+}
+
+.pFilterPage__left__filtersBox__card__sizes.hidden {
+  display: none !important;
+}
+
+.pFilterPage__left__filtersBox__card__sizes__card {
+  background-color: transparent;
+  padding: 10px;
+  text-decoration: none;
+  color: #131212;
+  border: 1px solid #2b2828;
+  font-size: 12px;
+}
+
+.pFilterPage__left__filtersBox__card__sizes__card:hover {
+  background-color: #faf6f6;
+}
+
 .pFilterPage__right {
   /* background-color: #534e5c; */
   padding: 5px;
