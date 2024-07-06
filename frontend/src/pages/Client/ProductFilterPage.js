@@ -1,12 +1,29 @@
-import React, { useState } from "react";
-
+import React, { useEffect, useState, useContext } from "react";
 import Header from "../../components/Client/Header";
-import Footer from "../../components/Client/Footer";
+
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { FaRegHeart } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import SideBarAllFilters from "../../components/Client/ProductsFilterPage/SideBarAllFilters";
+import { useDispatch, useSelector } from "react-redux";
+import { getChildFilterAsync } from "../../Redux/AdminSlices/childFilterSlice";
+import { getParentFilterAsync } from "../../Redux/AdminSlices/parentFilterSlice";
+import { AppContext } from "../../context/AppContext";
+
 const ProductFilterPage = () => {
+  const adminParentFilterRedux = useSelector(
+    (state) => state.admin_parentFilter.data
+  );
+
+  const adminChildFilterRedux = useSelector(
+    (state) => state.admin_childFilter.data
+  );
+
+  const { isLoadingTopProgress, setisLoadingTopProgress } =
+    useContext(AppContext);
+
+  // console.log("adminParentFilterRedux - ", adminParentFilterRedux.query);
+  const dispatch = useDispatch();
   const [isFilterChildRadiosVisible, setIsFilterChildRadiosVisible] = useState(
     {}
   );
@@ -146,6 +163,20 @@ const ProductFilterPage = () => {
     },
   ];
 
+  async function fetchFilter() {
+    setisLoadingTopProgress(30);
+
+    const actionResultParent = await dispatch(getParentFilterAsync());
+
+    if (actionResultParent.payload.msg === "success") {
+      setisLoadingTopProgress(100);
+    }
+  }
+
+  useEffect(() => {
+    fetchFilter();
+  }, []);
+
   return (
     <>
       <Header />
@@ -161,62 +192,66 @@ const ProductFilterPage = () => {
               <div className="pFilterPage__left__filtersBox">
                 {(function () {
                   try {
-                    return filterData.map((data, index) => {
-                      return (
-                        <div
-                          className="pFilterPage__left__filtersBox__card"
-                          key={index}
-                        >
+                    return (
+                      adminParentFilterRedux.query &&
+                      adminParentFilterRedux.query.map((data, index) => {
+                        return (
                           <div
-                            className="pFilterPage__left__filtersBox__card__wrapper"
-                            onClick={() => handleFilterToggle(index)}
+                            className="pFilterPage__left__filtersBox__card"
+                            key={index}
                           >
-                            <div className="pFilterPage__left__filtersBox__card__title">
-                              <p>{data.catName}</p>
+                            <div
+                              className="pFilterPage__left__filtersBox__card__wrapper"
+                              onClick={() => handleFilterToggle(index)}
+                            >
+                              <div className="pFilterPage__left__filtersBox__card__title">
+                                <p> {data.name && data.name} </p>
+                              </div>
+                              <div className="pFilterPage__left__filtersBox__card__icon">
+                                {" "}
+                                {isFilterChildRadiosVisible[index] ? (
+                                  <IoIosArrowUp />
+                                ) : (
+                                  <IoIosArrowDown />
+                                )}{" "}
+                              </div>
                             </div>
-                            <div className="pFilterPage__left__filtersBox__card__icon">
-                              {" "}
-                              {isFilterChildRadiosVisible[index] ? (
-                                <IoIosArrowUp />
-                              ) : (
-                                <IoIosArrowDown />
-                              )}{" "}
-                            </div>
-                          </div>
 
-                          <div
-                            className={`pFilterPage__left__filtersBox__card__childRadios ${
-                              isFilterChildRadiosVisible[index]
-                                ? "visible"
-                                : "hidden"
-                            } `}
-                          >
-                            {data.subCatName.map((subData, subIdx) => {
-                              return (
-                                <div
-                                  className="pFilterPage__left__filtersBox__card__childRadios__card"
-                                  key={subIdx}
-                                >
-                                  {" "}
-                                  <input
-                                    type="checkbox"
-                                    name="categoryCloth"
-                                    id="categoryCloth"
-                                    className="pFilterPage__left__filtersBox__card__childRadios__card__checkBox"
-                                  />{" "}
-                                  <label
-                                    htmlFor="categoryCloth"
-                                    className="pFilterPage__left__filtersBox__card__childRadios__card__label"
-                                  >
-                                    {subData.name} (5)
-                                  </label>
-                                </div>
-                              );
-                            })}
+                            <div
+                              className={`pFilterPage__left__filtersBox__card__childRadios ${
+                                isFilterChildRadiosVisible[index]
+                                  ? "visible"
+                                  : "hidden"
+                              } `}
+                            >
+                              {data.childData &&
+                                data.childData.map((subData, subIdx) => {
+                                  return (
+                                    <div
+                                      className="pFilterPage__left__filtersBox__card__childRadios__card"
+                                      key={subIdx}
+                                    >
+                                      {" "}
+                                      <input
+                                        type="checkbox"
+                                        name="categoryCloth"
+                                        id={`${subData.name}${subData.id}`}
+                                        className="pFilterPage__left__filtersBox__card__childRadios__card__checkBox"
+                                      />{" "}
+                                      <label
+                                        htmlFor={`${subData.name}${subData.id}`}
+                                        className="pFilterPage__left__filtersBox__card__childRadios__card__label"
+                                      >
+                                        {subData.name} (5)
+                                      </label>
+                                    </div>
+                                  );
+                                })}
+                            </div>
                           </div>
-                        </div>
-                      );
-                    });
+                        );
+                      })
+                    );
                   } catch (error) {
                     console.log("Filter Error - ", error);
                   }
@@ -251,8 +286,10 @@ const ProductFilterPage = () => {
                     <select
                       className="form-select form-select-sm"
                       aria-label=".form-select-sm example"
+                      id="openselecr"
+                      name="sdfasdfs"
                     >
-                      <option selected>Open this select menu</option>
+                      <option>Open this select menu</option>
                       <option value="1">One</option>
                       <option value="2">Two</option>
                       <option value="3">Three</option>

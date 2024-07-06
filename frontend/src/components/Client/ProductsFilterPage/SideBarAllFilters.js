@@ -1,12 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { MdOutlineFilterAlt } from "react-icons/md";
 import { RxCross2 } from "react-icons/rx";
 import { BiSortAlt2 } from "react-icons/bi";
 import { TiTick } from "react-icons/ti";
 import SideFilter from "./SideFilter";
+import { AppContext } from "../../../context/AppContext";
+
 const SideBarAllFilters = () => {
   const [isSortByVisible, setIsSortByVisible] = useState(false);
   const [isFilterSideBarVisible, setIsFilterSideBarVisible] = useState(false);
+
+  //  console.log("adminParentFilterRedux - ", adminParentFilterRedux);
+
+ 
 
   return (
     <div className="sideBarFilter">

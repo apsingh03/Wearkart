@@ -1,10 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { RxCross2 } from "react-icons/rx";
 import { FaPlus, FaMinus } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+import { AppContext } from "../../../context/AppContext";
+import { getParentFilterAsync } from "../../../Redux/AdminSlices/parentFilterSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const SideFilter = ({ setIsFilterSideBarVisible }) => {
   const [isSubMenuToggle, setisSubMenuToggle] = useState({});
+
+  const dispatch = useDispatch();
 
   const handleToggle = (id) => {
     setisSubMenuToggle((prevState) => ({
@@ -12,6 +17,29 @@ const SideFilter = ({ setIsFilterSideBarVisible }) => {
       [id]: !prevState[id],
     }));
   };
+
+  const adminParentFilterRedux = useSelector(
+    (state) => state.admin_parentFilter.data
+  );
+
+  console.log("adminParentFilterRedux - ", adminParentFilterRedux);
+
+  const { isLoadingTopProgress, setisLoadingTopProgress } =
+    useContext(AppContext);
+
+  async function fetchFilter() {
+    setisLoadingTopProgress(30);
+
+    const actionResultParent = await dispatch(getParentFilterAsync());
+
+    if (actionResultParent.payload.msg === "success") {
+      setisLoadingTopProgress(100);
+    }
+  }
+
+  useEffect(() => {
+    fetchFilter();
+  }, []);
 
   const menuData = [
     {
@@ -70,49 +98,51 @@ const SideFilter = ({ setIsFilterSideBarVisible }) => {
         </div>
       </div>
       <div className="filterMenu__body">
-        {menuData.map((data, idx) => {
-          return (
-            <div
-              className="filterMenu__body__card"
-              key={idx}
-              onClick={() => handleToggle(data.id)}
-            >
-              <div className="filterMenu__body__card__parent ">
-                <div>
-                  <span className="filterMenu__body__card__parent__catName">
-                    {data.catName}
-                  </span>
-                </div>
-
-                <div>
-                  <span>
-                    {isSubMenuToggle[data.id] ? <FaMinus /> : <FaPlus />}
-                  </span>
-                </div>
-              </div>
-
+        {adminParentFilterRedux.query &&
+          adminParentFilterRedux.query.map((data, idx) => {
+            return (
               <div
-                className={`filterMenu__body__child  ${
-                  isSubMenuToggle[data.id]
-                    ? "subMenuActive"
-                    : "subMenuNotActive"
-                } `}
+                className="filterMenu__body__card"
+                key={idx}
+                onClick={() => handleToggle(data.id)}
               >
-                {data.subMenu.map((subMenuData, subMenuIdx) => {
-                  return (
-                    <div
-                      key={subMenuIdx}
-                      className="filterMenu__body__child__card"
-                    >
-                      {" "}
-                      <Link to="#"> {subMenuData.subName} </Link>{" "}
-                    </div>
-                  );
-                })}
+                <div className="filterMenu__body__card__parent ">
+                  <div>
+                    <span className="filterMenu__body__card__parent__catName">
+                      {data.name}
+                    </span>
+                  </div>
+
+                  <div>
+                    <span>
+                      {isSubMenuToggle[data.id] ? <FaMinus /> : <FaPlus />}
+                    </span>
+                  </div>
+                </div>
+
+                <div
+                  className={`filterMenu__body__child  ${
+                    isSubMenuToggle[data.id]
+                      ? "subMenuActive"
+                      : "subMenuNotActive"
+                  } `}
+                >
+                  {data.childData &&
+                    data.childData.map((subMenuData, subMenuIdx) => {
+                      return (
+                        <div
+                          key={subMenuIdx}
+                          className="filterMenu__body__child__card"
+                        >
+                          {" "}
+                          <Link to="#"> {subMenuData.name} </Link>{" "}
+                        </div>
+                      );
+                    })}
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
       </div>
 
       <div className="filterMenu__footer">

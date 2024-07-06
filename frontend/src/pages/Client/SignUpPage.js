@@ -80,7 +80,6 @@ const SignUpPage = () => {
 
                 // console.log("actionResult - ", actionResult);
               } catch (error) {
-                setisLoadingTopProgress(100);
                 console.log("Error client SignUp ", error.message);
               }
             }}

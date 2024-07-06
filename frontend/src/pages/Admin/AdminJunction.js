@@ -9,12 +9,17 @@ import { FaChevronRight, FaChevronDown } from "react-icons/fa";
 import { FaSolarPanel } from "react-icons/fa";
 import { IoNotifications } from "react-icons/io5";
 import { Squash as Hamburger } from "hamburger-react";
+import { useSelector, useDispatch } from "react-redux";
 // components
 import VenDashboard from "../../components/Admin/VenDashboard";
 import AddProduct from "../../components/Admin/AddProduct";
 import AllProducts from "../../components/Admin/AllProducts";
+import ParentFilter from "../../components/Admin/Filter/ParentFilter";
+import ChildFilter from "../../components/Admin/Filter/ChildFilter";
 
 const AdminJunction = () => {
+  const adminAuth = useSelector((state) => state.admin_auth.loggedData);
+
   const [sideNavIconToggle, setSideNavIconToggle] = useState({});
   const [isOpenHamBurger, setisOpenHamBurger] = useState(false);
 
@@ -41,12 +46,11 @@ const AdminJunction = () => {
   const sideNav = [
     {
       id: 1,
-      category: "Products",
-      title: "Product",
+      category: "Product Filters",
+      title: "Filters",
       subMenu: [
-        { name: "Add Product", url: "addProduct" },
-        { name: "All Listed Products", url: "listedProducts" },
-        { name: "Recycle Bin", url: "" },
+        { name: "Create Parent", url: "parentFilter" },
+        { name: "Create Child", url: "childFilter" },
       ],
     },
     {
@@ -123,7 +127,7 @@ const AdminJunction = () => {
             <div className="admin__header__menu">
               <Link className="admin__header__menu__title">
                 {" "}
-                <FaRegUserCircle /> User{" "}
+                <FaRegUserCircle /> {adminAuth.email && adminAuth.email}
               </Link>
               <div className="admin__header__menu__children">
                 <Link className="admin__header__menu__children__title">
@@ -221,15 +225,17 @@ const AdminJunction = () => {
           </div>
 
           <div className="admin__belowSide__rightSide">
-            <div className="">
-              <Routes>
-                <Route path="/" element={<VenDashboard />} />
+            <Routes>
+              <Route path="/" element={<VenDashboard />} />
 
-                {/* Products  */}
-                <Route path="/addProduct" element={<AddProduct />} />
-                <Route path="/listedProducts" element={<AllProducts />} />
-              </Routes>
-            </div>
+              {/* Filter */}
+              <Route path="/parentFilter" element={<ParentFilter />} />
+              <Route path="/childFilter" element={<ChildFilter />} />
+
+              {/* Products  */}
+              <Route path="/addProduct" element={<AddProduct />} />
+              <Route path="/listedProducts" element={<AllProducts />} />
+            </Routes>
           </div>
         </div>
       </div>

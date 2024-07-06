@@ -72,7 +72,7 @@ function App() {
     <>
       <LoadingBar
         color="red"
-        height={5}
+        height={3}
         progress={isLoadingTopProgress}
         shadow={true}
         onLoaderFinished={() => setisLoadingTopProgress(0)}
