@@ -32,12 +32,6 @@ const createProductSize = async (req, res) => {
       );
 
       const updatedQuery = await ProductSizes.findOne({
-        include: {
-          model: AdminAuth,
-          required: true,
-          as: "sizesAdmin",
-          attributes: { exclude: ["password", "createdAt", "updatedAt"] },
-        },
         where: { id: createQuery.id, admin_id: req.admin.id },
         order: [["id", "Asc"]],
         transaction: t,
@@ -55,14 +49,6 @@ const createProductSize = async (req, res) => {
 const getProductSize = async (req, res) => {
   try {
     const query = await ProductSizes.findAll({
-      include: [
-        {
-          model: AdminAuth,
-          required: true,
-          as: "sizesAdmin",
-          attributes: { exclude: ["password", "createdAt", "updatedAt"] },
-        },
-      ],
       where: { admin_id: req.admin.id },
       order: [["id", "Asc"]],
     });

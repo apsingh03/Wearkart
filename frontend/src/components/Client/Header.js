@@ -7,22 +7,20 @@ import { LiaShoppingBagSolid } from "react-icons/lia";
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
 import { TbScreenShare } from "react-icons/tb";
 import { GiHamburgerMenu } from "react-icons/gi";
-import { AppContext, AppProvider } from "../../context/AppContext";
+import { AppContext } from "../../context/AppContext";
 import { useDispatch, useSelector } from "react-redux";
-import { getParentMenuAsync } from "../../Redux/AdminSlices/Menu/parentMenuSlice";
+import { clientGetMenuAsync } from "../../Redux/ClientSlices/clientProductSlice";
 
 const Header = () => {
   const dispatch = useDispatch();
-  const clientIsLogged = useSelector(
-    (state) => state.client_auth.loggedData.isUserLogged
-  );
+  const clientIsLogged = useSelector((state) => state.client_auth.loggedData);
 
   const adminIsLogged = useSelector(
     (state) => state.admin_auth.loggedData.isUserLogged
   );
 
-  const admin_parentMenuRedux = useSelector(
-    (state) => state.admin_parentMenu.data
+  const client_headerMenuRedux = useSelector(
+    (state) => state.client_product.headerMenu
   );
 
   const {
@@ -30,7 +28,6 @@ const Header = () => {
     setisActiveSideBarMenu,
     cartIsHover,
     setcartIsHover,
-    isLoadingTopProgress,
     setisLoadingTopProgress,
   } = useContext(AppContext);
 
@@ -47,11 +44,9 @@ const Header = () => {
   async function fetchData() {
     setisLoadingTopProgress(30);
 
-    const actionResultParent = await dispatch(getParentMenuAsync());
+    await dispatch(clientGetMenuAsync());
 
-    if (actionResultParent.payload.msg === "success") {
-      setisLoadingTopProgress(100);
-    }
+    setisLoadingTopProgress(100);
   }
 
   useEffect(() => {
@@ -101,8 +96,8 @@ const Header = () => {
             {(function () {
               try {
                 return (
-                  admin_parentMenuRedux.query &&
-                  admin_parentMenuRedux.query.map((menuData, menuIdx) => {
+                  client_headerMenuRedux.query &&
+                  client_headerMenuRedux.query.map((menuData, menuIdx) => {
                     return (
                       <div className="header__2ndContainer__menu" key={menuIdx}>
                         <Link className="header__2ndContainer__menu__title">
@@ -113,7 +108,10 @@ const Header = () => {
                           {menuData.menuChildData &&
                             menuData.menuChildData.map((subMenu, subIdx) => {
                               return (
-                                <Link className="header__2ndContainer__menu__children__title">
+                                <Link
+                                  key={subIdx}
+                                  className="header__2ndContainer__menu__children__title"
+                                >
                                   {subMenu.name && subMenu.name}
                                 </Link>
                               );
@@ -162,7 +160,7 @@ const Header = () => {
               </Link>
             )}
 
-            {clientIsLogged ? (
+            {clientIsLogged.isUserLogged ? (
               <Link
                 className="header__4thContainer__userIcon"
                 title="Favorites"
@@ -176,11 +174,11 @@ const Header = () => {
               </Link>
             )}
 
-            {clientIsLogged ? (
+            {clientIsLogged.isUserLogged ? (
               <Link
                 className="header__4thContainer__userIcon"
-                title="User"
                 to="/account"
+                title={clientIsLogged.email}
               >
                 <FaRegUser />
               </Link>

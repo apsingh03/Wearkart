@@ -1,8 +1,26 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { FaRegHeart } from "react-icons/fa";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { AppContext } from "../../../context/AppContext";
+import { clientGetCategoryWiseProductAsync } from "../../../Redux/ClientSlices/clientProductSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import {
+  calculateProductDiscount,
+  convertInInr,
+} from "../../../utils/productDiscountCalculate";
 
 const ProductsCarousel = () => {
+  const dispatch = useDispatch();
+
+  const categoryWiseProductsRedux = useSelector(
+    (state) => state.client_product.categoryWiseProducts
+  );
+
+  // console.log("client_productRedux - ", categoryWiseProductsRedux);
+
+  const { setisLoadingTopProgress } = useContext(AppContext);
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [itemsPerPage, setitemsPerPage] = useState(4);
 
@@ -10,7 +28,14 @@ const ProductsCarousel = () => {
 
   const [isScreenAtSm, setIsScreenAtSm] = useState(window.innerWidth < 576);
 
+  async function fetchData() {
+    setisLoadingTopProgress(30);
+    await dispatch(clientGetCategoryWiseProductAsync());
+    setisLoadingTopProgress(100);
+  }
+
   useEffect(() => {
+    fetchData();
     if (isScreenAtMd) {
       setitemsPerPage(3);
     } else {
@@ -47,6 +72,158 @@ const ProductsCarousel = () => {
       setCurrentIndex(currentIndex - itemsPerPage);
     }
   };
+
+  // const categoryData = [
+  //   {
+  //     id: 5,
+  //     name: "Blazers",
+  //     admin_id: 1,
+  //     createdAt: "2024-07-10T12:24:12.000Z",
+  //     updatedAt: null,
+  //     productCategory: [
+  //       {
+  //         id: 1,
+  //         name: "T-shirts",
+  //         description: "description",
+  //         sizeAndFit: "sizeAndFit",
+  //         fabricAndCare: "fabricAndCare",
+  //         isRecycleBin: false,
+  //         isFavorite: false,
+  //         isPublished: true,
+  //         admin_id: 1,
+  //         createdAt: null,
+  //         updatedAt: null,
+  //         productImages_id: 1,
+  //         category_id: 5,
+  //         productImage: {
+  //           id: 1,
+  //           url1: "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FDR896ACBL_2.jpg%3Fv%3D1689061795&w=1200&q=75",
+  //           url2: "url 2",
+  //           url3: "url 3",
+  //           url4: "url 4",
+  //           url5: "url 5",
+  //           admin_id: 1,
+  //           product_id: 1,
+  //         },
+  //       },
+  //       {
+  //         id: 2,
+  //         name: "Two -shirts ",
+  //         description: "description",
+  //         sizeAndFit: "sizeAndFit",
+  //         fabricAndCare: "fabricAndCare",
+  //         isRecycleBin: false,
+  //         isFavorite: true,
+  //         isPublished: true,
+  //         admin_id: 1,
+  //         createdAt: null,
+  //         updatedAt: null,
+  //         productImages_id: 2,
+  //         category_id: 5,
+  //         productImage: {
+  //           id: 2,
+  //           url1: "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2F3_c10ecf54-1853-446c-8a12-16bd3d7e1700.png%3Fv%3D1690454351&w=1920&q=75",
+  //           url2: "url 2",
+  //           url3: "url 2",
+  //           url4: "url 2",
+  //           url5: "url 2",
+  //           admin_id: 1,
+  //           product_id: 2,
+  //         },
+  //       },
+  //       {
+  //         id: 3,
+  //         name: "Three -shirts ",
+  //         description: "description",
+  //         sizeAndFit: "sizeAndFit",
+  //         fabricAndCare: "fabricAndCare",
+  //         isRecycleBin: false,
+  //         isFavorite: false,
+  //         isPublished: false,
+  //         admin_id: 1,
+  //         createdAt: null,
+  //         updatedAt: null,
+  //         productImages_id: 3,
+  //         category_id: 5,
+  //         productImage: {
+  //           id: 3,
+  //           url1: "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FSK097BEGE_2.jpg%3Fv%3D1712125284&w=1200&q=75",
+  //           url2: "url 3",
+  //           url3: "url 3",
+  //           url4: "url 3",
+  //           url5: "url 3",
+  //           admin_id: 1,
+  //           product_id: 3,
+  //         },
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     id: 12,
+  //     name: "Shorts",
+  //     admin_id: 1,
+  //     createdAt: "2024-07-10T12:25:01.000Z",
+  //     updatedAt: null,
+  //     productCategory: [
+  //       {
+  //         id: 4,
+  //         name: "SAMSUNG Galaxy F13 (Sunrise Copper, 64 GB)  (4 GB RAM)",
+  //         description:
+  //           "<p><strong>fa</strong></p><p><strong>fasfasfsfasdfa<u>sfasdfadsfsadfsadf</u></strong></p><p><strong><u>asdfasdfasdf</u></strong></p><p><strong>asdfasfadsfa</strong></p>",
+  //         sizeAndFit:
+  //           "<p><strong><u>Fabirc and ca</u>re <s>Details</s>&nbsp;</strong></p>",
+  //         fabricAndCare:
+  //           "<p><strong><u>Fabirc and ca</u>re <s>Details</s>&nbsp;</strong></p>",
+  //         isRecycleBin: false,
+  //         isFavorite: false,
+  //         isPublished: true,
+  //         admin_id: 1,
+  //         createdAt: "2024-07-11T17:20:04.000Z",
+  //         updatedAt: null,
+  //         productImages_id: 1,
+  //         category_id: 12,
+  //         productImage: {
+  //           id: 1,
+  //           url1: "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FDR896ACBL_2.jpg%3Fv%3D1689061795&w=1200&q=75",
+  //           url2: "url 2",
+  //           url3: "url 3",
+  //           url4: "url 4",
+  //           url5: "url 5",
+  //           admin_id: 1,
+  //           product_id: 1,
+  //         },
+  //       },
+  //       {
+  //         id: 5,
+  //         name: "Placket Detail Waistcoat - Grey",
+  //         description:
+  //           '<p><span style="color: rgb(41, 40, 43); font-family: SourceSansLight; font-size: 14px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;">- Comfort fit</span><br style="box-sizing: inherit; padding: 0px; margin: 0px; font-family: SourceSansLight; color: rgb(41, 40, 43); font-size: 14px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;"><span style="color: rgb(41, 40, 43); font-family: SourceSansLight; font-size: 14px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;">- V-neck</span><br style="box-sizing: inherit; padding: 0px; margin: 0px; font-family: SourceSansLight; color: rgb(41, 40, 43); font-size: 14px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;"><span style="color: rgb(41, 40, 43); font-family: SourceSansLight; font-size: 14px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;">- Extended placket detail</span><br style="box-sizing: inherit; padding: 0px; margin: 0px; font-family: SourceSansLight; color: rgb(41, 40, 43); font-size: 14px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;"><span style="color: rgb(41, 40, 43); font-family: SourceSansLight; font-size: 14px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;">- Sleeveless</span><br style="box-sizing: inherit; padding: 0px; margin: 0px; font-family: SourceSansLight; color: rgb(41, 40, 43); font-size: 14px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;"><span style="color: rgb(41, 40, 43); font-family: SourceSansLight; font-size: 14px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;">- Has A lining</span><br style="box-sizing: inherit; padding: 0px; margin: 0px; font-family: SourceSansLight; color: rgb(41, 40, 43); font-size: 14px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;"><span style="color: rgb(41, 40, 43); font-family: SourceSansLight; font-size: 14px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;">- Non-transparent</span></p>',
+  //         sizeAndFit:
+  //           '<p><span style="color: rgb(41, 40, 43); font-family: SourceSansLight; font-size: 14px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;">Fabric &amp; Care</span></p>',
+  //         fabricAndCare:
+  //           '<p><span style="color: rgb(41, 40, 43); font-family: SourceSansLight; font-size: 14px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;">Fabric &amp; Care</span></p>',
+  //         isRecycleBin: false,
+  //         isFavorite: true,
+  //         isPublished: false,
+  //         admin_id: 1,
+  //         createdAt: "2024-07-11T17:47:18.000Z",
+  //         updatedAt: null,
+  //         productImages_id: 2,
+  //         category_id: 12,
+  //         productImage: {
+  //           id: 2,
+  //           url1: "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2F3_c10ecf54-1853-446c-8a12-16bd3d7e1700.png%3Fv%3D1690454351&w=1920&q=75",
+  //           url2: "url 2",
+  //           url3: "url 2",
+  //           url4: "url 2",
+  //           url5: "url 2",
+  //           admin_id: 1,
+  //           product_id: 2,
+  //         },
+  //       },
+  //     ],
+  //   },
+  // ];
 
   const productImages = [
     {
@@ -117,133 +294,202 @@ const ProductsCarousel = () => {
   );
   // console.log("currentData  - ", currentData);
 
+  // ------------------------------------------------------------------------------------
+  //
+  // ------------------------------------------------------------------------------------
+
+  const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0);
+
+  // const prevOnClick = () => {
+  //   if (currentCategoryIndex > 0) {
+  //     setCurrentCategoryIndex(currentCategoryIndex - 1);
+  //   }
+  // };
+
+  // const nextOnClick = () => {
+  //   if (currentCategoryIndex < categoryData.length - 1) {
+  //     setCurrentCategoryIndex(currentCategoryIndex + 1);
+  //   }
+  // };
+
+  // const currentCategory = categoryData[currentCategoryIndex];
+
   return (
     <>
       <div className="homePage__3rdBox__productsBox">
-        <ul className="nav nav-tabs" id="myTab" role="tablist">
-          <li className="nav-item" role="presentation">
-            <button
-              className="nav-link active"
-              id="home-tab"
-              data-bs-toggle="tab"
-              data-bs-target="#home-tab-pane"
-              type="button"
-              role="tab"
-              aria-controls="home-tab-pane"
-              aria-selected="true"
-            >
-              Casuals
-            </button>
-          </li>
-          <li className="nav-item" role="presentation">
-            <button
-              className="nav-link"
-              id="profile-tab"
-              data-bs-toggle="tab"
-              data-bs-target="#profile-tab-pane"
-              type="button"
-              role="tab"
-              aria-controls="profile-tab-pane"
-              aria-selected="false"
-            >
-              Formals
-            </button>
-          </li>
-          <li className="nav-item" role="presentation">
-            <button
-              className="nav-link"
-              id="contact-tab"
-              data-bs-toggle="tab"
-              data-bs-target="#contact-tab-pane"
-              type="button"
-              role="tab"
-              aria-controls="contact-tab-pane"
-              aria-selected="false"
-            >
-              Evening Wear
-            </button>
-          </li>
-        </ul>
-        <div className="tab-content" id="myTabContent">
-          <div
-            className="tab-pane fade show active"
-            id="home-tab-pane"
-            role="tabpanel"
-            aria-labelledby="home-tab"
-            tabIndex="0"
-          >
-            <div className="homePage__3rdBox__wrapper ">
-              <div className="homePage__3rdBox__wrapper__btns">
-                <button
-                  className="homePage__3rdBox__wrapper__btns__prev"
-                  onClick={() => prevOnClick()}
-                >
-                  <IoIosArrowBack />
-                </button>
-                <button
-                  className="homePage__3rdBox__wrapper__btns__next"
-                  onClick={() => nextOnClick()}
-                >
-                  <IoIosArrowForward />
-                </button>
-              </div>
-              {currentData.map((data, index) => {
-                return (
-                  <div
-                    className="homePage__3rdBox__productsBox__card"
-                    key={index}
-                  >
-                    <div className="homePage__3rdBox__wrapper__favIcon">
-                      <FaRegHeart />{" "}
-                    </div>
-                    <img
-                      src={data.url}
-                      className="homePage__3rdBox__productsBox__card__image"
-                      alt="dress code "
-                    />
-                    <p className="homePage__3rdBox__productsBox__card__productTitle">
-                      {data.id} {data.name}
-                    </p>
-                    <div className="homePage__3rdBox__productsBox__card__prices">
-                      <p> &#8377; 1,160 </p>
-                      <p style={{ textDecoration: "line-through" }}>
-                        &#8377; 1,160
-                      </p>
-                      <p style={{ color: "#A10E2C" }}>17% Off</p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-          <div
-            className="tab-pane fade"
-            id="profile-tab-pane"
-            role="tabpanel"
-            aria-labelledby="profile-tab"
-            tabIndex="0"
-          >
-            B
-          </div>
-          <div
-            className="tab-pane fade"
-            id="contact-tab-pane"
-            role="tabpanel"
-            aria-labelledby="contact-tab"
-            tabIndex="0"
-          >
-            C
-          </div>
-          <div
-            className="tab-pane fade"
-            id="disabled-tab-pane"
-            role="tabpanel"
-            aria-labelledby="disabled-tab"
-            tabIndex="0"
-          >
-            D
-          </div>
-        </div>
+        {(function () {
+          try {
+            return (
+              <>
+                <ul className="nav nav-tabs" id="myTab" role="tablist">
+                  {categoryWiseProductsRedux.query &&
+                    categoryWiseProductsRedux.query.map((category, index) =>
+                      (function () {
+                        if (category.isFavorite === true) {
+                          return (
+                            <li
+                              className="nav-item"
+                              role="presentation"
+                              key={index}
+                            >
+                              <button
+                                className={`nav-link ${
+                                  index === currentCategoryIndex ? "active" : ""
+                                }`}
+                                id={`tab-${category.id}`}
+                                data-bs-toggle="tab"
+                                data-bs-target={`#tab-pane-${category.id}`}
+                                type="button"
+                                role="tab"
+                                aria-controls={`tab-pane-${category.id}`}
+                                aria-selected={
+                                  index === currentCategoryIndex
+                                    ? "true"
+                                    : "false"
+                                }
+                                onClick={() => setCurrentCategoryIndex(index)}
+                              >
+                                {category.name && category.name}
+                              </button>
+                            </li>
+                          );
+                        }
+                      })()
+                    )}
+                </ul>
+
+                <div className="tab-content" id="myTabContent">
+                  {categoryWiseProductsRedux.query &&
+                    categoryWiseProductsRedux.query.map((category, index) =>
+                      (function () {
+                        if (category.isFavorite === true) {
+                          return (
+                            <div
+                              key={index}
+                              className={`tab-pane fade ${
+                                index === currentCategoryIndex
+                                  ? "show active"
+                                  : ""
+                              }`}
+                              id={`tab-pane-${category.id}`}
+                              role="tabpanel"
+                              aria-labelledby={`tab-${category.id}`}
+                              tabIndex="0"
+                            >
+                              <div className="homePage__3rdBox__wrapper">
+                                <div className="homePage__3rdBox__wrapper__btns">
+                                  <button
+                                    className="homePage__3rdBox__wrapper__btns__prev"
+                                    onClick={prevOnClick}
+                                  >
+                                    <IoIosArrowBack />
+                                  </button>
+                                  <button
+                                    className="homePage__3rdBox__wrapper__btns__next"
+                                    onClick={nextOnClick}
+                                  >
+                                    <IoIosArrowForward />
+                                  </button>
+                                </div>
+
+                                {category.productCategory &&
+                                  category.productCategory.map(
+                                    (product, prodIndex) =>
+                                      (function () {
+                                        // console.log("product - ", product);
+                                        if (
+                                          product.isFavorite === true &&
+                                          product.isPublished === true &&
+                                          product.isRecycleBin === false
+                                        ) {
+                                          const sortedProductSizes = [
+                                            ...(product.productSizesProduct ||
+                                              []),
+                                          ].sort((a, b) => a.mrp - b.mrp);
+
+                                          return (
+                                            <div
+                                              className="homePage__3rdBox__productsBox__card"
+                                              key={prodIndex}
+                                            >
+                                              <div className="homePage__3rdBox__wrapper__favIcon">
+                                                <FaRegHeart />{" "}
+                                              </div>
+                                              <Link
+                                                to={`/product/${
+                                                  product.productCategory &&
+                                                  product.productCategory.name
+                                                }/${product.id}/${
+                                                  product.name
+                                                }`}
+                                              >
+                                                <img
+                                                  src={
+                                                    product.productImage.url1
+                                                  }
+                                                  className="homePage__3rdBox__productsBox__card__image"
+                                                  alt="Product"
+                                                />
+                                              </Link>
+                                              <p className="homePage__3rdBox__productsBox__card__productTitle">
+                                                {product.id} {" - "}{" "}
+                                                {product.name}
+                                              </p>
+                                              <div className="homePage__3rdBox__productsBox__card__prices">
+                                                <p>
+                                                  {calculateProductDiscount(
+                                                    sortedProductSizes.length >
+                                                      0
+                                                      ? sortedProductSizes[0]
+                                                          .mrp
+                                                      : 0,
+                                                    sortedProductSizes.length >
+                                                      0
+                                                      ? sortedProductSizes[0]
+                                                          .discountPercent
+                                                      : 0
+                                                  )}
+                                                </p>
+                                                <p
+                                                  style={{
+                                                    textDecoration:
+                                                      "line-through",
+                                                  }}
+                                                >
+                                                  {convertInInr(
+                                                    sortedProductSizes.length >
+                                                      0
+                                                      ? sortedProductSizes[0]
+                                                          .mrp
+                                                      : 0
+                                                  )}
+                                                </p>
+                                                <p style={{ color: "#A10E2C" }}>
+                                                  {sortedProductSizes.length > 0
+                                                    ? sortedProductSizes[0]
+                                                        .discountPercent
+                                                    : 0}
+                                                  % Off
+                                                </p>
+                                              </div>
+                                            </div>
+                                          );
+                                        }
+                                      })()
+                                  )}
+                              </div>
+                            </div>
+                          );
+                        }
+                      })()
+                    )}
+                </div>
+              </>
+            );
+          } catch (error) {
+            console.log("Error - ", error.message);
+          }
+        })()}
       </div>
     </>
   );

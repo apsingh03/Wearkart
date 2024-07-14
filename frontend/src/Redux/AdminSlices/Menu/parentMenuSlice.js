@@ -2,8 +2,8 @@ import { jwtDecode } from "jwt-decode";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// const HOSTNAME = process.env.REACT_APP_BACKENDHOSTNAME;
-const HOSTNAME = "http://localhost:8000";
+const HOSTNAME = process.env.REACT_APP_BACKENDHOSTNAME;
+
 const adminToken = localStorage.getItem("adminLoggedToken");
 
 export const createParentMenuAsync = createAsyncThunk(

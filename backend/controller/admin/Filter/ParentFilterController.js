@@ -12,15 +12,18 @@ const sequelize = db.sequelize;
 const createParentFilter = async (req, res) => {
   const t = await sequelize.transaction();
   try {
+    // console.log("Req.body - " , req.body );
     const nameAlreadyExist = await ParentFilter.findOne({
       where: { name: req.body.name, admin_id: req.admin.id },
       transaction: t,
     });
 
     if (nameAlreadyExist) {
+      // console.log("nameAlreadyExist");
       await t.rollback();
       return res.status(200).send({ msg: "Name Already Exist" });
     } else {
+      // console.log("Not nameAlreadyExist");
       const createQuery = await ParentFilter.create(
         {
           name: req.body.name,
@@ -29,19 +32,13 @@ const createParentFilter = async (req, res) => {
         },
         { transaction: t }
       );
-
+      // console.log("createQuery - ", createQuery);
       const updatedQuery = await ParentFilter.findOne({
-        include: {
-          model: AdminAuth,
-          required: true,
-          as: "filterAdminParent",
-          attributes: { exclude: ["password", "createdAt", "updatedAt"] },
-        },
         where: { id: createQuery.id, admin_id: req.admin.id },
         order: [["id", "Asc"]],
         transaction: t,
       });
-
+      // console.log("updatedQuery - ", updatedQuery.name);
       await t.commit();
       return res.status(200).send({ msg: "success", query: updatedQuery });
     }
@@ -55,12 +52,6 @@ const getParentFilter = async (req, res) => {
   try {
     const query = await ParentFilter.findAll({
       include: [
-        {
-          model: AdminAuth,
-          required: true,
-          as: "filterAdminParent",
-          attributes: { exclude: ["password", "createdAt", "updatedAt"] },
-        },
         {
           model: ChildFilter,
           required: false,
@@ -96,8 +87,8 @@ const updateParentFilter = async (req, res) => {
         },
         {
           where: { id: req.params.id, admin_id: req.admin.id },
-        },
-        { transaction: t }
+          transaction: t,
+        }
       );
 
       // Check if any rows were updated
@@ -110,6 +101,7 @@ const updateParentFilter = async (req, res) => {
         await t.commit();
         return res.status(200).send({ msg: "success", query });
       } else {
+        await t.rollback();
         return res.status(404).send({ msg: "Record not found" });
       }
     }

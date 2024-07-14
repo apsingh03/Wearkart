@@ -2,14 +2,17 @@ module.exports = (sequelize, DataTypes) => {
   const ProductSizes = sequelize.define(
     "productSizes",
     {
-      name: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
-      },
-      qty: {
+      mrp: {
         type: DataTypes.INTEGER,
-        allowNull: true,
+        allowNull: false,
+      },
+      discountPercent: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      admin_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
       },
       createdAt: {
         type: DataTypes.DATE,

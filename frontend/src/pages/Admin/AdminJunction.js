@@ -12,13 +12,17 @@ import { Squash as Hamburger } from "hamburger-react";
 import { useSelector, useDispatch } from "react-redux";
 // components
 import VenDashboard from "../../components/Admin/VenDashboard";
-import AddProduct from "../../components/Admin/AddProduct";
-import AllProducts from "../../components/Admin/AllProducts";
+import AddProduct from "../../components/Admin/Product/AddProduct";
+import AllProducts from "../../components/Admin/Product/AllProducts";
 import ParentFilter from "../../components/Admin/Filter/ParentFilter";
 import ChildFilter from "../../components/Admin/Filter/ChildFilter";
 import ParentMenu from "../../components/Admin/Menu/ParentMenu";
 import ChildMenu from "../../components/Admin/Menu/ChildMenu";
 import Sizes from "../../components/Admin/Sizes/Sizes";
+import Category from "../../components/Admin/Category/Category";
+import Color from "../../components/Admin/Color/Color";
+import Fabric from "../../components/Admin/Fabric/Fabric";
+import RecycleBin from "../../components/Admin/Product/RecycleBin";
 
 const AdminJunction = () => {
   const adminAuth = useSelector((state) => state.admin_auth.loggedData);
@@ -70,9 +74,12 @@ const AdminJunction = () => {
       category: "Product other Details",
       title: "Product Info",
       subMenu: [
-        { name: "Sizes", url: "sizes" },
-        { name: "Offers", url: "sizes" },
-        { name: "Coupon", url: "sizes" },
+        { name: "Listed Products", url: "listedProducts" },
+        { name: "Category", url: "category" },
+        { name: "Color", url: "color" },
+        { name: "Fabrics", url: "fabrics" },
+        { name: "Create Product", url: "addProduct" },
+        { name: "Recycle Bin", url: "recycleBinProduct" },
       ],
     },
     {
@@ -244,8 +251,12 @@ const AdminJunction = () => {
               <Route path="/sizes" element={<Sizes />} />
 
               {/* Products  */}
+              <Route path="/category" element={<Category />} />
+              <Route path="/color" element={<Color />} />
+              <Route path="/fabrics" element={<Fabric />} />
               <Route path="/addProduct" element={<AddProduct />} />
               <Route path="/listedProducts" element={<AllProducts />} />
+              <Route path="/recycleBinProduct" element={<RecycleBin />} />
             </Routes>
           </div>
         </div>

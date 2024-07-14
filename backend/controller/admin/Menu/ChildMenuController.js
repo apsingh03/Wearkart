@@ -34,12 +34,6 @@ const createChildMenu = async (req, res) => {
       const findUpdatedQuery = await ChildMenu.findOne({
         include: [
           {
-            model: AdminAuth,
-            required: true,
-            as: "menuAdminChild",
-            attributes: { exclude: ["password", "createdAt", "updatedAt"] },
-          },
-          {
             model: ParentMenu,
             required: true,
             as: "menuChildData",
@@ -65,12 +59,6 @@ const getChildMenu = async (req, res) => {
     // console.log("------- getChildMenu");
     const query = await ChildMenu.findAll({
       include: [
-        {
-          model: AdminAuth,
-          required: true,
-          as: "menuAdminChild",
-          attributes: { exclude: ["password", "createdAt", "updatedAt"] },
-        },
         {
           model: ParentMenu,
           required: false,
@@ -107,8 +95,8 @@ const updateChildMenu = async (req, res) => {
         },
         {
           where: { id: req.params.id, admin_id: req.admin.id },
-        },
-        { transaction: t }
+          transaction: t,
+        }
       );
 
       // Check if any rows were updated
@@ -121,6 +109,7 @@ const updateChildMenu = async (req, res) => {
         await t.commit();
         return res.status(200).send({ msg: "success", query });
       } else {
+        await t.rollback();
         return res.status(404).send({ msg: "Record not found" });
       }
     }

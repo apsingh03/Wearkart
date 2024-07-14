@@ -17,6 +17,7 @@ import LoadingBar from "react-top-loading-bar";
 import ClientProtectedRoutes from "./components/Client/ClientProtectedRoutes";
 import AdminProtectedRoutes from "./components/Admin/AdminProtectedRoutes";
 function App() {
+  // console.log("process.env - ", process.env);
   const {
     isActiveSideBarMenu,
     setisActiveSideBarMenu,
@@ -87,7 +88,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/typography" element={<Typography />} />
         <Route path="/collections" element={<ProductFilterPage />} />
-        <Route path="/product" element={<ProductDetailPage />} />
+        <Route path="/product/*" element={<ProductDetailPage />} />
         <Route path="/signin" element={<LogInPage />} />
         <Route path="/signup" element={<SignUpPage />} />
 

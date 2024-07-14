@@ -34,12 +34,6 @@ const createChildFilter = async (req, res) => {
       const findUpdatedQuery = await ChildFilter.findOne({
         include: [
           {
-            model: AdminAuth,
-            required: true,
-            as: "filterAdminChild",
-            attributes: { exclude: ["password", "createdAt", "updatedAt"] },
-          },
-          {
             model: ParentFilter,
             required: true,
             as: "filterChildData",
@@ -64,12 +58,6 @@ const getChildFilter = async (req, res) => {
   try {
     const query = await ChildFilter.findAll({
       include: [
-        {
-          model: AdminAuth,
-          required: true,
-          as: "filterAdminChild",
-          attributes: { exclude: ["password", "createdAt", "updatedAt"] },
-        },
         {
           model: ParentFilter,
           required: false,
@@ -106,20 +94,21 @@ const updateChildFilter = async (req, res) => {
         },
         {
           where: { id: req.params.id, admin_id: req.admin.id },
-        },
-        { transaction: t }
+          transaction: t,
+        }
       );
 
       // Check if any rows were updated
       if (updated) {
         // Fetch the updated record
         const query = await ChildFilter.findOne({
-          where: [{ id: req.params.id }, { admin_id: req.admin.id }],
+          where: { id: req.params.id, admin_id: req.admin.id },
           transaction: t,
         });
         await t.commit();
         return res.status(200).send({ msg: "success", query });
       } else {
+        await t.rollback();
         return res.status(404).send({ msg: "Record not found" });
       }
     }

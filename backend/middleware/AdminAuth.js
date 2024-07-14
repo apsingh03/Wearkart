@@ -15,7 +15,7 @@ const authenticateAdmin = async (req, res, next) => {
           .status(401)
           .json({ success: false, error: "User Authentication Failed" });
       } else {
-        // console.log("query - ", user);
+        // console.log("query - ", user);ā
         req.admin = user;
         next();
       }

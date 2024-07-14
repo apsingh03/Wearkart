@@ -10,19 +10,32 @@ import { getChildFilterAsync } from "../../Redux/AdminSlices/Filter/childFilterS
 import { getParentFilterAsync } from "../../Redux/AdminSlices/Filter/parentFilterSlice";
 import { AppContext } from "../../context/AppContext";
 import { getProductSizeAsync } from "../../Redux/AdminSlices/Sizes/SizesSlice";
+import {
+  clientAllListedProductsAsync,
+  clientGetProductFiltersAsync,
+  clientGetSizesFiltersAsync,
+} from "../../Redux/ClientSlices/clientProductSlice";
+import {
+  calculateProductDiscount,
+  convertInInr,
+} from "../../utils/productDiscountCalculate";
 
 const ProductFilterPage = () => {
-  const adminParentFilterRedux = useSelector(
-    (state) => state.admin_parentFilter.data
+  const client_allProductsRedux = useSelector(
+    (state) => state.client_product.allProducts
   );
 
-  const admin_productSizeRedux = useSelector(
-    (state) => state.admin_productSize.data
+  const client_productFiltersRedux = useSelector(
+    (state) => state.client_product.productFilters
   );
 
-  // console.log("admin_productSizeRedux - ", admin_productSizeRedux);
-  const { isLoadingTopProgress, setisLoadingTopProgress } =
-    useContext(AppContext);
+   const client_sizesFiltersRedux = useSelector(
+     (state) => state.client_product.sizesFilters
+   );
+
+
+  // console.log("clientProductFiltersRedux - ", clientProductFiltersRedux);
+  const { setisLoadingTopProgress } = useContext(AppContext);
 
   // console.log("adminParentFilterRedux - ", adminParentFilterRedux.query);
   const dispatch = useDispatch();
@@ -38,144 +51,16 @@ const ProductFilterPage = () => {
     }));
   };
 
-  const filterData = [
-    {
-      id: 1,
-      catName: "Category",
-      subCatName: [
-        {
-          id: 1.1,
-          name: "Dresses",
-        },
-        {
-          id: 1.2,
-          name: "Jackets",
-        },
-        {
-          id: 1.3,
-          name: "Jeans",
-        },
-        {
-          id: 1.4,
-          name: "LivIn Pants",
-        },
-        {
-          id: 1.5,
-          name: "Shirts",
-        },
-      ],
-    },
-    {
-      id: 2,
-      catName: "Color",
-      subCatName: [
-        {
-          id: 2.1,
-          name: "Green",
-        },
-        {
-          id: 2.2,
-          name: "Black",
-        },
-        {
-          id: 2.3,
-          name: "Yellow",
-        },
-        {
-          id: 2.4,
-          name: "Orange",
-        },
-      ],
-    },
-    {
-      id: 3,
-      catName: "Fabric",
-      subCatName: [
-        {
-          id: 3.1,
-          name: "Chiffon",
-        },
-        {
-          id: 3.2,
-          name: "Cotton",
-        },
-        {
-          id: 3.3,
-          name: "Woolean",
-        },
-        {
-          id: 3.4,
-          name: "Nylon",
-        },
-        {
-          id: 3.5,
-          name: "Polyster",
-        },
-      ],
-    },
-    {
-      id: 4,
-      catName: "Category 4",
-      subCatName: [
-        {
-          id: 4.1,
-          name: "Dresses",
-        },
-        {
-          id: 4.2,
-          name: "Jackets",
-        },
-        {
-          id: 4.3,
-          name: "Jeans",
-        },
-        {
-          id: 4.4,
-          name: "LivIn Pants",
-        },
-        {
-          id: 4.5,
-          name: "Shirts",
-        },
-      ],
-    },
-    {
-      id: 5,
-      catName: "Category 5",
-      subCatName: [
-        {
-          id: 5.1,
-          name: "Dresses",
-        },
-        {
-          id: 5.2,
-          name: "Jackets",
-        },
-        {
-          id: 5.3,
-          name: "Jeans",
-        },
-        {
-          id: 5.4,
-          name: "LivIn Pants",
-        },
-        {
-          id: 5.5,
-          name: "Shirts",
-        },
-      ],
-    },
-  ];
-
   async function fetchFilter() {
     setisLoadingTopProgress(30);
 
-    const actionResultParent = await dispatch(getParentFilterAsync());
-    await dispatch(getProductSizeAsync());
+    await dispatch(clientGetProductFiltersAsync());
 
-    if (actionResultParent.payload.msg === "success") {
-      setisLoadingTopProgress(100);
-    }
+    await dispatch(clientGetSizesFiltersAsync());
+
+    await dispatch(clientAllListedProductsAsync());
+
+    setisLoadingTopProgress(100);
   }
 
   useEffect(() => {
@@ -198,8 +83,8 @@ const ProductFilterPage = () => {
                 {(function () {
                   try {
                     return (
-                      adminParentFilterRedux.query &&
-                      adminParentFilterRedux.query.map((data, index) => {
+                      client_productFiltersRedux.query &&
+                      client_productFiltersRedux.query.map((data, index) => {
                         return (
                           <div
                             className="pFilterPage__left__filtersBox__card"
@@ -288,14 +173,14 @@ const ProductFilterPage = () => {
                     {(function () {
                       try {
                         return (
-                          admin_productSizeRedux.query &&
-                          admin_productSizeRedux.query.map((data, idx) => {
+                          client_sizesFiltersRedux.query &&
+                          client_sizesFiltersRedux.query.map((size, idx) => {
                             return (
                               <Link
                                 className="pFilterPage__left__filtersBox__card__sizes__card"
                                 key={idx}
                               >
-                                {data.name && data.name} (000)
+                                {size.name && size.name} (000)
                               </Link>
                             );
                           })
@@ -352,42 +237,76 @@ const ProductFilterPage = () => {
                 <div className=" row ">
                   {(function () {
                     try {
-                      return ["", "", "", "", "", ""].map((data, index) => {
-                        return (
-                          <div
-                            className="col-6 col-lg-4 col-xl-3 mb-2 p-1"
-                            // style={{ paddingLeft : "0px" }}
-                            key={index}
-                          >
-                            <div className="pFilterPage__right__body__card">
-                              <div
-                                className="pFilterPage__right__body__card__favIcon"
-                                onClick={() => alert("Click on Fav Icon")}
-                              >
-                                <FaRegHeart />{" "}
-                              </div>
-                              <Link to="/product">
-                                <img
-                                  src="https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FDR896ACBL_1.jpg%3Fv%3D1689061795&w=1920&q=75"
-                                  className="pFilterPage__right__body__card__image"
-                                  alt="dress"
-                                />
-                                <p className="pFilterPage__right__body__card__productTitle">
-                                  LivSoft Cotton T-Shirt - White and Black
-                                </p>
-                              </Link>
+                      return (
+                        client_allProductsRedux.query &&
+                        client_allProductsRedux.query.map((product, index) => {
+                          const sortedProductSizes = [
+                            ...(product.productSizesProduct || []),
+                          ].sort((a, b) => a.mrp - b.mrp);
+                          return (
+                            <div
+                              className="col-6 col-lg-4 col-xl-3 mb-2 p-1"
+                              // style={{ paddingLeft : "0px" }}
+                              key={index}
+                            >
+                              <div className="pFilterPage__right__body__card">
+                                <div
+                                  className="pFilterPage__right__body__card__favIcon"
+                                  onClick={() => alert("Click on Fav Icon")}
+                                >
+                                  <FaRegHeart />{" "}
+                                </div>
+                                <Link
+                                  to={`/product/${
+                                    product.productCategory &&
+                                    product.productCategory.name
+                                  }/${product.id}/${product.name}`}
+                                >
+                                  <img
+                                    // src="https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FDR896ACBL_1.jpg%3Fv%3D1689061795&w=1920&q=75"
+                                    src={
+                                      product.productImage &&
+                                      product.productImage.url1
+                                    }
+                                    className="pFilterPage__right__body__card__image"
+                                    alt="dress"
+                                  />
+                                  <p className="pFilterPage__right__body__card__productTitle">
+                                    {product.name &&
+                                      product.name.substring(0, 30) + "..."}
+                                  </p>
+                                </Link>
 
-                              <div className="pFilterPage__right__body__card__prices">
-                                <p> &#8377; 1,160 </p>
-                                <p style={{ textDecoration: "line-through" }}>
-                                  &#8377; 1,160
-                                </p>
-                                <p style={{ color: "#A10E2C" }}>17% Off</p>
+                                <div className="pFilterPage__right__body__card__prices">
+                                  <p>
+                                    {calculateProductDiscount(
+                                      sortedProductSizes.length > 0
+                                        ? sortedProductSizes[0].mrp
+                                        : 0,
+                                      sortedProductSizes.length > 0
+                                        ? sortedProductSizes[0].discountPercent
+                                        : 0
+                                    )}
+                                  </p>
+                                  <p style={{ textDecoration: "line-through" }}>
+                                    {convertInInr(
+                                      sortedProductSizes.length > 0
+                                        ? sortedProductSizes[0].mrp
+                                        : 0
+                                    )}
+                                  </p>
+                                  <p style={{ color: "#A10E2C" }}>
+                                    {sortedProductSizes.length > 0
+                                      ? sortedProductSizes[0].discountPercent
+                                      : 0}
+                                    % Off
+                                  </p>
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        );
-                      });
+                          );
+                        })
+                      );
                     } catch (error) {
                       console.log("Error - ", error.message);
                     }

@@ -10,16 +10,20 @@ router.get("/", (req, res) => {
 const authRoute = require("./AdminAuthRoutes");
 const filterRoute = require("./Filter");
 const menuRoute = require("./Menu");
-const sizesRoute = require("./Sizes/SizesRoutes")
+const sizesRoute = require("./Sizes/SizesRoutes");
+const productRoute = require("./Product/ProductRoutes");
+const categoryRoute = require("./Category/CategoryRoutes");
+const colorRoute = require("./Color/ColorRoutes");
+const fabricRoute = require("./Fabric/FabricRoutes");
 
-// admin/auth/
+// admin/CurrentDefinedPath/
 router.use("/auth", authRoute);
-// admin/filter/
 router.use("/filter", filterRoute);
-
-// admin/menu/
 router.use("/menu", menuRoute);
-// Sizes
 router.use("/sizes", sizesRoute);
+router.use("/products", productRoute);
+router.use("/categories", categoryRoute);
+router.use("/colors", colorRoute);
+router.use("/fabrics", fabricRoute);
 
 module.exports = router;

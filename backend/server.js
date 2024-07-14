@@ -1,6 +1,7 @@
 require("dotenv").config();
 
 const express = require("express");
+const bodyParser = require("body-parser");
 
 const app = express();
 const cors = require("cors");
@@ -13,6 +14,10 @@ const corsOptions = {
   optionSuccessStatus: 200,
 };
 app.use(cors(corsOptions));
+
+// Using body-parser
+app.use(bodyParser.json({ limit: "10mb" }));
+app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
 
 const clientRoutes = require("./routes/client");
 const adminRoutes = require("./routes/admin");
