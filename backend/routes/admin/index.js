@@ -15,6 +15,7 @@ const productRoute = require("./Product/ProductRoutes");
 const categoryRoute = require("./Category/CategoryRoutes");
 const colorRoute = require("./Color/ColorRoutes");
 const fabricRoute = require("./Fabric/FabricRoutes");
+const ordersRoute = require("./Orders/OrdersRoutes");
 
 // admin/CurrentDefinedPath/
 router.use("/auth", authRoute);
@@ -25,5 +26,6 @@ router.use("/products", productRoute);
 router.use("/categories", categoryRoute);
 router.use("/colors", colorRoute);
 router.use("/fabrics", fabricRoute);
+router.use("/orders", ordersRoute);
 
 module.exports = router;

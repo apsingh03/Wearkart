@@ -23,6 +23,7 @@ import Category from "../../components/Admin/Category/Category";
 import Color from "../../components/Admin/Color/Color";
 import Fabric from "../../components/Admin/Fabric/Fabric";
 import RecycleBin from "../../components/Admin/Product/RecycleBin";
+import AllPlacedOrders from "../../components/Admin/Orders/AllPlacedOrders";
 
 const AdminJunction = () => {
   const adminAuth = useSelector((state) => state.admin_auth.loggedData);
@@ -81,6 +82,12 @@ const AdminJunction = () => {
         { name: "Create Product", url: "addProduct" },
         { name: "Recycle Bin", url: "recycleBinProduct" },
       ],
+    },
+    {
+      id: 5,
+      category: "Orders Info",
+      title: "Orders",
+      subMenu: [{ name: "Placed Orders", url: "placedOrders" }],
     },
     {
       id: 4,
@@ -257,6 +264,9 @@ const AdminJunction = () => {
               <Route path="/addProduct" element={<AddProduct />} />
               <Route path="/listedProducts" element={<AllProducts />} />
               <Route path="/recycleBinProduct" element={<RecycleBin />} />
+
+              {/* Orders */}
+              <Route path="/placedOrders" element={<AllPlacedOrders />} />
             </Routes>
           </div>
         </div>

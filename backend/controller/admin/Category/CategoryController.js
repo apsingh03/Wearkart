@@ -29,9 +29,11 @@ const createCategory = async (req, res) => {
       await t.rollback();
       return res.status(200).send({ msg: "Name Already Exist" });
     } else {
+      console.log("Req.body - ", req.body);
       const createQuery = await Category.create(
         {
           name: req.body.name,
+          isFavorite: 0,
           createdAt: new Date(),
           admin_id: req.admin.id,
         },

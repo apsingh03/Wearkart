@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 // Client
-import clientAuthSlice from "./ClientSlices/clientAuth";
+import userAuthSlice from "./UserSlices/UserAuth";
 // Admin
 import adminAuthSlice from "./AdminSlices/adminAuth";
 import parentFilterSlice from "./AdminSlices/Filter/parentFilterSlice";
@@ -13,6 +13,8 @@ import colorSlice from "./AdminSlices/Color/ColorSlice";
 import fabricSlice from "./AdminSlices/Fabric/FabricSlice";
 import productSlice from "./AdminSlices/Product/ProductSlice";
 import clientProductSlice from "./ClientSlices/clientProductSlice";
+import UserCartSlice from "./UserSlices/Cart/UserCartRedux";
+import ordersSlice from "./AdminSlices/Orders/OrderSlice";
 
 export const store = configureStore({
   reducer: {
@@ -27,9 +29,13 @@ export const store = configureStore({
     admin_color: colorSlice,
     admin_fabric: fabricSlice,
     admin_product: productSlice,
+    admin_orders: ordersSlice,
 
     // Client Slices
-    client_auth: clientAuthSlice,
     client_product: clientProductSlice,
+
+    // User Slices
+    client_auth: userAuthSlice,
+    user_userCart: UserCartSlice,
   },
 });

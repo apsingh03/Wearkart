@@ -24,7 +24,7 @@ import {
   convertInInr,
 } from "../../../utils/productDiscountCalculate";
 
-import { convertDate } from "../../../utils/convertTime";
+import { convertDate, formatDate } from "../../../utils/convertTime";
 
 const AllProducts = (props) => {
   const dispatch = useDispatch();
@@ -106,7 +106,7 @@ const AllProducts = (props) => {
 
   return (
     <>
-      <h4 className="text-center mb-3">All Products</h4>
+      <h4 className="text-center mb-3">All Listed Products</h4>
       <div id="adminRightSideWrapper">
         <div className="listedProducts">
           <div className="table-responsive">
@@ -568,7 +568,7 @@ const AllProducts = (props) => {
 
                                       <td className="text-center">
                                         <span>
-                                          {convertDate(data.createdAt)}
+                                          {formatDate(data.createdAt)}
                                         </span>
                                       </td>
                                     </tr>

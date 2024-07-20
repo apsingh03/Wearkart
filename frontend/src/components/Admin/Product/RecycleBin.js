@@ -405,7 +405,7 @@ const RecycleBin = () => {
                                       </td>
                                     </tr>
                                   );
-                                } 
+                                }
                               })
                             );
                           } catch (error) {

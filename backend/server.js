@@ -21,9 +21,13 @@ app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
 
 const clientRoutes = require("./routes/client");
 const adminRoutes = require("./routes/admin");
+const userRoutes = require("./routes/user");
+const purchaseRoutes = require("./routes/purchase");
 
-app.use("/client", clientRoutes);
 app.use("/admin", adminRoutes);
+app.use("/client", clientRoutes);
+app.use("/user", userRoutes);
+app.use("/purchase", purchaseRoutes);
 
 app.use("/", function (req, res) {
   try {

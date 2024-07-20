@@ -27,7 +27,7 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
 // Client Tables
-db.clientAuth = require("./client/ClientAuthModel.js")(sequelize, DataTypes);
+db.clientAuth = require("./user/ClientAuthModel.js")(sequelize, DataTypes);
 // Admin Models
 db.adminAuth = require("./admin/AdminAuthModel.js")(sequelize, DataTypes);
 db.parentFilter = require("./admin/Filter/ParentFilterModel.js")(
@@ -73,6 +73,15 @@ db.productColors = require("./admin/Product/ProductColors.js")(
   DataTypes
 );
 db.productFabrics = require("./admin/Product/ProductFabrics.js")(
+  sequelize,
+  DataTypes
+);
+
+db.userAddress = require("./user/UserAddressModel.js")(sequelize, DataTypes);
+db.userCartItem = require("./user/UserCartItemModel.js")(sequelize, DataTypes);
+db.userCart = require("./user/UserCartModel.js")(sequelize, DataTypes);
+
+db.userFavoriteProduct = require("./user/UserFavoriteProductModel.js")(
   sequelize,
   DataTypes
 );
@@ -254,6 +263,94 @@ db.pSize.hasMany(db.productSizes, {
 db.productSizes.belongsTo(db.pSize, {
   foreignKey: "PSize_id",
   as: "pSizeProductSizes",
+});
+
+// userAddress -> clientAuth
+db.clientAuth.hasMany(db.userAddress, {
+  foreignKey: "user_id",
+  as: "userAddressClientAuth",
+});
+
+db.userAddress.belongsTo(db.clientAuth, {
+  foreignKey: "user_id",
+  as: "userAddressClientAuth",
+});
+
+// userCartItem -> userCart
+db.userCart.hasMany(db.userCartItem, {
+  foreignKey: "cart_id",
+  as: "userCartUserCartItem",
+});
+
+db.userCartItem.belongsTo(db.userCart, {
+  foreignKey: "cart_id",
+  as: "userCartUserCartItem",
+});
+
+// userCartItem -> clientAuth
+db.clientAuth.hasMany(db.userCartItem, {
+  foreignKey: "user_id",
+  as: "clientAuthUserCartItem",
+});
+
+db.userCartItem.belongsTo(db.clientAuth, {
+  foreignKey: "user_id",
+  as: "clientAuthUserCartItem",
+});
+
+// userCartItem -> product
+db.product.hasMany(db.userCartItem, {
+  foreignKey: "product_id",
+  as: "productUserCartItem",
+});
+
+db.userCartItem.belongsTo(db.product, {
+  foreignKey: "product_id",
+  as: "productUserCartItem",
+});
+
+// userCart -> clientAuth
+db.clientAuth.hasMany(db.userCart, {
+  foreignKey: "user_id",
+  as: "clientAuthUserCart",
+});
+
+db.userCart.belongsTo(db.clientAuth, {
+  foreignKey: "user_id",
+  as: "clientAuthUserCart",
+});
+
+// userCart -> clientAuth
+db.userAddress.hasMany(db.userCart, {
+  foreignKey: "address_id",
+  as: "userAddressUserCart",
+});
+
+db.userCart.belongsTo(db.userAddress, {
+  foreignKey: "address_id",
+  as: "userAddressUserCart",
+});
+
+// userFavoriteProduct -> clientAuth
+db.clientAuth.hasMany(db.userFavoriteProduct, {
+  foreignKey: "user_id",
+  as: "clientAuthUserFavoriteProduct",
+});
+
+db.userFavoriteProduct.belongsTo(db.clientAuth, {
+  foreignKey: "user_id",
+  as: "clientAuthUserFavoriteProduct",
+});
+
+// userFavoriteProduct -> clientAuth
+db.product.hasMany(db.userFavoriteProduct, {
+  foreignKey: "product_id",
+  as: "productUserFavoriteProduct",
+});
+
+db.userFavoriteProduct.belongsTo(db.product, {
+  foreignKey: "product_id",
+  as: "productUserFavoriteProduct",
 });
 
 // db.sequelize.sync({ force: false }).then(() => {

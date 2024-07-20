@@ -10,7 +10,6 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { BrowserRouter } from "react-router-dom";
 import { AppProvider } from "./context/AppContext";
-
 import { store } from "./Redux/Store";
 import { Provider } from "react-redux";
 

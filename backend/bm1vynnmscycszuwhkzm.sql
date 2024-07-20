@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: bm1vynnmscycszuwhkzm-mysql.services.clever-cloud.com:3306
--- Generation Time: Jul 12, 2024 at 07:15 PM
+-- Generation Time: Jul 20, 2024 at 09:43 AM
 -- Server version: 8.0.22-13
 -- PHP Version: 8.2.21
 
@@ -41,7 +41,7 @@ CREATE TABLE `AdminAuths` (
 --
 
 INSERT INTO `AdminAuths` (`id`, `fullName`, `email`, `password`, `createdAt`, `updatedAt`) VALUES
-(1, 'Admin Singh', 'admin@gmail.com', '$2b$10$1IaTLWpltAuPcZqHEm9I3eA1dSaUITPvCmJqqsVStWNhxf1X1TtlO', '2024-07-08 18:52:42', NULL);
+(1, 'Admin Singh', 'admin@gmail.com', '$2b$10$Xqp68q9q35OdUh65mAez5.Ujav75/mEHEt7IJuWqgDpQg5UMRAK2C', '2024-07-17 13:51:50', NULL);
 
 -- --------------------------------------------------------
 
@@ -63,20 +63,11 @@ CREATE TABLE `categories` (
 --
 
 INSERT INTO `categories` (`id`, `name`, `admin_id`, `isFavorite`, `createdAt`, `updatedAt`) VALUES
-(5, 'Blazers', 1, 1, '2024-07-10 12:24:12', NULL),
-(6, 'Co-ords', 1, 0, '2024-07-10 12:24:20', NULL),
-(7, 'Dresses', 1, 0, '2024-07-10 12:24:26', NULL),
-(8, 'Jackets', 1, 0, '2024-07-10 12:24:34', NULL),
-(9, 'Jeans', 1, 0, '2024-07-10 12:24:40', NULL),
-(10, 'LivIn Pants', 1, 0, '2024-07-10 12:24:46', NULL),
-(11, 'Shirts', 1, 0, '2024-07-10 12:24:55', NULL),
-(12, 'Shorts', 1, 1, '2024-07-10 12:25:01', NULL),
-(13, 'Skirts', 1, 0, '2024-07-10 12:25:08', NULL),
-(14, 'Skorts', 1, 0, '2024-07-10 12:25:15', NULL),
-(15, 'Sweatshirt', 1, 0, '2024-07-10 12:25:26', NULL),
-(16, 'T-shirts', 1, 0, '2024-07-10 12:25:32', NULL),
-(17, 'Tops', 1, 0, '2024-07-10 12:25:40', NULL),
-(18, 'Trousers', 1, 0, '2024-07-10 12:25:53', NULL);
+(1, 'Jeans', 1, 0, '2024-07-17 19:19:57', '2024-07-20 06:41:06'),
+(2, 'T-Shirt', 1, 0, '2024-07-17 14:13:10', NULL),
+(3, 'Shirts', 1, 0, '2024-07-17 14:13:22', NULL),
+(4, 'Crop Top', 1, 0, '2024-07-17 14:16:16', NULL),
+(5, 'Lower', 1, 0, '2024-07-17 14:16:28', NULL);
 
 -- --------------------------------------------------------
 
@@ -93,23 +84,6 @@ CREATE TABLE `childFilters` (
   `parent_id` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Dumping data for table `childFilters`
---
-
-INSERT INTO `childFilters` (`id`, `name`, `admin_id`, `createdAt`, `updatedAt`, `parent_id`) VALUES
-(7, 'Blazers', 1, '2024-07-10 09:05:26', NULL, 2),
-(8, 'T-Shirts', 1, '2024-07-10 09:05:57', NULL, 2),
-(9, 'Jeans', 1, '2024-07-10 09:06:34', NULL, 2),
-(10, 'Shirts', 1, '2024-07-10 09:06:45', NULL, 2),
-(11, 'Red', 1, '2024-07-10 09:07:00', NULL, 3),
-(12, 'Green', 1, '2024-07-10 09:07:14', NULL, 3),
-(13, 'Blue', 1, '2024-07-10 09:07:20', NULL, 3),
-(14, 'Orange', 1, '2024-07-10 09:07:27', NULL, 3),
-(15, 'Cotton', 1, '2024-07-10 09:07:44', NULL, 4),
-(16, 'Woolean', 1, '2024-07-10 09:07:52', NULL, 4),
-(17, 'Silk', 1, '2024-07-10 09:08:01', NULL, 4);
-
 -- --------------------------------------------------------
 
 --
@@ -125,14 +99,6 @@ CREATE TABLE `childMenus` (
   `parent_id` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Dumping data for table `childMenus`
---
-
-INSERT INTO `childMenus` (`id`, `name`, `admin_id`, `createdAt`, `updatedAt`, `parent_id`) VALUES
-(1, 'son 1 ', 1, '2024-07-10 08:59:31', NULL, 2),
-(2, 'four', 1, '2024-07-10 09:02:02', '2024-07-10 09:03:57', 2);
-
 -- --------------------------------------------------------
 
 --
@@ -147,6 +113,14 @@ CREATE TABLE `clientAuths` (
   `createdAt` datetime DEFAULT NULL,
   `updatedAt` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `clientAuths`
+--
+
+INSERT INTO `clientAuths` (`id`, `fullName`, `email`, `password`, `createdAt`, `updatedAt`) VALUES
+(1, 'loreum Singh', 'user@gmail.com', '$2b$10$8/ox3ywFRicCx7E4McTLHOteywkRT5mb2azntjPtL3Ds97OgH513K', '2024-07-17 14:43:35', NULL),
+(2, 'uday pratap singh', 'uday@gmail.com', 'uday singh', '2024-07-17 14:43:35', NULL);
 
 -- --------------------------------------------------------
 
@@ -167,26 +141,18 @@ CREATE TABLE `colors` (
 --
 
 INSERT INTO `colors` (`id`, `name`, `admin_id`, `createdAt`, `updatedAt`) VALUES
-(8, 'Acid Green', 1, '2024-07-10 12:21:26', NULL),
-(9, 'Black', 1, '2024-07-10 12:21:33', NULL),
-(10, 'Black And White', 1, '2024-07-10 12:21:40', NULL),
-(11, 'Blue', 1, '2024-07-10 12:21:46', NULL),
-(12, 'Blush Pink', 1, '2024-07-10 12:21:54', NULL),
-(13, 'Brown', 1, '2024-07-10 12:22:04', NULL),
-(14, 'Green', 1, '2024-07-10 12:22:10', NULL),
-(15, 'Grey', 1, '2024-07-10 12:22:16', NULL),
-(16, 'Maroon', 1, '2024-07-10 12:22:22', NULL),
-(17, 'Multicolour', 1, '2024-07-10 12:22:29', NULL),
-(18, 'Navy', 1, '2024-07-10 12:22:35', NULL),
-(19, 'Orange', 1, '2024-07-10 12:22:42', NULL),
-(20, 'Peach', 1, '2024-07-10 12:22:51', NULL),
-(21, 'Pink', 1, '2024-07-10 12:22:58', NULL),
-(22, 'Red', 1, '2024-07-10 12:23:03', NULL),
-(23, 'Tint', 1, '2024-07-10 12:23:09', NULL),
-(24, 'Vermilion', 1, '2024-07-10 12:23:15', NULL),
-(25, 'Violet', 1, '2024-07-10 12:23:23', NULL),
-(26, 'White', 1, '2024-07-10 12:23:33', NULL),
-(27, 'Yellow', 1, '2024-07-10 12:23:40', NULL);
+(1, 'Red', 1, '2024-07-17 14:16:57', NULL),
+(2, 'Orange', 1, '2024-07-17 14:17:05', NULL),
+(3, 'Brown', 1, '2024-07-17 14:17:11', NULL),
+(4, 'Yellow', 1, '2024-07-17 14:17:21', NULL),
+(5, 'Green', 1, '2024-07-17 14:17:35', NULL),
+(6, 'Turquoise', 1, '2024-07-17 14:17:41', NULL),
+(7, 'Blue', 1, '2024-07-17 14:17:47', NULL),
+(8, 'Violet', 1, '2024-07-17 14:18:32', NULL),
+(9, 'Pink', 1, '2024-07-17 14:18:37', NULL),
+(10, 'White', 1, '2024-07-17 14:18:42', NULL),
+(11, 'Gray', 1, '2024-07-17 14:18:46', NULL),
+(12, 'Black', 1, '2024-07-17 14:18:53', NULL);
 
 -- --------------------------------------------------------
 
@@ -207,16 +173,10 @@ CREATE TABLE `fabrics` (
 --
 
 INSERT INTO `fabrics` (`id`, `name`, `admin_id`, `createdAt`, `updatedAt`) VALUES
-(4, 'Chiffon', 1, '2024-07-10 12:19:12', NULL),
-(5, 'Cotton', 1, '2024-07-10 12:19:19', NULL),
-(6, 'Denim', 1, '2024-07-10 12:19:26', NULL),
-(7, 'Georgette', 1, '2024-07-10 12:19:33', NULL),
-(8, 'Knit', 1, '2024-07-10 12:19:39', NULL),
-(9, 'Linen', 1, '2024-07-10 12:19:46', NULL),
-(10, 'Nylon', 1, '2024-07-10 12:19:53', NULL),
-(11, 'Polyester', 1, '2024-07-10 12:20:06', NULL),
-(12, 'Rayon', 1, '2024-07-10 12:20:13', NULL),
-(13, 'Satin', 1, '2024-07-10 12:20:21', NULL);
+(1, 'Cotton', 1, '2024-07-17 14:19:16', NULL),
+(2, 'Polyster', 1, '2024-07-17 14:19:23', NULL),
+(3, 'Nylon', 1, '2024-07-17 14:19:28', NULL),
+(4, 'Woolean', 1, '2024-07-17 14:19:35', NULL);
 
 -- --------------------------------------------------------
 
@@ -232,15 +192,6 @@ CREATE TABLE `parentFilters` (
   `updatedAt` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Dumping data for table `parentFilters`
---
-
-INSERT INTO `parentFilters` (`id`, `name`, `admin_id`, `createdAt`, `updatedAt`) VALUES
-(2, 'Category', 1, NULL, NULL),
-(3, 'Color', 1, '2024-07-10 07:53:59', NULL),
-(4, 'Fabric', 1, '2024-07-10 07:54:27', NULL);
-
 -- --------------------------------------------------------
 
 --
@@ -254,15 +205,6 @@ CREATE TABLE `parentMenus` (
   `createdAt` datetime DEFAULT NULL,
   `updatedAt` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `parentMenus`
---
-
-INSERT INTO `parentMenus` (`id`, `name`, `admin_id`, `createdAt`, `updatedAt`) VALUES
-(2, 'sharma ji', 1, '2024-07-10 08:52:23', '2024-07-10 08:58:14'),
-(3, 'cloths new ', 1, '2024-07-10 08:52:33', '2024-07-10 08:55:22'),
-(4, 'Formals', 1, '2024-07-10 08:52:41', NULL);
 
 -- --------------------------------------------------------
 
@@ -284,22 +226,13 @@ CREATE TABLE `productColors` (
 --
 
 INSERT INTO `productColors` (`id`, `admin_id`, `createdAt`, `updatedAt`, `product_id`, `color_id`) VALUES
-(1, 1, NULL, NULL, 1, 8),
-(2, 1, NULL, NULL, 1, 13),
-(3, 1, NULL, NULL, 1, 10),
-(4, 1, NULL, NULL, 1, 16),
-(5, 1, NULL, NULL, 1, 13),
-(6, 1, NULL, NULL, 2, 20),
-(7, 1, NULL, NULL, 2, 21),
-(8, 1, NULL, NULL, 2, 22),
-(9, 1, NULL, NULL, 3, 18),
-(10, 1, '2024-07-11 17:20:09', NULL, 4, 8),
-(11, 1, '2024-07-11 17:20:09', NULL, 4, 10),
-(12, 1, '2024-07-11 17:20:10', NULL, 4, 24),
-(13, 1, '2024-07-11 17:47:23', NULL, 5, 23),
-(14, 1, '2024-07-11 17:47:23', NULL, 5, 24),
-(15, 1, '2024-07-11 17:47:23', NULL, 5, 25),
-(16, 1, '2024-07-11 17:47:24', NULL, 5, 27);
+(1, 1, '2024-07-17 14:23:02', NULL, 1, 2),
+(2, 1, '2024-07-17 14:23:03', NULL, 1, 3),
+(3, 1, '2024-07-17 14:23:03', NULL, 1, 5),
+(4, 1, '2024-07-17 15:15:11', NULL, 2, 9),
+(5, 1, '2024-07-17 15:15:12', NULL, 2, 10),
+(6, 1, '2024-07-17 15:15:13', NULL, 2, 11),
+(7, 1, '2024-07-17 15:15:13', NULL, 2, 12);
 
 -- --------------------------------------------------------
 
@@ -321,20 +254,10 @@ CREATE TABLE `productFabrics` (
 --
 
 INSERT INTO `productFabrics` (`id`, `admin_id`, `createdAt`, `updatedAt`, `product_id`, `fabric_id`) VALUES
-(1, 1, NULL, NULL, 1, 4),
-(2, 1, NULL, NULL, 1, 5),
-(3, 1, NULL, NULL, 1, 6),
-(4, 1, NULL, NULL, 1, 7),
-(5, 1, NULL, NULL, 2, 8),
-(6, 1, NULL, NULL, 2, 9),
-(7, 1, NULL, NULL, 2, 10),
-(8, 1, NULL, NULL, 3, 11),
-(9, 1, NULL, NULL, 3, 12),
-(10, 1, '2024-07-11 17:20:07', NULL, 4, 5),
-(11, 1, '2024-07-11 17:20:08', NULL, 4, 11),
-(12, 1, '2024-07-11 17:20:08', NULL, 4, 13),
-(13, 1, '2024-07-11 17:47:22', NULL, 5, 4),
-(14, 1, '2024-07-11 17:47:22', NULL, 5, 6);
+(1, 1, '2024-07-17 14:23:02', NULL, 1, 2),
+(2, 1, '2024-07-17 14:23:02', NULL, 1, 3),
+(3, 1, '2024-07-17 15:15:10', NULL, 2, 1),
+(4, 1, '2024-07-17 15:15:11', NULL, 2, 2);
 
 -- --------------------------------------------------------
 
@@ -358,9 +281,8 @@ CREATE TABLE `productImages` (
 --
 
 INSERT INTO `productImages` (`id`, `url1`, `url2`, `url3`, `url4`, `url5`, `admin_id`, `product_id`) VALUES
-(1, 'https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FDR896ACBL_2.jpg%3Fv%3D1689061795&w=1200&q=75', 'url 2', 'url 3', 'url 4', 'url 5', 1, 1),
-(2, 'https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2F3_c10ecf54-1853-446c-8a12-16bd3d7e1700.png%3Fv%3D1690454351&w=1920&q=75', 'url 2', 'url 2', 'url 2', 'url 2', 1, 2),
-(3, 'https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FSK097BEGE_2.jpg%3Fv%3D1712125284&w=1200&q=75', 'url 3', 'url 3', 'url 3', 'url 3', 1, 3);
+(1, 'https://clothingecommerce.s3.amazonaws.com/1721226171256-j4evt8bojr.jpg', 'https://clothingecommerce.s3.amazonaws.com/1721226173771-407e8yizays.jpg', 'https://clothingecommerce.s3.amazonaws.com/1721226174868-lfcewdy537.jpg', 'https://clothingecommerce.s3.amazonaws.com/1721226175912-d5ox6gn6zig.jpg', 'https://clothingecommerce.s3.amazonaws.com/1721226176850-our5s2k567f.jpg', 1, 1),
+(2, 'https://clothingecommerce.s3.amazonaws.com/1721229296773-ukolpssbvn.jpg', 'https://clothingecommerce.s3.amazonaws.com/1721229299022-fx26enwutvo.jpg', 'https://clothingecommerce.s3.amazonaws.com/1721229300164-na5rdfj8nzg.jpg', 'https://clothingecommerce.s3.amazonaws.com/1721229301011-gfsjys5n9q7.jpg', 'https://clothingecommerce.s3.amazonaws.com/1721229301884-1q0b0g74p3p.jpg', 1, 2);
 
 -- --------------------------------------------------------
 
@@ -375,8 +297,8 @@ CREATE TABLE `products` (
   `sizeAndFit` text NOT NULL,
   `fabricAndCare` text NOT NULL,
   `isRecycleBin` tinyint(1) NOT NULL,
-  `isPublished` tinyint(1) NOT NULL,
   `isFavorite` tinyint(1) NOT NULL,
+  `isPublished` tinyint(1) NOT NULL,
   `admin_id` int NOT NULL,
   `createdAt` datetime DEFAULT NULL,
   `updatedAt` datetime DEFAULT NULL,
@@ -388,12 +310,9 @@ CREATE TABLE `products` (
 -- Dumping data for table `products`
 --
 
-INSERT INTO `products` (`id`, `name`, `description`, `sizeAndFit`, `fabricAndCare`, `isRecycleBin`, `isPublished`, `isFavorite`, `admin_id`, `createdAt`, `updatedAt`, `productImages_id`, `category_id`) VALUES
-(1, 'T-shirts', 'description', 'sizeAndFit', 'fabricAndCare', 0, 1, 1, 1, NULL, NULL, 1, 5),
-(2, 'Two -shirts ', 'description', 'sizeAndFit', 'fabricAndCare', 0, 1, 1, 1, NULL, NULL, 2, 5),
-(3, 'Three -shirts ', 'description', 'sizeAndFit', 'fabricAndCare', 0, 1, 1, 1, NULL, NULL, 3, 5),
-(4, 'SAMSUNG Galaxy F13 (Sunrise Copper, 64 GB)  (4 GB RAM)', '<p><strong>fa</strong></p><p><strong>fasfasfsfasdfa<u>sfasdfadsfsadfsadf</u></strong></p><p><strong><u>asdfasdfasdf</u></strong></p><p><strong>asdfasfadsfa</strong></p>', '<p><strong><u>Fabirc and ca</u>re <s>Details</s>&nbsp;</strong></p>', '<p><strong><u>Fabirc and ca</u>re <s>Details</s>&nbsp;</strong></p>', 0, 1, 1, 1, '2024-07-11 17:20:04', NULL, 1, 12),
-(5, 'Placket Detail Waistcoat - Grey', '<p><span style=\"color: rgb(41, 40, 43); font-family: SourceSansLight; font-size: 14px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;\">- Comfort fit</span><br style=\"box-sizing: inherit; padding: 0px; margin: 0px; font-family: SourceSansLight; color: rgb(41, 40, 43); font-size: 14px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;\"><span style=\"color: rgb(41, 40, 43); font-family: SourceSansLight; font-size: 14px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;\">- V-neck</span><br style=\"box-sizing: inherit; padding: 0px; margin: 0px; font-family: SourceSansLight; color: rgb(41, 40, 43); font-size: 14px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;\"><span style=\"color: rgb(41, 40, 43); font-family: SourceSansLight; font-size: 14px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;\">- Extended placket detail</span><br style=\"box-sizing: inherit; padding: 0px; margin: 0px; font-family: SourceSansLight; color: rgb(41, 40, 43); font-size: 14px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;\"><span style=\"color: rgb(41, 40, 43); font-family: SourceSansLight; font-size: 14px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;\">- Sleeveless</span><br style=\"box-sizing: inherit; padding: 0px; margin: 0px; font-family: SourceSansLight; color: rgb(41, 40, 43); font-size: 14px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;\"><span style=\"color: rgb(41, 40, 43); font-family: SourceSansLight; font-size: 14px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;\">- Has A lining</span><br style=\"box-sizing: inherit; padding: 0px; margin: 0px; font-family: SourceSansLight; color: rgb(41, 40, 43); font-size: 14px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;\"><span style=\"color: rgb(41, 40, 43); font-family: SourceSansLight; font-size: 14px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;\">- Non-transparent</span></p>', '<p><span style=\"color: rgb(41, 40, 43); font-family: SourceSansLight; font-size: 14px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;\">Fabric &amp; Care</span></p>', '<p><span style=\"color: rgb(41, 40, 43); font-family: SourceSansLight; font-size: 14px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;\">Fabric &amp; Care</span></p>', 0, 1, 1, 1, '2024-07-11 17:47:18', NULL, 2, 12);
+INSERT INTO `products` (`id`, `name`, `description`, `sizeAndFit`, `fabricAndCare`, `isRecycleBin`, `isFavorite`, `isPublished`, `admin_id`, `createdAt`, `updatedAt`, `productImages_id`, `category_id`) VALUES
+(1, 'Boat Neck Geometric Print Top - Red', '<p>df</p><ul><li>sdfsdafsadf</li></ul><p>sdfa<strong>This is a new</strong> Data&nbsp;</p><p>asd</p>', '<p><span style=\"color: rgb(33, 37, 41); font-family: system-ui, -apple-system, &quot;Segoe UI&quot;, Roboto, &quot;Helvetica Neue&quot;, &quot;Noto Sans&quot;, &quot;Liberation Sans&quot;, Arial, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;, &quot;Noto Color Emoji&quot;; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important; font-size: 16px;\">Fabric <strong>and</strong> Care <strong>Details</strong></span></p>', '<p><span style=\"color: rgb(33, 37, 41); font-family: system-ui, -apple-system, &quot;Segoe UI&quot;, Roboto, &quot;Helvetica Neue&quot;, &quot;Noto Sans&quot;, &quot;Liberation Sans&quot;, Arial, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;, &quot;Noto Color Emoji&quot;; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important; font-size: 16px;\">Fabric <strong>and</strong> Care <strong>Details</strong></span></p>', 0, 0, 1, 1, '2024-07-17 14:22:59', NULL, 1, 3),
+(2, 'Satin Geometric Print Shirt - Navy', '<ul><li>Comfort Fit </li><li>Geomatric Pant</li><li>Stylish buttons</li><br></ul>', '<ol><li>Its a <strong>pure</strong> cotton Work Shirt</li><li>also contains some kind of polySter</li><br></ol>', '<ol><li>Its a <strong>pure</strong> cotton Work Shirt</li><li>also contains some kind of polySter</li><br></ol>', 0, 0, 1, 1, '2024-07-17 15:15:05', NULL, 2, 2);
 
 -- --------------------------------------------------------
 
@@ -417,25 +336,15 @@ CREATE TABLE `productSizes` (
 --
 
 INSERT INTO `productSizes` (`id`, `mrp`, `discountPercent`, `admin_id`, `createdAt`, `updatedAt`, `product_id`, `PSize_id`) VALUES
-(1, 1000, 2, 1, NULL, NULL, 1, 1),
-(2, 2000, 10, 1, NULL, NULL, 1, 2),
-(3, 3000, 15, 1, NULL, NULL, 1, 3),
-(4, 599, 20, 1, NULL, NULL, 1, 4),
-(5, 200, 12, 1, NULL, NULL, 2, 5),
-(6, 300, 16, 1, NULL, NULL, 2, 6),
-(7, 899, 13, 1, NULL, NULL, 2, 7),
-(8, 788, 14, 1, NULL, NULL, 2, 8),
-(9, 4599, 21, 1, NULL, NULL, 3, 9),
-(10, 2343, 25, 1, NULL, NULL, 3, 10),
-(11, 4535, 23, 1, NULL, NULL, 3, NULL),
-(12, 2646, 18, 1, NULL, NULL, 3, NULL),
-(13, 100, 2, 1, '2024-07-11 17:20:05', NULL, 4, 11),
-(14, 322323, 112, 1, '2024-07-11 17:20:06', NULL, 4, 12),
-(15, 4343242, 22, 1, '2024-07-11 17:20:07', NULL, 4, 13),
-(16, 1000, 12, 1, '2024-07-11 17:47:19', NULL, 5, 14),
-(17, 2000, 23, 1, '2024-07-11 17:47:20', NULL, 5, 15),
-(18, 1221, 23, 1, '2024-07-11 17:47:21', NULL, 5, 16),
-(19, 43434, 86, 1, '2024-07-11 17:47:21', NULL, 5, 17);
+(1, 1200, 10, 1, '2024-07-17 14:23:00', NULL, 1, 1),
+(2, 1400, 15, 1, '2024-07-17 14:23:01', NULL, 1, 2),
+(3, 1600, 8, 1, '2024-07-17 14:23:01', NULL, 1, 3),
+(4, 4323, 22, 1, '2024-07-17 14:23:01', NULL, 1, 4),
+(5, 323, 21, 1, '2024-07-17 15:15:07', NULL, 2, 5),
+(6, 2112, 10, 1, '2024-07-17 15:15:08', NULL, 2, 6),
+(7, 2124, 4, 1, '2024-07-17 15:15:09', NULL, 2, 7),
+(8, 5432, 20, 1, '2024-07-17 15:15:09', NULL, 2, 8),
+(9, 1212, 22, 1, '2024-07-17 15:15:10', NULL, 2, 9);
 
 -- --------------------------------------------------------
 
@@ -458,23 +367,110 @@ CREATE TABLE `pSizes` (
 --
 
 INSERT INTO `pSizes` (`id`, `name`, `qty`, `admin_id`, `createdAt`, `updatedAt`, `product_id`) VALUES
-(1, 'X', 2, 1, NULL, NULL, 1),
-(2, 'L', 30, 1, NULL, NULL, 1),
-(3, 'M', 2, 1, NULL, NULL, 1),
-(4, 'N', 43, 1, NULL, NULL, 1),
-(5, '100', 2, 1, NULL, NULL, 2),
-(6, '200', 30, 1, NULL, NULL, 2),
-(7, '300', 2, 1, NULL, NULL, 2),
-(8, '400', 43, 1, NULL, NULL, 2),
-(9, '501', 2, 1, NULL, NULL, 3),
-(10, '502', 30, 1, NULL, NULL, 3),
-(11, 'XXL', 32, 1, '2024-07-11 17:20:04', NULL, 4),
-(12, 'XLM', 43, 1, '2024-07-11 17:20:06', NULL, 4),
-(13, 'XLMM', 21, 1, '2024-07-11 17:20:06', NULL, 4),
-(14, 'A', 10, 1, '2024-07-11 17:47:19', NULL, 5),
-(15, 'B', 3, 1, '2024-07-11 17:47:20', NULL, 5),
-(16, 'C', 21, 1, '2024-07-11 17:47:21', NULL, 5),
-(17, 'D', 211, 1, '2024-07-11 17:47:21', NULL, 5);
+(1, 'A', 10, 1, '2024-07-17 14:23:00', NULL, 1),
+(2, 'AA', 20, 1, '2024-07-17 14:23:00', NULL, 1),
+(3, 'AAA', 29, 1, '2024-07-17 14:23:01', NULL, 1),
+(4, 'AAAA', 39, 1, '2024-07-17 14:23:01', NULL, 1),
+(5, 'B', 15, 1, '2024-07-17 15:15:06', NULL, 2),
+(6, 'BB', 30, 1, '2024-07-17 15:15:08', NULL, 2),
+(7, 'BBB', 10, 1, '2024-07-17 15:15:08', NULL, 2),
+(8, 'BBBB', 13, 1, '2024-07-17 15:15:09', NULL, 2),
+(9, 'BBBBB', 10, 1, '2024-07-17 15:15:10', NULL, 2);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `userAddresses`
+--
+
+CREATE TABLE `userAddresses` (
+  `id` int NOT NULL,
+  `receiverName` varchar(255) NOT NULL,
+  `fullAddress` varchar(255) NOT NULL,
+  `landmark` varchar(255) NOT NULL,
+  `city` varchar(255) NOT NULL,
+  `state` varchar(255) NOT NULL,
+  `createdAt` datetime DEFAULT NULL,
+  `updatedAt` datetime DEFAULT NULL,
+  `user_id` int DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `userCartItems`
+--
+
+CREATE TABLE `userCartItems` (
+  `id` int NOT NULL,
+  `qty` int DEFAULT NULL,
+  `color_id` int DEFAULT NULL,
+  `PSize_id` int DEFAULT NULL,
+  `orderPlacedStatus` tinyint(1) NOT NULL,
+  `createdAt` datetime DEFAULT NULL,
+  `updatedAt` datetime DEFAULT NULL,
+  `cart_id` int DEFAULT NULL,
+  `user_id` int DEFAULT NULL,
+  `product_id` int DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `userCartItems`
+--
+
+INSERT INTO `userCartItems` (`id`, `qty`, `color_id`, `PSize_id`, `orderPlacedStatus`, `createdAt`, `updatedAt`, `cart_id`, `user_id`, `product_id`) VALUES
+(1, 12, 5, 2, 1, '2024-07-17 14:45:05', NULL, 1, 1, 1),
+(2, 6, 9, 9, 1, '2024-07-17 15:16:43', NULL, 1, 1, 2),
+(5, 2, 9, 8, 1, '2024-07-19 13:41:42', NULL, 3, 1, 2),
+(6, 1, 5, 4, 1, '2024-07-20 09:24:06', NULL, 4, 1, 1),
+(7, 5, 9, 5, 1, '2024-07-20 09:27:26', NULL, 5, 1, 2),
+(8, 1, 3, 3, 1, '2024-07-20 09:30:14', NULL, 6, 1, 1),
+(9, 1, 11, 8, 1, '2024-07-20 09:30:30', NULL, 6, 1, 2);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `userCarts`
+--
+
+CREATE TABLE `userCarts` (
+  `id` int NOT NULL,
+  `cartAmount` int DEFAULT NULL,
+  `paymentMode` varchar(255) DEFAULT NULL,
+  `orderId` varchar(255) DEFAULT NULL,
+  `paymentId` varchar(255) DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL,
+  `deliveryStatus` varchar(50) DEFAULT NULL,
+  `createdAt` datetime DEFAULT NULL,
+  `updatedAt` datetime DEFAULT NULL,
+  `user_id` int DEFAULT NULL,
+  `address_id` int DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `userCarts`
+--
+
+INSERT INTO `userCarts` (`id`, `cartAmount`, `paymentMode`, `orderId`, `paymentId`, `status`, `deliveryStatus`, `createdAt`, `updatedAt`, `user_id`, `address_id`) VALUES
+(1, 19952, 'Online', 'order_OaPvRmaNLCIfdN', 'pay_OaPvoZeyGFy0Ga', 'SUCCESSFUL', 'Order Packed', '2024-07-17 14:45:05', '2024-07-20 08:51:32', 1, NULL),
+(3, 8691, 'Online', 'order_OaVkNkd07grrDO', 'pay_OaVkkqaHpgJetF', 'SUCCESSFUL', 'Order Dispatched', '2024-07-19 13:41:41', '2024-07-20 08:51:45', 1, NULL),
+(4, 3371, 'Online', 'order_OaptHkWExWuYlo', 'pay_Oapu2WZgk2kDwL', 'SUCCESSFUL', NULL, '2024-07-20 09:24:06', NULL, 1, NULL),
+(5, 1275, 'Online', 'order_OapxNG08KcFlbT', 'pay_OapxpPZVNvEnGw', 'SUCCESSFUL', NULL, '2024-07-20 09:27:25', NULL, 1, NULL),
+(6, 5817, 'Online', 'order_Oaq0G6OPtPROnv', 'pay_Oaq0PBtn5vWedO', 'SUCCESSFUL', NULL, '2024-07-20 09:30:14', NULL, 1, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `userFavoriteProducts`
+--
+
+CREATE TABLE `userFavoriteProducts` (
+  `id` int NOT NULL,
+  `createdAt` datetime DEFAULT NULL,
+  `updatedAt` datetime DEFAULT NULL,
+  `user_id` int DEFAULT NULL,
+  `product_id` int DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Indexes for dumped tables
@@ -486,64 +482,7 @@ INSERT INTO `pSizes` (`id`, `name`, `qty`, `admin_id`, `createdAt`, `updatedAt`,
 ALTER TABLE `AdminAuths`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `email` (`email`),
-  ADD UNIQUE KEY `email_2` (`email`),
-  ADD UNIQUE KEY `email_3` (`email`),
-  ADD UNIQUE KEY `email_4` (`email`),
-  ADD UNIQUE KEY `email_5` (`email`),
-  ADD UNIQUE KEY `email_6` (`email`),
-  ADD UNIQUE KEY `email_7` (`email`),
-  ADD UNIQUE KEY `email_8` (`email`),
-  ADD UNIQUE KEY `email_9` (`email`),
-  ADD UNIQUE KEY `email_10` (`email`),
-  ADD UNIQUE KEY `email_11` (`email`),
-  ADD UNIQUE KEY `email_12` (`email`),
-  ADD UNIQUE KEY `email_13` (`email`),
-  ADD UNIQUE KEY `email_14` (`email`),
-  ADD UNIQUE KEY `email_15` (`email`),
-  ADD UNIQUE KEY `email_16` (`email`),
-  ADD UNIQUE KEY `email_17` (`email`),
-  ADD UNIQUE KEY `email_18` (`email`),
-  ADD UNIQUE KEY `email_19` (`email`),
-  ADD UNIQUE KEY `email_20` (`email`),
-  ADD UNIQUE KEY `email_21` (`email`),
-  ADD UNIQUE KEY `email_22` (`email`),
-  ADD UNIQUE KEY `email_23` (`email`),
-  ADD UNIQUE KEY `email_24` (`email`),
-  ADD UNIQUE KEY `email_25` (`email`),
-  ADD UNIQUE KEY `email_26` (`email`),
-  ADD UNIQUE KEY `email_27` (`email`),
-  ADD UNIQUE KEY `email_28` (`email`),
-  ADD UNIQUE KEY `email_29` (`email`),
-  ADD UNIQUE KEY `email_30` (`email`),
-  ADD UNIQUE KEY `email_31` (`email`),
-  ADD UNIQUE KEY `email_32` (`email`),
-  ADD UNIQUE KEY `email_33` (`email`),
-  ADD UNIQUE KEY `email_34` (`email`),
-  ADD UNIQUE KEY `email_35` (`email`),
-  ADD UNIQUE KEY `email_36` (`email`),
-  ADD UNIQUE KEY `email_37` (`email`),
-  ADD UNIQUE KEY `email_38` (`email`),
-  ADD UNIQUE KEY `email_39` (`email`),
-  ADD UNIQUE KEY `email_40` (`email`),
-  ADD UNIQUE KEY `email_41` (`email`),
-  ADD UNIQUE KEY `email_42` (`email`),
-  ADD UNIQUE KEY `email_43` (`email`),
-  ADD UNIQUE KEY `email_44` (`email`),
-  ADD UNIQUE KEY `email_45` (`email`),
-  ADD UNIQUE KEY `email_46` (`email`),
-  ADD UNIQUE KEY `email_47` (`email`),
-  ADD UNIQUE KEY `email_48` (`email`),
-  ADD UNIQUE KEY `email_49` (`email`),
-  ADD UNIQUE KEY `email_50` (`email`),
-  ADD UNIQUE KEY `email_51` (`email`),
-  ADD UNIQUE KEY `email_52` (`email`),
-  ADD UNIQUE KEY `email_53` (`email`),
-  ADD UNIQUE KEY `email_54` (`email`),
-  ADD UNIQUE KEY `email_55` (`email`),
-  ADD UNIQUE KEY `email_56` (`email`),
-  ADD UNIQUE KEY `email_57` (`email`),
-  ADD UNIQUE KEY `email_58` (`email`),
-  ADD UNIQUE KEY `email_59` (`email`);
+  ADD UNIQUE KEY `email_2` (`email`);
 
 --
 -- Indexes for table `categories`
@@ -571,68 +510,7 @@ ALTER TABLE `childMenus`
 ALTER TABLE `clientAuths`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `email` (`email`),
-  ADD UNIQUE KEY `email_2` (`email`),
-  ADD UNIQUE KEY `email_3` (`email`),
-  ADD UNIQUE KEY `email_4` (`email`),
-  ADD UNIQUE KEY `email_5` (`email`),
-  ADD UNIQUE KEY `email_6` (`email`),
-  ADD UNIQUE KEY `email_7` (`email`),
-  ADD UNIQUE KEY `email_8` (`email`),
-  ADD UNIQUE KEY `email_9` (`email`),
-  ADD UNIQUE KEY `email_10` (`email`),
-  ADD UNIQUE KEY `email_11` (`email`),
-  ADD UNIQUE KEY `email_12` (`email`),
-  ADD UNIQUE KEY `email_13` (`email`),
-  ADD UNIQUE KEY `email_14` (`email`),
-  ADD UNIQUE KEY `email_15` (`email`),
-  ADD UNIQUE KEY `email_16` (`email`),
-  ADD UNIQUE KEY `email_17` (`email`),
-  ADD UNIQUE KEY `email_18` (`email`),
-  ADD UNIQUE KEY `email_19` (`email`),
-  ADD UNIQUE KEY `email_20` (`email`),
-  ADD UNIQUE KEY `email_21` (`email`),
-  ADD UNIQUE KEY `email_22` (`email`),
-  ADD UNIQUE KEY `email_23` (`email`),
-  ADD UNIQUE KEY `email_24` (`email`),
-  ADD UNIQUE KEY `email_25` (`email`),
-  ADD UNIQUE KEY `email_26` (`email`),
-  ADD UNIQUE KEY `email_27` (`email`),
-  ADD UNIQUE KEY `email_28` (`email`),
-  ADD UNIQUE KEY `email_29` (`email`),
-  ADD UNIQUE KEY `email_30` (`email`),
-  ADD UNIQUE KEY `email_31` (`email`),
-  ADD UNIQUE KEY `email_32` (`email`),
-  ADD UNIQUE KEY `email_33` (`email`),
-  ADD UNIQUE KEY `email_34` (`email`),
-  ADD UNIQUE KEY `email_35` (`email`),
-  ADD UNIQUE KEY `email_36` (`email`),
-  ADD UNIQUE KEY `email_37` (`email`),
-  ADD UNIQUE KEY `email_38` (`email`),
-  ADD UNIQUE KEY `email_39` (`email`),
-  ADD UNIQUE KEY `email_40` (`email`),
-  ADD UNIQUE KEY `email_41` (`email`),
-  ADD UNIQUE KEY `email_42` (`email`),
-  ADD UNIQUE KEY `email_43` (`email`),
-  ADD UNIQUE KEY `email_44` (`email`),
-  ADD UNIQUE KEY `email_45` (`email`),
-  ADD UNIQUE KEY `email_46` (`email`),
-  ADD UNIQUE KEY `email_47` (`email`),
-  ADD UNIQUE KEY `email_48` (`email`),
-  ADD UNIQUE KEY `email_49` (`email`),
-  ADD UNIQUE KEY `email_50` (`email`),
-  ADD UNIQUE KEY `email_51` (`email`),
-  ADD UNIQUE KEY `email_52` (`email`),
-  ADD UNIQUE KEY `email_53` (`email`),
-  ADD UNIQUE KEY `email_54` (`email`),
-  ADD UNIQUE KEY `email_55` (`email`),
-  ADD UNIQUE KEY `email_56` (`email`),
-  ADD UNIQUE KEY `email_57` (`email`),
-  ADD UNIQUE KEY `email_58` (`email`),
-  ADD UNIQUE KEY `email_59` (`email`),
-  ADD UNIQUE KEY `email_60` (`email`),
-  ADD UNIQUE KEY `email_61` (`email`),
-  ADD UNIQUE KEY `email_62` (`email`),
-  ADD UNIQUE KEY `email_63` (`email`);
+  ADD UNIQUE KEY `email_2` (`email`);
 
 --
 -- Indexes for table `colors`
@@ -688,43 +566,6 @@ ALTER TABLE `products`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `name` (`name`),
   ADD UNIQUE KEY `name_2` (`name`),
-  ADD UNIQUE KEY `name_3` (`name`),
-  ADD UNIQUE KEY `name_4` (`name`),
-  ADD UNIQUE KEY `name_5` (`name`),
-  ADD UNIQUE KEY `name_6` (`name`),
-  ADD UNIQUE KEY `name_7` (`name`),
-  ADD UNIQUE KEY `name_8` (`name`),
-  ADD UNIQUE KEY `name_9` (`name`),
-  ADD UNIQUE KEY `name_10` (`name`),
-  ADD UNIQUE KEY `name_11` (`name`),
-  ADD UNIQUE KEY `name_12` (`name`),
-  ADD UNIQUE KEY `name_13` (`name`),
-  ADD UNIQUE KEY `name_14` (`name`),
-  ADD UNIQUE KEY `name_15` (`name`),
-  ADD UNIQUE KEY `name_16` (`name`),
-  ADD UNIQUE KEY `name_17` (`name`),
-  ADD UNIQUE KEY `name_18` (`name`),
-  ADD UNIQUE KEY `name_19` (`name`),
-  ADD UNIQUE KEY `name_20` (`name`),
-  ADD UNIQUE KEY `name_21` (`name`),
-  ADD UNIQUE KEY `name_22` (`name`),
-  ADD UNIQUE KEY `name_23` (`name`),
-  ADD UNIQUE KEY `name_24` (`name`),
-  ADD UNIQUE KEY `name_25` (`name`),
-  ADD UNIQUE KEY `name_26` (`name`),
-  ADD UNIQUE KEY `name_27` (`name`),
-  ADD UNIQUE KEY `name_28` (`name`),
-  ADD UNIQUE KEY `name_29` (`name`),
-  ADD UNIQUE KEY `name_30` (`name`),
-  ADD UNIQUE KEY `name_31` (`name`),
-  ADD UNIQUE KEY `name_32` (`name`),
-  ADD UNIQUE KEY `name_33` (`name`),
-  ADD UNIQUE KEY `name_34` (`name`),
-  ADD UNIQUE KEY `name_35` (`name`),
-  ADD UNIQUE KEY `name_36` (`name`),
-  ADD UNIQUE KEY `name_37` (`name`),
-  ADD UNIQUE KEY `name_38` (`name`),
-  ADD UNIQUE KEY `name_39` (`name`),
   ADD KEY `productImages_id` (`productImages_id`),
   ADD KEY `category_id` (`category_id`);
 
@@ -741,47 +582,38 @@ ALTER TABLE `productSizes`
 --
 ALTER TABLE `pSizes`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `name` (`name`),
-  ADD UNIQUE KEY `name_2` (`name`),
-  ADD UNIQUE KEY `name_3` (`name`),
-  ADD UNIQUE KEY `name_4` (`name`),
-  ADD UNIQUE KEY `name_5` (`name`),
-  ADD UNIQUE KEY `name_6` (`name`),
-  ADD UNIQUE KEY `name_7` (`name`),
-  ADD UNIQUE KEY `name_8` (`name`),
-  ADD UNIQUE KEY `name_9` (`name`),
-  ADD UNIQUE KEY `name_10` (`name`),
-  ADD UNIQUE KEY `name_11` (`name`),
-  ADD UNIQUE KEY `name_12` (`name`),
-  ADD UNIQUE KEY `name_13` (`name`),
-  ADD UNIQUE KEY `name_14` (`name`),
-  ADD UNIQUE KEY `name_15` (`name`),
-  ADD UNIQUE KEY `name_16` (`name`),
-  ADD UNIQUE KEY `name_17` (`name`),
-  ADD UNIQUE KEY `name_18` (`name`),
-  ADD UNIQUE KEY `name_19` (`name`),
-  ADD UNIQUE KEY `name_20` (`name`),
-  ADD UNIQUE KEY `name_21` (`name`),
-  ADD UNIQUE KEY `name_22` (`name`),
-  ADD UNIQUE KEY `name_23` (`name`),
-  ADD UNIQUE KEY `name_24` (`name`),
-  ADD UNIQUE KEY `name_25` (`name`),
-  ADD UNIQUE KEY `name_26` (`name`),
-  ADD UNIQUE KEY `name_27` (`name`),
-  ADD UNIQUE KEY `name_28` (`name`),
-  ADD UNIQUE KEY `name_29` (`name`),
-  ADD UNIQUE KEY `name_30` (`name`),
-  ADD UNIQUE KEY `name_31` (`name`),
-  ADD UNIQUE KEY `name_32` (`name`),
-  ADD UNIQUE KEY `name_33` (`name`),
-  ADD UNIQUE KEY `name_34` (`name`),
-  ADD UNIQUE KEY `name_35` (`name`),
-  ADD UNIQUE KEY `name_36` (`name`),
-  ADD UNIQUE KEY `name_37` (`name`),
-  ADD UNIQUE KEY `name_38` (`name`),
-  ADD UNIQUE KEY `name_39` (`name`),
-  ADD UNIQUE KEY `name_40` (`name`),
-  ADD UNIQUE KEY `name_41` (`name`),
+  ADD KEY `product_id` (`product_id`);
+
+--
+-- Indexes for table `userAddresses`
+--
+ALTER TABLE `userAddresses`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `userCartItems`
+--
+ALTER TABLE `userCartItems`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `cart_id` (`cart_id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `product_id` (`product_id`);
+
+--
+-- Indexes for table `userCarts`
+--
+ALTER TABLE `userCarts`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `address_id` (`address_id`);
+
+--
+-- Indexes for table `userFavoriteProducts`
+--
+ALTER TABLE `userFavoriteProducts`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`),
   ADD KEY `product_id` (`product_id`);
 
 --
@@ -798,85 +630,109 @@ ALTER TABLE `AdminAuths`
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `childFilters`
 --
 ALTER TABLE `childFilters`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `childMenus`
 --
 ALTER TABLE `childMenus`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `clientAuths`
 --
 ALTER TABLE `clientAuths`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `colors`
 --
 ALTER TABLE `colors`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `fabrics`
 --
 ALTER TABLE `fabrics`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `parentFilters`
 --
 ALTER TABLE `parentFilters`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `parentMenus`
 --
 ALTER TABLE `parentMenus`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `productColors`
 --
 ALTER TABLE `productColors`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `productFabrics`
 --
 ALTER TABLE `productFabrics`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `productImages`
 --
 ALTER TABLE `productImages`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `productSizes`
 --
 ALTER TABLE `productSizes`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `pSizes`
 --
 ALTER TABLE `pSizes`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT for table `userAddresses`
+--
+ALTER TABLE `userAddresses`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `userCartItems`
+--
+ALTER TABLE `userCartItems`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT for table `userCarts`
+--
+ALTER TABLE `userCarts`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT for table `userFavoriteProducts`
+--
+ALTER TABLE `userFavoriteProducts`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables
@@ -898,15 +754,15 @@ ALTER TABLE `childMenus`
 -- Constraints for table `productColors`
 --
 ALTER TABLE `productColors`
-  ADD CONSTRAINT `productColors_ibfk_67` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `productColors_ibfk_68` FOREIGN KEY (`color_id`) REFERENCES `colors` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT `productColors_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `productColors_ibfk_2` FOREIGN KEY (`color_id`) REFERENCES `colors` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Constraints for table `productFabrics`
 --
 ALTER TABLE `productFabrics`
-  ADD CONSTRAINT `productFabrics_ibfk_27` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `productFabrics_ibfk_28` FOREIGN KEY (`fabric_id`) REFERENCES `fabrics` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT `productFabrics_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `productFabrics_ibfk_2` FOREIGN KEY (`fabric_id`) REFERENCES `fabrics` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Constraints for table `productImages`
@@ -918,21 +774,49 @@ ALTER TABLE `productImages`
 -- Constraints for table `products`
 --
 ALTER TABLE `products`
-  ADD CONSTRAINT `products_ibfk_75` FOREIGN KEY (`productImages_id`) REFERENCES `productImages` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `products_ibfk_76` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT `products_ibfk_1` FOREIGN KEY (`productImages_id`) REFERENCES `productImages` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `products_ibfk_2` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Constraints for table `productSizes`
 --
 ALTER TABLE `productSizes`
-  ADD CONSTRAINT `productSizes_ibfk_27` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `productSizes_ibfk_28` FOREIGN KEY (`PSize_id`) REFERENCES `pSizes` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT `productSizes_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `productSizes_ibfk_2` FOREIGN KEY (`PSize_id`) REFERENCES `pSizes` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Constraints for table `pSizes`
 --
 ALTER TABLE `pSizes`
   ADD CONSTRAINT `pSizes_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Constraints for table `userAddresses`
+--
+ALTER TABLE `userAddresses`
+  ADD CONSTRAINT `userAddresses_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `clientAuths` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Constraints for table `userCartItems`
+--
+ALTER TABLE `userCartItems`
+  ADD CONSTRAINT `userCartItems_ibfk_1` FOREIGN KEY (`cart_id`) REFERENCES `userCarts` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `userCartItems_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `clientAuths` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `userCartItems_ibfk_3` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Constraints for table `userCarts`
+--
+ALTER TABLE `userCarts`
+  ADD CONSTRAINT `userCarts_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `clientAuths` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `userCarts_ibfk_2` FOREIGN KEY (`address_id`) REFERENCES `userAddresses` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Constraints for table `userFavoriteProducts`
+--
+ALTER TABLE `userFavoriteProducts`
+  ADD CONSTRAINT `userFavoriteProducts_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `clientAuths` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `userFavoriteProducts_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

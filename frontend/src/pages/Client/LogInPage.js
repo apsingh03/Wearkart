@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { AppContext } from "../../context/AppContext";
 import { useSelector, useDispatch } from "react-redux";
-import { loginClientAsync } from "../../Redux/ClientSlices/clientAuth";
+import { loginClientAsync } from "../../Redux/UserSlices/UserAuth";
 
 const LogInPage = () => {
   const [logInEmailError, setlogInEmailError] = useState("");

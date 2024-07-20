@@ -12,7 +12,7 @@ const sequelize = db.sequelize;
 const createProductSize = async (req, res) => {
   const t = await sequelize.transaction();
   try {
-    console.log("Req.body - ", req.body);
+    // console.log("Req.body - ", req.body);
     const nameAlreadyExist = await ProductSizes.findOne({
       where: { name: req.body.name, admin_id: req.admin.id },
       transaction: t,

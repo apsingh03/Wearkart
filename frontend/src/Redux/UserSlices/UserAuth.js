@@ -3,6 +3,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const HOSTNAME = process.env.REACT_APP_BACKENDHOSTNAME;
+const userToken = localStorage.getItem("clientLoggedToken");
 
 export const createClientAsync = createAsyncThunk(
   "client/createClient",
@@ -37,8 +38,23 @@ export const loginClientAsync = createAsyncThunk(
   }
 );
 
+export const getUserInfoAsync = createAsyncThunk(
+  "client/getUserInfo",
+  async () => {
+    try {
+      const response = await axios.get(`${HOSTNAME}/user/account/user`, {
+        headers: { Authorization: `${userToken}` },
+      });
+
+      return response.data;
+    } catch (error) {
+      console.log("getUserInfoAsync Error  ", error.response);
+    }
+  }
+);
+
 const initialState = {
-  data: [],
+  userDetails: [],
   isLoading: false,
   isError: false,
   loggedData: {
@@ -61,7 +77,7 @@ const initialState = {
   },
 };
 
-export const clientAuthSlice = createSlice({
+export const userAuthSlice = createSlice({
   name: "clientAuth",
   initialState,
   reducers: {},
@@ -95,8 +111,22 @@ export const clientAuthSlice = createSlice({
       .addCase(loginClientAsync.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
+      })
+
+      .addCase(getUserInfoAsync.pending, (state, action) => {
+        state.isLoading = true;
+      })
+
+      .addCase(getUserInfoAsync.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.userDetails = action.payload;
+      })
+
+      .addCase(getUserInfoAsync.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
       });
   },
 });
 
-export default clientAuthSlice.reducer;
+export default userAuthSlice.reducer;

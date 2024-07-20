@@ -1,29 +1,83 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { LiaShoppingBagSolid } from "react-icons/lia";
 import { RxCross2 } from "react-icons/rx";
 import { Link } from "react-router-dom";
 import { RiSubtractFill } from "react-icons/ri";
 import { FaPlus } from "react-icons/fa6";
 import { MdChevronRight } from "react-icons/md";
+import { AppContext } from "../../context/AppContext";
+import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  deleteUserCartAsync,
+  getUserCartAsync,
+  updateUserCartQtyAsync,
+} from "../../Redux/UserSlices/Cart/UserCartRedux";
+import {
+  calculateProductDiscount,
+  convertInInr,
+} from "../../utils/productDiscountCalculate";
+import { displayRazorpay } from "../../paymentGateway/PaymentGateway";
+
 const Cart = ({ setcartIsHover }) => {
+  const dispatch = useDispatch();
   const [cartQty, setcartQty] = useState(1);
 
-  function decreaseCartQty() {
-    if (cartQty >= 1) {
-      setcartQty(cartQty - 1);
-    } else {
-      alert("can't decrease");
-    }
+  const user_userCart = useSelector((state) => state.user_userCart.data);
+
+  // console.log("user_userCart - ", user_userCart.query  )
+
+  const { setisLoadingTopProgress } = useContext(AppContext);
+  let calculateTotalCartMrp = 0;
+  let calculateTotalCartAfterDiscount = 0;
+
+  async function fetchData() {
+    setisLoadingTopProgress(30);
+
+    await dispatch(getUserCartAsync());
+
+    setisLoadingTopProgress(100);
   }
 
-  function increaseCartQty() {
-    if (cartQty >= 10) {
-      alert("can't Increase ");
-    } else {
-      setcartQty(cartQty + 1);
-    }
+  async function handleRemoveBtn(cart_id, cartItem_id) {
+    setisLoadingTopProgress(30);
+
+    await dispatch(deleteUserCartAsync({ cart_id, cartItem_id }));
+
+    setisLoadingTopProgress(100);
   }
 
+  async function handleCartQty(
+    cartItem_id,
+    qtyMessage,
+    userCartItemQty,
+    productStockQty
+  ) {
+    setisLoadingTopProgress(30);
+
+    // console.log(" userCartItemQty - ", userCartItemQty);
+    // console.log(" productStockQty - ", productStockQty);
+
+    if (qtyMessage === "Decrease" && userCartItemQty <= 1) {
+      alert("You can't less it");
+    } else if (
+      qtyMessage === "Increase" &&
+      userCartItemQty >= productStockQty
+    ) {
+      alert("You can't add more than stock qty");
+    } else {
+      await dispatch(updateUserCartQtyAsync({ cartItem_id, qtyMessage }));
+    }
+
+    setisLoadingTopProgress(100);
+  }
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const userCartItems = user_userCart?.query?.[0]?.userCartUserCartItem || [];
+  // console.log("userCartItems", userCartItems);
   return (
     <div className="cart">
       <div className="cart__header">
@@ -33,7 +87,7 @@ const Cart = ({ setcartIsHover }) => {
               {" "}
               <LiaShoppingBagSolid />{" "}
             </span>
-            <span>1 items</span>
+            <span>{userCartItems?.length} items</span>
           </div>
           <div
             onClick={() => [
@@ -52,57 +106,156 @@ const Cart = ({ setcartIsHover }) => {
           <p>Free India Shipping | Easy 7 Day Returns | Free Pickup</p>
         </div>
       </div>
-      <div className="cart__body">
-        {["", "", "", ""].map((data, index) => {
-          return (
-            <div className="cart__body__card" key={index}>
-              <div>
-                <img
-                  src="https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FFSKNTP1255BLAC_1.jpg%3Fv%3D1708679469&w=1920&q=75"
-                  className="cart__body__card__image"
-                  alt="Product "
-                />
-              </div>
 
-              <div className="cart__body__card__product">
-                <p className="cart__body__card__product__Title">
-                  {" "}
-                  Round Neck Rib Knit Top Black and White{" "}
-                </p>
-                <p className="cart__body__card__product__Price">
-                  {" "}
-                  &#8377; 7,170{" "}
-                </p>
+      <div
+        className={`cart__body ${
+          userCartItems.length > 1 ? "scrollIt" : null
+        } `}
+      >
+        {(function () {
+          try {
+            if (userCartItems.length > 0) {
+              return (
+                userCartItems &&
+                userCartItems.map((cartItem, index) => {
+                  // console.log("psize id - ", cartItem.PSize_id);
 
-                <div className="cart__body__card__product__btns">
-                  <div className="cart__body__card__product__btns_qtyGrp">
-                    <div
-                      className="cart__body__card__product__btns_qtyGrp__icon"
-                      onClick={() => decreaseCartQty()}
-                    >
-                      {" "}
-                      <RiSubtractFill />{" "}
+                  // console.log(
+                  //   "cartItem - ",
+                  //   cartItem.productUserCartItem.productSizesProduct
+                  // );
+
+                  const matchingSize =
+                    cartItem.productUserCartItem.productSizesProduct.find(
+                      (size) => size.PSize_id === cartItem.PSize_id
+                    );
+
+                  // console.log("matchingSize ", matchingSize);
+
+                  if (matchingSize) {
+                    calculateTotalCartMrp += matchingSize.mrp * cartItem?.qty;
+
+                    calculateTotalCartAfterDiscount +=
+                      (matchingSize.mrp *
+                        cartItem?.qty *
+                        matchingSize.discountPercent) /
+                      100;
+
+                    calculateProductDiscount(
+                      matchingSize.mrp,
+                      matchingSize.discountPercent
+                    );
+                  }
+
+                  const matchingColor =
+                    cartItem.productUserCartItem.productColorsProduct.find(
+                      (color) => color.color_id === cartItem.color_id
+                    );
+
+                  return (
+                    <div className="cart__body__card" key={index}>
+                      <div>
+                        <img
+                          src={
+                            cartItem.productUserCartItem.productImage &&
+                            cartItem.productUserCartItem.productImage.url1
+                          }
+                          className="cart__body__card__image"
+                          alt="Product"
+                        />
+                      </div>
+
+                      <div className="cart__body__card__product">
+                        <p className="cart__body__card__product__Title">
+                          {cartItem.productUserCartItem &&
+                            cartItem.productUserCartItem.name}
+                          {cartItem.id}
+                        </p>
+
+                        <div className="d-flex flex-row justify-content-between">
+                          <p
+                            className="cart__body__card__product__Title"
+                            style={{ fontSize: "12px" }}
+                          >
+                            <span style={{ fontWeight: "bold" }}> Size - </span>
+                            {matchingSize &&
+                              matchingSize.pSizeProductSizes.name}
+                          </p>
+                          <p
+                            className="cart__body__card__product__Title"
+                            style={{ fontSize: "12px" }}
+                          >
+                            <span style={{ fontWeight: "bold" }}>
+                              {" "}
+                              Color -{" "}
+                            </span>
+                            {matchingColor &&
+                              matchingColor.productColorsColor.name}
+                          </p>
+                        </div>
+
+                        <p className="cart__body__card__product__Price">
+                          {matchingSize &&
+                            calculateProductDiscount(
+                              matchingSize.mrp,
+                              matchingSize.discountPercent
+                            )}
+                        </p>
+
+                        <div className="cart__body__card__product__btns">
+                          <div className="cart__body__card__product__btns_qtyGrp">
+                            <div
+                              className="cart__body__card__product__btns_qtyGrp__icon"
+                              onClick={() =>
+                                handleCartQty(
+                                  cartItem?.id,
+                                  "Decrease",
+                                  cartItem?.qty,
+                                  matchingSize?.pSizeProductSizes?.qty
+                                )
+                              }
+                            >
+                              <RiSubtractFill />
+                            </div>
+                            <p className="cart__body__card__product__btns_qtyGrp__qty">
+                              {cartItem?.qty}
+                            </p>
+                            <div
+                              className="cart__body__card__product__btns_qtyGrp__icon"
+                              onClick={() =>
+                                handleCartQty(
+                                  cartItem?.id,
+                                  "Increase",
+                                  cartItem?.qty,
+                                  matchingSize?.pSizeProductSizes?.qty
+                                )
+                              }
+                            >
+                              <FaPlus />
+                            </div>
+                          </div>
+
+                          <Link
+                            className="cart__body__card__product__btns__removeBtn"
+                            onClick={() =>
+                              handleRemoveBtn(cartItem.cart_id, cartItem.id)
+                            }
+                          >
+                            Remove
+                          </Link>
+                        </div>
+                      </div>
                     </div>
-                    <p className="cart__body__card__product__btns_qtyGrp__qty">
-                      {cartQty}
-                    </p>
-                    <div
-                      className="cart__body__card__product__btns_qtyGrp__icon"
-                      onClick={() => increaseCartQty()}
-                    >
-                      {" "}
-                      <FaPlus />{" "}
-                    </div>
-                  </div>
-
-                  <Link className="cart__body__card__product__btns__removeBtn">
-                    Remove
-                  </Link>
-                </div>
-              </div>
-            </div>
-          );
-        })}
+                  );
+                })
+              );
+            } else {
+              return <h6 className="text-center p-3">Cart is Empty</h6>;
+            }
+          } catch (error) {
+            console.log("Error -", error.message);
+          }
+        })()}
       </div>
       <div className="cart__footer">
         <div className="cart__footer__summary">
@@ -114,10 +267,12 @@ const Cart = ({ setcartIsHover }) => {
               SUMMER 20 is applied
             </p>
             <p className="cart__footer__summary__wrapper__discountPrice">
-              &#8377; 7,170
+              {convertInInr(calculateTotalCartMrp)}
             </p>
             <p className="cart__footer__summary__wrapper__cartTotal">
-              &#8377; 7,170
+              {convertInInr(
+                calculateTotalCartMrp - calculateTotalCartAfterDiscount
+              )}
             </p>
           </div>
         </div>
@@ -125,7 +280,13 @@ const Cart = ({ setcartIsHover }) => {
         <div>
           <div
             className="cart__footer__checkoutBtn"
-            onClick={() => alert("Indian Order")}
+            onClick={() => {
+              if (calculateTotalCartAfterDiscount > 1) {
+                displayRazorpay();
+              } else {
+                alert("Cart have no Item");
+              }
+            }}
           >
             <span>
               {" "}

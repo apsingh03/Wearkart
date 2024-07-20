@@ -12,8 +12,6 @@ const SideBarAllFilters = () => {
 
   //  console.log("adminParentFilterRedux - ", adminParentFilterRedux);
 
- 
-
   return (
     <div className="sideBarFilter">
       <div

@@ -1,22 +1,21 @@
-const db = require("../models/");
+const db = require("../models");
 const jwt = require("jsonwebtoken");
+const ClientAuth = db.clientAuth;
 
-const AdminAuth = db.adminAuth;
-
-const authenticateAdmin = async (req, res, next) => {
+const authenticateUser = async (req, res, next) => {
   try {
     const token = req.header("Authorization");
     // const userId = JSON.parse(userObject).id;
     const userObject = jwt.verify(token, "itsASecretKey");
     // console.log("id - ", userObject);
-    const query = await AdminAuth.findByPk(userObject.id).then((user) => {
+    const query = await ClientAuth.findByPk(userObject.id).then((user) => {
       if (user === null) {
         return res
           .status(401)
-          .json({ success: false, error: "Admin Authentication Failed" });
+          .json({ success: false, error: "User Authentication Failed" });
       } else {
         // console.log("query - ", user);ā
-        req.admin = user;
+        req.user = user;
         next();
       }
     });
@@ -27,5 +26,5 @@ const authenticateAdmin = async (req, res, next) => {
 };
 
 module.exports = {
-  authenticateAdmin,
+  authenticateUser,
 };

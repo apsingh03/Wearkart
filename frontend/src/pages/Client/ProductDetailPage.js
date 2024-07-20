@@ -16,8 +16,13 @@ import {
   calculateProductDiscount,
   convertInInr,
 } from "../../utils/productDiscountCalculate";
-
+import { toast } from "react-toastify";
 import { useLocation } from "react-router-dom";
+import {
+  createUserCartAsync,
+  getUserCartAsync,
+} from "../../Redux/UserSlices/Cart/UserCartRedux";
+import { displayRazorpay } from "../../paymentGateway/PaymentGateway";
 
 const ProductDetailPage = () => {
   const dispatch = useDispatch();
@@ -25,10 +30,16 @@ const ProductDetailPage = () => {
     (state) => state.client_product.singleProduct
   );
 
+  const clientIsLogged = useSelector(
+    (state) => state.client_auth.loggedData.isUserLogged
+  );
+
+  // console.log("clientIsLogged - ", clientIsLogged);
+
   const { setisLoadingTopProgress } = useContext(AppContext);
-
   const [isSubMenuToggle, setisSubMenuToggle] = useState({});
-
+  const [selectSizeCodeId, setselectSizeCodeId] = useState();
+  const [selectColorCodeId, setselectColorCodeId] = useState();
   const [scrollTop, setScrollTop] = useState(0);
 
   let location = useLocation();
@@ -47,6 +58,42 @@ const ProductDetailPage = () => {
       })
     );
 
+    await dispatch(getUserCartAsync());
+
+    setisLoadingTopProgress(100);
+  }
+
+  async function addProductInCart(id) {
+    setisLoadingTopProgress(30);
+
+    // console.log("selectColorCodeId - ", selectColorCodeId);
+    // console.log("selectSizeCodeId - ", selectSizeCodeId);
+
+    if (clientIsLogged === null) {
+      toast.error("You Need to Login First");
+    } else {
+      if (selectColorCodeId === undefined) {
+        toast.warning("Please Select Color");
+      } else if (selectSizeCodeId === undefined) {
+        toast.warning("Please Select Size");
+      } else {
+        const cartActionResult = await dispatch(
+          createUserCartAsync({
+            productId: id,
+            color_id: selectColorCodeId,
+            PSize_id: selectSizeCodeId,
+          })
+        );
+
+        if (cartActionResult.payload?.msg === "success") {
+          toast.success("Item Added in Cart");
+        }
+
+        if (cartActionResult.payload?.msg === "Item Already Exist") {
+          toast.success(cartActionResult.payload.msg);
+        }
+      }
+    }
     setisLoadingTopProgress(100);
   }
 
@@ -79,29 +126,6 @@ const ProductDetailPage = () => {
     }));
   };
 
-  const productImages = [
-    {
-      id: 1,
-      url: "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FDR896ACBL_1.jpg%3Fv%3D1689061795&w=1920&q=75",
-      alt: "",
-    },
-    {
-      id: 2,
-      url: "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FDR896ACBL_2.jpg%3Fv%3D1689061795&w=1920&q=75",
-      alt: "",
-    },
-    {
-      id: 3,
-      url: "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FWhatsAppImage2023-06-11at12.44.41PM_1_copy_1.jpg%3Fv%3D1689061795&w=1920&q=75",
-      alt: "",
-    },
-    {
-      id: 4,
-      url: "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FDR896ACBL_3.jpg%3Fv%3D1689061795&w=1920&q=75",
-      alt: "",
-    },
-  ];
-
   return (
     <>
       <Header />
@@ -111,33 +135,44 @@ const ProductDetailPage = () => {
           <div className="col-12 col-sm-12 col-md-6 col-lg-5 ">
             <div className="productDetail__left">
               <div className="productDetail__left_imageGrid">
-                {productImages.map((data, index) => {
-                  return (
-                    <div
-                      className="productDetail__left_imageGrid__card"
-                      key={index}
-                    >
-                      <img
-                        src={data.url}
-                        alt="Actress"
-                        className="productDetail__left_imageGrid__card__image"
-                      />
-                    </div>
-                  );
-                })}
-              </div>
-              <div className="productDetail__left__image">
-                <img src={productImages[0].url} alt="Actress" />
-                {/* {productImages.map((data, index) => {
-                  return (
-                    <img
-                      key={index}
-                      src={data.url}
-                      alt="Actress"
-                      // className="productDetail__left_imageGrid__card__image"
-                    />
-                  );
-                })} */}
+                {(function () {
+                  try {
+                    const productImages = [
+                      clientSingleProductRedux?.query?.productImage?.url1,
+                      clientSingleProductRedux?.query?.productImage?.url2,
+                      clientSingleProductRedux?.query?.productImage?.url3,
+                      clientSingleProductRedux?.query?.productImage?.url4,
+                      clientSingleProductRedux?.query?.productImage?.url5,
+                    ].filter((url) => url); // Filter out any undefined URLs
+
+                    return (
+                      <>
+                        <div className="d-flex flex-column gap-1">
+                          {productImages.map((data, index) => {
+                            return (
+                              <div
+                                className="productDetail__left_imageGrid__card"
+                                key={index}
+                              >
+                                <img
+                                  src={data}
+                                  alt="Actress"
+                                  className="productDetail__left_imageGrid__card__image"
+                                />
+                              </div>
+                            );
+                          })}
+                        </div>
+
+                        <div className="productDetail__left__image">
+                          <img src={productImages[0]} alt="Actress" />
+                        </div>
+                      </>
+                    );
+                  } catch (error) {
+                    console.log("Error - ", error.message);
+                  }
+                })()}
               </div>
             </div>
           </div>
@@ -240,10 +275,93 @@ const ProductDetailPage = () => {
                             </div>
                           </div>
 
+                          <div className="productDetail__right__allColors">
+                            <div className="d-flex flex-row gap-2">
+                              <p>Selected {" - "}</p>
+                              <p>
+                                {(function () {
+                                  {
+                                    const selectedColor = [
+                                      ...product.productColorsProduct,
+                                    ].find(
+                                      (color) =>
+                                        color.productColorsColor.id ===
+                                        selectColorCodeId
+                                    );
+                                    return (
+                                      <span style={{ fontWeight: "bold" }}>
+                                        Id -{" "}
+                                        {selectedColor?.productColorsColor?.id}
+                                        {" , "} Name -
+                                        {
+                                          selectedColor?.productColorsColor
+                                            ?.name
+                                        }
+                                      </span>
+                                    );
+                                  }
+                                })()}
+                              </p>
+                            </div>
+
+                            <div className="productDetail__right__allColors__wrapper">
+                              {product.productColorsProduct &&
+                                [...product.productColorsProduct]
+                                  .sort((a, b) => a.id - b.id)
+                                  .map((color, sizeIdx) => {
+                                    return (
+                                      <div
+                                        className={`productDetail__right__allColors__wrapper__card ${
+                                          selectColorCodeId ===
+                                          color.productColorsColor.id
+                                            ? "selected"
+                                            : null
+                                        } `}
+                                        key={sizeIdx}
+                                        onClick={() =>
+                                          setselectColorCodeId(color.color_id)
+                                        }
+                                        style={{
+                                          backgroundColor: `${
+                                            color.productColorsColor &&
+                                            color.productColorsColor.name
+                                          }`,
+                                        }}
+                                        title={
+                                          color.productColorsColor &&
+                                          color.productColorsColor.name
+                                        }
+                                      ></div>
+                                    );
+                                  })}
+                            </div>
+                          </div>
+
                           <div className="productDetail__right__5thSizes">
-                            <div className="d-flex flex-row justify-content-between">
-                              <p>Size</p>
-                              <p>Sizes Chart</p>
+                            <div className="d-flex flex-row gap-2">
+                              <p>Selected Size - </p>
+                              <p>
+                                {(function () {
+                                  {
+                                    const selectedSize = [
+                                      ...product.productSizesProduct,
+                                    ].find(
+                                      (size) =>
+                                        size.pSizeProductSizes.id ===
+                                        selectSizeCodeId
+                                    );
+
+                                    return (
+                                      <span style={{ fontWeight: "bold" }}>
+                                        id -{" "}
+                                        {selectedSize?.pSizeProductSizes?.id}{" "}
+                                        {" , "} Name -
+                                        {selectedSize?.pSizeProductSizes?.name}
+                                      </span>
+                                    );
+                                  }
+                                })()}
+                              </p>
                             </div>
 
                             <div className="productDetail__right__5thSizes__allSizes">
@@ -251,15 +369,24 @@ const ProductDetailPage = () => {
                                 [...product.productSizesProduct]
                                   .sort((a, b) => a.mrp - b.mrp)
                                   .map((sizes, sizeIdx) => {
+                                    // console.log("sizes - ", sizes);
                                     return (
                                       <div
-                                        className="productDetail__right__5thSizes__card"
+                                        className={`productDetail__right__5thSizes__card ${
+                                          selectSizeCodeId ===
+                                          sizes.pSizeProductSizes.id
+                                            ? "selected"
+                                            : null
+                                        } `}
                                         key={sizeIdx}
+                                        onClick={() =>
+                                          setselectSizeCodeId(sizes.PSize_id)
+                                        }
                                       >
                                         <div>
                                           <p title="Size Code">
-                                            {sizes.pSizeProductSizes &&
-                                              sizes.pSizeProductSizes.name}
+                                            {sizes?.pSizeProductSizes?.name}
+                                            {/* {sizes?.PSize_id} */}
                                           </p>
 
                                           <p
@@ -325,11 +452,17 @@ const ProductDetailPage = () => {
                           </div>
 
                           <div className="productDetail__right__6thcheckoutBtns">
-                            <div className="productDetail__right__6thcheckoutBtns__cartBtn">
+                            <div
+                              onClick={() => addProductInCart(product.id)}
+                              className="productDetail__right__6thcheckoutBtns__cartBtn"
+                            >
                               <span>add to cart</span>
                             </div>
 
-                            <div className="productDetail__right__6thcheckoutBtns__buyNowBtn">
+                            <div
+                              className="productDetail__right__6thcheckoutBtns__buyNowBtn"
+                              // onClick={() => displayRazorpay()}
+                            >
                               <span>buy now</span>
                             </div>
                           </div>

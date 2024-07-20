@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { FaUser, FaMobile } from "react-icons/fa";
 import { MdEmail, MdPassword } from "react-icons/md";
 import { Link } from "react-router-dom";
-import { createClientAsync } from "../../Redux/ClientSlices/clientAuth";
+import { createClientAsync } from "../../Redux/UserSlices/UserAuth";
 import { useSelector, useDispatch } from "react-redux";
 import { AppContext } from "../../context/AppContext";
 

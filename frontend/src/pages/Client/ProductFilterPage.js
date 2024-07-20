@@ -29,10 +29,9 @@ const ProductFilterPage = () => {
     (state) => state.client_product.productFilters
   );
 
-   const client_sizesFiltersRedux = useSelector(
-     (state) => state.client_product.sizesFilters
-   );
-
+  const client_sizesFiltersRedux = useSelector(
+    (state) => state.client_product.sizesFilters
+  );
 
   // console.log("clientProductFiltersRedux - ", clientProductFiltersRedux);
   const { setisLoadingTopProgress } = useContext(AppContext);
@@ -234,6 +233,7 @@ const ProductFilterPage = () => {
               </div>
 
               <div className="pFilterPage__right__body">
+                {/* <p> {client_allProductsRedux.query  } </p> */}
                 <div className=" row ">
                   {(function () {
                     try {
@@ -243,68 +243,77 @@ const ProductFilterPage = () => {
                           const sortedProductSizes = [
                             ...(product.productSizesProduct || []),
                           ].sort((a, b) => a.mrp - b.mrp);
-                          return (
-                            <div
-                              className="col-6 col-lg-4 col-xl-3 mb-2 p-1"
-                              // style={{ paddingLeft : "0px" }}
-                              key={index}
-                            >
-                              <div className="pFilterPage__right__body__card">
-                                <div
-                                  className="pFilterPage__right__body__card__favIcon"
-                                  onClick={() => alert("Click on Fav Icon")}
-                                >
-                                  <FaRegHeart />{" "}
-                                </div>
-                                <Link
-                                  to={`/product/${
-                                    product.productCategory &&
-                                    product.productCategory.name
-                                  }/${product.id}/${product.name}`}
-                                >
-                                  <img
-                                    // src="https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FDR896ACBL_1.jpg%3Fv%3D1689061795&w=1920&q=75"
-                                    src={
-                                      product.productImage &&
-                                      product.productImage.url1
-                                    }
-                                    className="pFilterPage__right__body__card__image"
-                                    alt="dress"
-                                  />
-                                  <p className="pFilterPage__right__body__card__productTitle">
-                                    {product.name &&
-                                      product.name.substring(0, 30) + "..."}
-                                  </p>
-                                </Link>
 
-                                <div className="pFilterPage__right__body__card__prices">
-                                  <p>
-                                    {calculateProductDiscount(
-                                      sortedProductSizes.length > 0
-                                        ? sortedProductSizes[0].mrp
-                                        : 0,
-                                      sortedProductSizes.length > 0
+                          if (
+                            product.isPublished === true &&
+                            product.isRecycleBin === false
+                          ) {
+                            return (
+                              <div
+                                className="col-6 col-lg-4 col-xl-3 mb-2 p-1"
+                                // style={{ paddingLeft : "0px" }}
+                                key={index}
+                              >
+                                <div className="pFilterPage__right__body__card">
+                                  <div
+                                    className="pFilterPage__right__body__card__favIcon"
+                                    onClick={() => alert("Click on Fav Icon")}
+                                  >
+                                    <FaRegHeart />{" "}
+                                  </div>
+                                  <Link
+                                    to={`/product/${
+                                      product.productCategory &&
+                                      product.productCategory.name
+                                    }/${product.id}/${product.name}`}
+                                  >
+                                    <img
+                                      // src="https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FDR896ACBL_1.jpg%3Fv%3D1689061795&w=1920&q=75"
+                                      src={
+                                        product.productImage &&
+                                        product.productImage.url1
+                                      }
+                                      className="pFilterPage__right__body__card__image"
+                                      alt="dress"
+                                    />
+                                    <p className="pFilterPage__right__body__card__productTitle">
+                                      {product.name &&
+                                        product.name.substring(0, 30) + "..."}
+                                    </p>
+                                  </Link>
+
+                                  <div className="pFilterPage__right__body__card__prices">
+                                    <p>
+                                      {calculateProductDiscount(
+                                        sortedProductSizes.length > 0
+                                          ? sortedProductSizes[0].mrp
+                                          : 0,
+                                        sortedProductSizes.length > 0
+                                          ? sortedProductSizes[0]
+                                              .discountPercent
+                                          : 0
+                                      )}
+                                    </p>
+                                    <p
+                                      style={{ textDecoration: "line-through" }}
+                                    >
+                                      {convertInInr(
+                                        sortedProductSizes.length > 0
+                                          ? sortedProductSizes[0].mrp
+                                          : 0
+                                      )}
+                                    </p>
+                                    <p style={{ color: "#A10E2C" }}>
+                                      {sortedProductSizes.length > 0
                                         ? sortedProductSizes[0].discountPercent
-                                        : 0
-                                    )}
-                                  </p>
-                                  <p style={{ textDecoration: "line-through" }}>
-                                    {convertInInr(
-                                      sortedProductSizes.length > 0
-                                        ? sortedProductSizes[0].mrp
-                                        : 0
-                                    )}
-                                  </p>
-                                  <p style={{ color: "#A10E2C" }}>
-                                    {sortedProductSizes.length > 0
-                                      ? sortedProductSizes[0].discountPercent
-                                      : 0}
-                                    % Off
-                                  </p>
+                                        : 0}
+                                      % Off
+                                    </p>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          );
+                            );
+                          }
                         })
                       );
                     } catch (error) {
