@@ -125,14 +125,7 @@ const getUserCart = async (req, res) => {
         model: UserCartItem,
         as: "userCartUserCartItem",
         attributes: {
-          exclude: [
-            "user_id",
-            "paymentId",
-            "status",
-            "createdAt",
-            "updatedAt",
-            "cart_id",
-          ],
+          exclude: ["user_id", "paymentId", "status", "createdAt", "updatedAt"],
         },
         where: {
           orderPlacedStatus: false,

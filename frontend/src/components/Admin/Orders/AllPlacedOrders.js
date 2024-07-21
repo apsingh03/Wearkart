@@ -24,10 +24,12 @@ import {
   getOrdersAsync,
   updateDeliveryStatusAsync,
 } from "../../../Redux/AdminSlices/Orders/OrderSlice";
+import { useSocket } from "../../../context/SocketContext";
 
 const AllPlacedOrders = (props) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const socket = useSocket();
 
   const { setisLoadingTopProgress } = useContext(AppContext);
   const [isToggleProductMoreDetail, setisToggleProductMoreDetail] = useState(
@@ -36,11 +38,14 @@ const AllPlacedOrders = (props) => {
 
   const [isUpdateDeliveryStatus, setisUpdateDeliveryStatus] = useState({});
 
-  const admin_productRedux = useSelector((state) => state.admin_product.data);
+  // const admin_productRedux = useSelector((state) => state.admin_product.data);
 
-  const admin_ordersRedux = useSelector((state) => state.admin_orders.data);
+  // const admin_ordersRedux = useSelector((state) => state.admin_orders.data);
 
   const [updateDeliveryCartId, setupdateDeliveryCartId] = useState();
+
+  const [allPlacedOrders, setallPlacedOrders] = useState([]);
+
   // console.log("isUpdateDeliveryStatus - ", isUpdateDeliveryStatus);
   function handleisUpdateDeliveryStatus(id) {
     setisUpdateDeliveryStatus((prev) => ({
@@ -52,7 +57,10 @@ const AllPlacedOrders = (props) => {
   async function fetchData() {
     setisLoadingTopProgress(30);
 
-    await dispatch(getOrdersAsync());
+    const action = await dispatch(getOrdersAsync());
+    if (action.payload.msg && action.payload.msg === "success") {
+      setallPlacedOrders(action.payload.query);
+    }
     setisLoadingTopProgress(100);
   }
 
@@ -62,10 +70,6 @@ const AllPlacedOrders = (props) => {
       [id]: !prev[id],
     }));
   }
-
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   async function handleUpdateDelivery(e) {
     if (window.confirm("Do You want to update Delivery ")) {
@@ -92,6 +96,26 @@ const AllPlacedOrders = (props) => {
     }
   }
 
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  // SOCKET
+  useEffect(() => {
+    if (!socket) return;
+
+    // Listen for new message events from the server
+    socket.on("newOrder", (socketAction) => {
+      // console.log("socketAction ", socketAction);
+      setallPlacedOrders((prevOrders) => [socketAction, ...prevOrders]);
+    });
+
+    // Clean up function to remove event listener
+    return () => {
+      socket.off("newOrder");
+    };
+  }, [socket]);
+
   return (
     <>
       <h4 className="text-center mb-3">All Placed Orders</h4>
@@ -100,10 +124,7 @@ const AllPlacedOrders = (props) => {
           <div className="table-responsive">
             {(function () {
               try {
-                if (
-                  admin_ordersRedux.query &&
-                  admin_ordersRedux.query.length > 0
-                ) {
+                if (allPlacedOrders && allPlacedOrders.length > 0) {
                   return (
                     <table className="table table-striped">
                       <thead>
@@ -135,8 +156,8 @@ const AllPlacedOrders = (props) => {
                         {(function () {
                           try {
                             return (
-                              admin_ordersRedux.query &&
-                              admin_ordersRedux.query.map((order, index) => {
+                              allPlacedOrders &&
+                              allPlacedOrders.map((order, index) => {
                                 const clientAuthUserCart =
                                   order?.clientAuthUserCart;
 

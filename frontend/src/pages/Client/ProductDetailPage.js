@@ -86,11 +86,11 @@ const ProductDetailPage = () => {
         );
 
         if (cartActionResult.payload?.msg === "success") {
-          toast.success("Item Added in Cart");
+          // toast.success("Item Added in Cart");
         }
 
         if (cartActionResult.payload?.msg === "Item Already Exist") {
-          toast.success(cartActionResult.payload.msg);
+          toast.warning(cartActionResult.payload.msg);
         }
       }
     }
@@ -290,9 +290,11 @@ const ProductDetailPage = () => {
                                     );
                                     return (
                                       <span style={{ fontWeight: "bold" }}>
-                                        Id -{" "}
+                                        {/* Id -{" "}
                                         {selectedColor?.productColorsColor?.id}
-                                        {" , "} Name -
+                                        {" , "}
+                                         */}
+                                        Name -
                                         {
                                           selectedColor?.productColorsColor
                                             ?.name
@@ -353,9 +355,10 @@ const ProductDetailPage = () => {
 
                                     return (
                                       <span style={{ fontWeight: "bold" }}>
-                                        id -{" "}
+                                        {/* id -{" "}
                                         {selectedSize?.pSizeProductSizes?.id}{" "}
-                                        {" , "} Name -
+                                        {" , "}  */}
+                                        Name -
                                         {selectedSize?.pSizeProductSizes?.name}
                                       </span>
                                     );

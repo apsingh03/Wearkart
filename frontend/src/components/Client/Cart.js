@@ -21,11 +21,8 @@ import { displayRazorpay } from "../../paymentGateway/PaymentGateway";
 
 const Cart = ({ setcartIsHover }) => {
   const dispatch = useDispatch();
-  const [cartQty, setcartQty] = useState(1);
 
   const user_userCart = useSelector((state) => state.user_userCart.data);
-
-  // console.log("user_userCart - ", user_userCart.query  )
 
   const { setisLoadingTopProgress } = useContext(AppContext);
   let calculateTotalCartMrp = 0;
@@ -41,7 +38,7 @@ const Cart = ({ setcartIsHover }) => {
 
   async function handleRemoveBtn(cart_id, cartItem_id) {
     setisLoadingTopProgress(30);
-
+    // console.log("delete func -  ", cart_id, cartItem_id);
     await dispatch(deleteUserCartAsync({ cart_id, cartItem_id }));
 
     setisLoadingTopProgress(100);
@@ -77,7 +74,7 @@ const Cart = ({ setcartIsHover }) => {
   }, []);
 
   const userCartItems = user_userCart?.query?.[0]?.userCartUserCartItem || [];
-  // console.log("userCartItems", userCartItems);
+
   return (
     <div className="cart">
       <div className="cart__header">
@@ -118,6 +115,7 @@ const Cart = ({ setcartIsHover }) => {
               return (
                 userCartItems &&
                 userCartItems.map((cartItem, index) => {
+                  // console.log("cartItem - ", cartItem);
                   // console.log("psize id - ", cartItem.PSize_id);
 
                   // console.log(

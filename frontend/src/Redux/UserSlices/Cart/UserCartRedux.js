@@ -66,6 +66,7 @@ export const deleteUserCartAsync = createAsyncThunk(
   "user/deleteUserCart",
   async ({ cart_id, cartItem_id }) => {
     try {
+      // console.log("slice - ", cart_id, cartItem_id);
       const response = await axios.delete(
         `${HOSTNAME}/user/carts/cart/${cart_id}/${cartItem_id}`,
         {
@@ -82,6 +83,7 @@ export const deleteUserCartAsync = createAsyncThunk(
 
 const initialState = {
   data: [],
+  cartLength: 0,
   isLoading: false,
   isError: false,
 };
@@ -100,13 +102,7 @@ export const UserCartSlice = createSlice({
 
       .addCase(createUserCartAsync.fulfilled, (state, action) => {
         state.isLoading = false;
-
-        state.data = action.payload;
-
-        // if (action.payload.msg === "success") {
-        //   state.data.query.unshift(action.payload.query);
-        // }
-        // console.log("payload - ", action.payload);
+        state.cartLength = state.cartLength + 1;
       })
 
       .addCase(createUserCartAsync.rejected, (state, action) => {
@@ -119,6 +115,8 @@ export const UserCartSlice = createSlice({
 
       .addCase(getUserCartAsync.fulfilled, (state, action) => {
         state.isLoading = false;
+        state.cartLength =
+          action.payload?.query?.[0]?.userCartUserCartItem?.length || 0;
         state.data = action.payload;
       })
 
@@ -177,14 +175,24 @@ export const UserCartSlice = createSlice({
 
       .addCase(deleteUserCartAsync.fulfilled, (state, action) => {
         state.isLoading = false;
+        // console.log(action.meta.arg);
 
         if (action.payload?.msg === "success") {
-          const { id } = action.meta.arg;
-          const findIndex = state.data.query.findIndex((data) => {
-            return data.id === id;
-          });
+          const { cartItem_id } = action.meta.arg;
 
-          state.data.query.splice(findIndex, 1);
+          const userCartUserCartItem =
+            state.data.query?.[0]?.userCartUserCartItem;
+
+          const findIndex = userCartUserCartItem.findIndex((data) => {
+            return data.id === cartItem_id;
+          });
+          userCartUserCartItem.splice(findIndex, 1);
+
+          if (state.cartLength === 1) {
+            state.cartLength = 0;
+          } else {
+            state.cartLength = state.cartLength - 1;
+          }
         }
       })
 

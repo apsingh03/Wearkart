@@ -8,6 +8,7 @@ const cors = require("cors");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 const corsOptions = {
   origin: process.env.CORS_FRONTEND_ORIGIN,
   credentials: true, //access-control-allow-credentials:true
@@ -18,6 +19,20 @@ app.use(cors(corsOptions));
 // Using body-parser
 app.use(bodyParser.json({ limit: "10mb" }));
 app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
+
+// socket.io
+const http = require("http");
+const socketIO = require("socket.io");
+const server = http.createServer(app);
+const io = socketIO(server);
+
+io.on("connection", (socket) => {
+  console.log("New SOCKET Connection");
+
+  socket.on("disconnect", () => {
+    console.log("Client Disconnected");
+  });
+});
 
 const clientRoutes = require("./routes/client");
 const adminRoutes = require("./routes/admin");
@@ -37,6 +52,10 @@ app.use("/", function (req, res) {
   }
 });
 
-app.listen(process.env.PORT || 5000, () => {
-  console.log(`Listening on port ${process.env.PORT}`);
+// actually we use app.listen() but we are using sockets so we have to use server.listen()
+server.listen(process.env.PORT || 5000, () => {
+  console.log(`Listening on PORT ${process.env.PORT} `);
 });
+
+// Make io globally available
+global.io = io;

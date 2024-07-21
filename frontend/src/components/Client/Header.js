@@ -13,7 +13,11 @@ import { clientGetMenuAsync } from "../../Redux/ClientSlices/clientProductSlice"
 
 const Header = () => {
   const dispatch = useDispatch();
+
   const clientIsLogged = useSelector((state) => state.client_auth.loggedData);
+  const user_userCartLength = useSelector(
+    (state) => state.user_userCart?.cartLength
+  );
 
   const adminIsLogged = useSelector(
     (state) => state.admin_auth.loggedData.isUserLogged
@@ -196,8 +200,30 @@ const Header = () => {
               className="header__4thContainer__cartIcon"
               title="Cart"
               onClick={() => onClickToggleCart()}
+              style={{ position: "relative" }}
             >
               <LiaShoppingBagSolid />
+              {clientIsLogged.isUserLogged ? (
+                <span
+                  style={{
+                    height: "25px",
+                    width: "25px",
+                    backgroundColor: "#000",
+                    color: "#fff",
+                    borderRadius: "50%",
+                    textAlign: "center",
+                    fontSize: "16px",
+                    position: "absolute",
+                    top: "-10px",
+                    left: "25px",
+                    fontSize: "10px",
+                    fontWeight: "bold",
+                    alignContent: "center",
+                  }}
+                >
+                  {user_userCartLength}
+                </span>
+              ) : null}
             </div>
           </div>
         </div>

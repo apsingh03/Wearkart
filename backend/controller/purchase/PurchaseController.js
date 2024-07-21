@@ -3,11 +3,20 @@ const Razorpay = require("razorpay");
 const db = require("../../models/");
 const { where } = require("sequelize");
 
-const UserCart = db.userCart;
-const UserCartItem = db.userCartItem;
+// Tables
+const AdminAuth = db.adminAuth;
+const Category = db.category;
 const ProductSizes = db.productSizes;
 const PSize = db.pSize;
 const Product = db.product;
+const ProductImages = db.productImages;
+const ProductColors = db.productColors;
+const ProductFabrics = db.productFabrics;
+const Color = db.color;
+const Fabric = db.fabric;
+const UserCart = db.userCart;
+const UserCartItem = db.userCartItem;
+const ClientAuth = db.clientAuth;
 
 const Sequelize = db.Sequelize;
 const sequelize = db.sequelize;
@@ -241,8 +250,140 @@ const updateTransactionStatus = async (req, res) => {
         })
       );
 
+      const newOrderQuery = await UserCart.findOne({
+        where: {
+          status: "SUCCESSFUL",
+          id: userCartFindQuery.id,
+        },
+        transaction: t,
+
+        // include which user placed this order
+        include: [
+          {
+            model: ClientAuth,
+            as: "clientAuthUserCart",
+            attributes: {
+              exclude: ["password", "createdAt", "updatedAt"],
+            },
+          },
+          // include cartItems according to Cart
+          {
+            model: UserCartItem,
+            as: "userCartUserCartItem",
+            attributes: {
+              exclude: [
+                "user_id",
+                "paymentId",
+                "status",
+                "createdAt",
+                "updatedAt",
+                "cart_id",
+              ],
+            },
+            where: {
+              orderPlacedStatus: true,
+            },
+            include: {
+              model: Product,
+              as: "productUserCartItem",
+              attributes: {
+                exclude: [
+                  "description",
+                  "sizeAndFit",
+                  "fabricAndCare",
+                  "productImages_id",
+                  "category_id",
+                  "isRecycleBin",
+                  "isFavorite",
+                  "isPublished",
+                  "admin_id",
+                  "createdAt",
+                  "updatedAt",
+                ],
+              },
+              include: [
+                {
+                  model: ProductImages,
+                  as: "productImage",
+                  attributes: {
+                    exclude: [
+                      "admin_id",
+                      "product_id",
+                      "url2",
+                      "url3",
+                      "url4",
+                      "url5",
+                    ],
+                  },
+                },
+                // {
+                //   model: Category,
+                //   as: "productCategory",
+                //   attributes: {
+                //     exclude: ["admin_id", "createdAt", "updatedAt"],
+                //   },
+                // },
+                {
+                  model: ProductColors,
+                  as: "productColorsProduct",
+                  attributes: {
+                    exclude: [
+                      "admin_id",
+                      "createdAt",
+                      "updatedAt",
+                      "product_id",
+                    ],
+                  },
+                  include: {
+                    model: Color,
+                    required: true,
+                    as: "productColorsColor",
+                    attributes: {
+                      exclude: ["admin_id", "createdAt", "updatedAt"],
+                    },
+                  },
+                },
+                {
+                  model: ProductSizes,
+                  as: "productSizesProduct",
+                  attributes: {
+                    exclude: [
+                      "admin_id",
+                      "createdAt",
+                      "updatedAt",
+                      "product_id",
+                    ],
+                  },
+                  include: {
+                    model: PSize,
+                    required: true,
+                    as: "pSizeProductSizes",
+                    attributes: {
+                      exclude: [
+                        "admin_id",
+                        "createdAt",
+                        "updatedAt",
+                        "product_id",
+                      ],
+                    },
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      });
+
       await t.commit();
-      return res.status(202).send({ message: "Transaction successfull" });
+
+      // console.log("newOrderQuery - ", newOrderQuery);
+
+      // Emit a socket event to inform clients about the new message
+      io.emit("newOrder", newOrderQuery);
+
+      return res
+        .status(202)
+        .send({ message: "Transaction successfull", query: newOrderQuery });
     }
   } catch (error) {
     await t.rollback();
