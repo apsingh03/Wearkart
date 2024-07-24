@@ -16,6 +16,8 @@ import ClientDashboard from "./pages/Client/ClientDashboard";
 import LoadingBar from "react-top-loading-bar";
 import ClientProtectedRoutes from "./components/Client/ClientProtectedRoutes";
 import AdminProtectedRoutes from "./components/Admin/AdminProtectedRoutes";
+import SideBarAllFilters from "./components/Client/ProductsFilterPage/SideBarAllFilters";
+import SideFilter from "./components/Client/ProductsFilterPage/SideFilter";
 function App() {
   // console.log("process.env - ", process.env);
   const {
@@ -25,6 +27,8 @@ function App() {
     setcartIsHover,
     isLoadingTopProgress,
     setisLoadingTopProgress,
+    isFilterSideBarVisible,
+    setIsFilterSideBarVisible,
   } = useContext(AppContext);
 
   const [scrollTop, setScrollTop] = useState(10);
@@ -84,10 +88,14 @@ function App() {
         <SideBarMenu setisActiveSideBarMenu={setisActiveSideBarMenu} />
       ) : null}
 
+      {isFilterSideBarVisible && (
+        <SideFilter setIsFilterSideBarVisible={setIsFilterSideBarVisible} />
+      )}
+
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/typography" element={<Typography />} />
-        <Route path="/collections" element={<ProductFilterPage />} />
+        <Route path="/collections/*" element={<ProductFilterPage />} />
         <Route path="/product/*" element={<ProductDetailPage />} />
         <Route path="/signin" element={<LogInPage />} />
         <Route path="/signup" element={<SignUpPage />} />

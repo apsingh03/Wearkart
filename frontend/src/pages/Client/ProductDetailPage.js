@@ -294,7 +294,7 @@ const ProductDetailPage = () => {
                                         {selectedColor?.productColorsColor?.id}
                                         {" , "}
                                          */}
-                                        Name -
+                                    
                                         {
                                           selectedColor?.productColorsColor
                                             ?.name
@@ -358,7 +358,7 @@ const ProductDetailPage = () => {
                                         {/* id -{" "}
                                         {selectedSize?.pSizeProductSizes?.id}{" "}
                                         {" , "}  */}
-                                        Name -
+                                       
                                         {selectedSize?.pSizeProductSizes?.name}
                                       </span>
                                     );

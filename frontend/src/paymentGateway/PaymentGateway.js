@@ -1,6 +1,8 @@
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 
+import { AppContext } from "../context/AppContext";
+
 function loadScript(src) {
   return new Promise((resolve) => {
     const script = document.createElement("script");
@@ -64,6 +66,7 @@ export const displayRazorpay = async () => {
 
         if (updateTxnAction.data?.message === "Transaction successfull") {
           alert(updateTxnAction.data?.message);
+
           window.location.replace("/account");
         }
       },

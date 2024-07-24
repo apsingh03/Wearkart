@@ -31,6 +31,23 @@ export const clientAllListedProductsAsync = createAsyncThunk(
   }
 );
 
+export const clientShowFilteredProductsAsync = createAsyncThunk(
+  "client/clientShowFilteredProducts",
+  async ({ filters }) => {
+    try {
+      const response = await axios.get(
+        `${HOSTNAME}/client/product/filteredProducts`,
+        {
+          params: filters,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.log("clientShowFilteredProductsAsync Error - ", error.response);
+    }
+  }
+);
+
 export const clientGetSingleProductAsync = createAsyncThunk(
   "client/clientGetSingleProduct",
   async ({ id }) => {
@@ -99,7 +116,65 @@ const initialState = {
 export const clientProductSlice = createSlice({
   name: "clientProduct",
   initialState,
-  reducers: {},
+  reducers: {
+    sortNewestFirstAllProducts(state, action) {
+      // console.log("sortNewestFirstAllProducts");
+
+      const sortedProducts = state.allProducts.query.sort((a, b) => {
+        return b.id - a.id;
+      });
+
+      state.allProducts.query = sortedProducts;
+    },
+
+    sortOldestFirstAllProducts(state, action) {
+      // console.log("sortOldestFirstAllProducts");
+
+      const sortedProducts = state.allProducts.query.sort((a, b) => {
+        return a.id - b.id;
+      });
+
+      state.allProducts.query = sortedProducts;
+    },
+
+    sortPriceHighToLowProducts(state, action) {
+      // console.log("sortPriceHighToLowProducts");
+
+      // Sort each product's sizes by MRP in descending order
+      state.allProducts.query.forEach((product) => {
+        product.productSizesProduct.sort((a, b) => b.mrp - a.mrp);
+      });
+
+      // Sort all products by the highest MRP in their productSizesProduct array
+      state.allProducts.query.sort((a, b) => {
+        const maxMrpA = Math.max(
+          ...a.productSizesProduct.map((size) => size.mrp)
+        );
+        const maxMrpB = Math.max(
+          ...b.productSizesProduct.map((size) => size.mrp)
+        );
+        return maxMrpB - maxMrpA;
+      });
+    },
+
+    sortPriceLowToHighProducts(state, action) {
+      // Sort each product's sizes by MRP in ASC order
+      state.allProducts?.query.forEach((product) => {
+        product.productSizesProduct.sort((a, b) => a.mrp - b.mrp);
+      });
+
+      // Sort all products by the Lowest MRP in their productSizesProduct array
+      state.allProducts?.query.sort((a, b) => {
+        const maxMrpA = Math.min(
+          ...a.productSizesProduct.map((size) => size.mrp)
+        );
+        const maxMrpB = Math.min(
+          ...b.productSizesProduct.map((size) => size.mrp)
+        );
+        return maxMrpA - maxMrpB;
+      });
+    },
+  },
 
   extraReducers: (builder) => {
     builder
@@ -120,20 +195,22 @@ export const clientProductSlice = createSlice({
       })
       .addCase(clientAllListedProductsAsync.fulfilled, (state, action) => {
         state.isLoading = false;
+        // console.log("clientAllListedProductsAsync - ", action.payload);
         state.allProducts = action.payload;
       })
       .addCase(clientAllListedProductsAsync.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
       })
-      .addCase(clientGetSingleProductAsync.pending, (state, action) => {
+      .addCase(clientShowFilteredProductsAsync.pending, (state, action) => {
         state.isLoading = true;
       })
-      .addCase(clientGetSingleProductAsync.fulfilled, (state, action) => {
+      .addCase(clientShowFilteredProductsAsync.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.singleProduct = action.payload;
+        // console.log("clientShowFilteredProductsAsync - ", action.payload);
+        state.allProducts = action.payload;
       })
-      .addCase(clientGetSingleProductAsync.rejected, (state, action) => {
+      .addCase(clientShowFilteredProductsAsync.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
       })
@@ -148,6 +225,19 @@ export const clientProductSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
       })
+
+      .addCase(clientGetSingleProductAsync.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(clientGetSingleProductAsync.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.singleProduct = action.payload;
+      })
+      .addCase(clientGetSingleProductAsync.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+      })
+
       .addCase(clientGetMenuAsync.pending, (state, action) => {
         state.isLoading = true;
       })
@@ -173,4 +263,10 @@ export const clientProductSlice = createSlice({
   },
 });
 
+export const {
+  sortNewestFirstAllProducts,
+  sortOldestFirstAllProducts,
+  sortPriceHighToLowProducts,
+  sortPriceLowToHighProducts,
+} = clientProductSlice.actions;
 export default clientProductSlice.reducer;

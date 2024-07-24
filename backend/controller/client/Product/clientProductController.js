@@ -1,4 +1,3 @@
-const { where } = require("sequelize");
 const db = require("../../../models");
 
 // Tables
@@ -22,10 +21,12 @@ const ChildMenu = db.childMenu;
 
 const clientGetCategoryWiseProduct = async (req, res) => {
   try {
+    // console.log("-------clientGetCategoryWiseProduct");
     const query = await Category.findAll({
       attributes: {
         exclude: ["createdAt", "updatedAt"],
       },
+      where: { isFavorite: true },
       include: [
         {
           model: Product,
@@ -43,6 +44,7 @@ const clientGetCategoryWiseProduct = async (req, res) => {
               "category_id",
             ],
           },
+          where: { isFavorite: true, isPublished: true, isRecycleBin: false },
           include: [
             {
               model: ProductImages,
@@ -107,8 +109,8 @@ const clientGetCategoryWiseProduct = async (req, res) => {
 
 const clientAllListedProducts = async (req, res) => {
   try {
+    // console.log("-------- clientAllListedProducts");
     const query = await Product.findAll({
-      // include: "productProductSizes", // Include the association
       attributes: {
         exclude: [
           "description",
@@ -119,6 +121,7 @@ const clientAllListedProducts = async (req, res) => {
           "updatedAt",
           "productImages_id",
           "category_id",
+          "isFavorite",
         ],
       },
       include: [
@@ -126,34 +129,44 @@ const clientAllListedProducts = async (req, res) => {
           model: ProductImages,
           as: "productImage",
           attributes: {
-            exclude: ["admin_id", "product_id"],
+            exclude: ["url3", "url4", "url5", "admin_id", "product_id"],
           },
         },
         {
           model: Category,
           as: "productCategory",
           attributes: {
-            exclude: ["admin_id", "createdAt", "updatedAt"],
+            exclude: ["admin_id", "createdAt", "updatedAt", "isFavorite"],
           },
         },
-        // {
-        //   model: ProductColors,
-        //   as: "productColorsProduct",
-        //   include: {
-        //     model: Color,
-        //     required: true,
-        //     as: "productColorsColor",
-        //   },
-        // },
-        // {
-        //   model: ProductFabrics,
-        //   as: "productFabricsProduct",
-        //   include: {
-        //     model: Fabric,
-        //     required: true,
-        //     as: "productFabricsFabric",
-        //   },
-        // },
+        {
+          model: ProductColors,
+          as: "productColorsProduct",
+          attributes: {
+            exclude: ["admin_id", "createdAt", "updatedAt", "product_id"],
+          },
+          include: {
+            model: Color,
+            required: true,
+            as: "productColorsColor",
+            attributes: {
+              exclude: ["admin_id", "createdAt", "updatedAt"],
+            },
+          },
+        },
+        {
+          model: ProductFabrics,
+          as: "productFabricsProduct",
+          attributes: {
+            exclude: ["url3", "url4", "url5", "admin_id", "product_id"],
+          },
+          include: {
+            model: Fabric,
+            required: true,
+            as: "productFabricsFabric",
+          },
+        },
+
         {
           model: ProductSizes,
           as: "productSizesProduct",
@@ -165,14 +178,201 @@ const clientAllListedProducts = async (req, res) => {
             required: true,
             as: "pSizeProductSizes",
             attributes: {
-              exclude: ["createdAt", "updatedAt", "admin_id", "product_id"],
+              exclude: [
+                "createdAt",
+                "updatedAt",
+                "admin_id",
+                "product_id",
+                "qty",
+              ],
             },
           },
         },
       ],
-
+      where: { isPublished: true, isRecycleBin: false },
       order: [["id", "Desc"]],
     });
+
+    return res.status(200).send({ msg: "success", query });
+  } catch (error) {
+    return res.status(500).send({ error: error.message });
+  }
+};
+
+const clientShowFilteredProducts = async (req, res) => {
+  try {
+    const categoryNames = req.query.category || [];
+    const colorNames = req.query.color || [];
+    const sizeNames = req.query.size || [];
+    const greaterPrice = req.query.price?.gte || null;
+    const lowerPrice = req.query.price?.lte || null;
+
+    const include = [
+      {
+        model: ProductImages,
+        as: "productImage",
+        attributes: {
+          exclude: ["url3", "url4", "url5", "admin_id", "product_id"],
+        },
+      },
+    ];
+
+    if (categoryNames.length > 0) {
+      include.push({
+        model: Category,
+        as: "productCategory",
+        required: true,
+        where: { name: categoryNames },
+        attributes: {
+          exclude: ["admin_id", "createdAt", "updatedAt", "isFavorite"],
+        },
+      });
+    } else {
+      include.push({
+        model: Category,
+        as: "productCategory",
+        attributes: {
+          exclude: ["admin_id", "createdAt", "updatedAt", "isFavorite"],
+        },
+      });
+    }
+
+    if (colorNames.length > 0) {
+      include.push({
+        model: ProductColors,
+        as: "productColorsProduct",
+        required: true,
+        attributes: {
+          exclude: ["admin_id", "createdAt", "updatedAt", "product_id"],
+        },
+        include: {
+          model: Color,
+          as: "productColorsColor",
+          where: { name: colorNames },
+          attributes: {
+            exclude: ["admin_id", "createdAt", "updatedAt"],
+          },
+        },
+      });
+    } else {
+      include.push({
+        model: ProductColors,
+        as: "productColorsProduct",
+        attributes: {
+          exclude: ["admin_id", "createdAt", "updatedAt", "product_id"],
+        },
+        include: {
+          model: Color,
+          as: "productColorsColor",
+          attributes: {
+            exclude: ["admin_id", "createdAt", "updatedAt"],
+          },
+        },
+      });
+    }
+
+    if (sizeNames.length > 0) {
+      // console.log("Including sizes");
+      include.push({
+        model: ProductSizes,
+        as: "productSizesProduct",
+        required: true,
+        attributes: {
+          exclude: ["createdAt", "updatedAt", "admin_id", "product_id"],
+        },
+        include: {
+          model: PSize,
+          as: "pSizeProductSizes",
+          where: { name: sizeNames },
+          attributes: {
+            exclude: [
+              "createdAt",
+              "updatedAt",
+              "admin_id",
+              "product_id",
+              "qty",
+            ],
+          },
+        },
+      });
+    } else {
+      include.push({
+        model: ProductSizes,
+        as: "productSizesProduct",
+        attributes: {
+          exclude: ["createdAt", "updatedAt", "admin_id", "product_id"],
+        },
+        include: {
+          model: PSize,
+          as: "pSizeProductSizes",
+          attributes: {
+            exclude: [
+              "createdAt",
+              "updatedAt",
+              "admin_id",
+              "product_id",
+              "qty",
+            ],
+          },
+        },
+      });
+    }
+
+    if (
+      greaterPrice !== null &&
+      lowerPrice !== null &&
+      lowerPrice > greaterPrice
+    ) {
+      console.log("Filtering with Price");
+      include.push({
+        model: ProductSizes,
+        as: "productSizesProduct",
+        required: true,
+        where: {
+          mrp: {
+            [Sequelize.Op.gt]: greaterPrice, // Greater than or equal to
+            [Sequelize.Op.lt]: lowerPrice, // Less than or equal to
+          },
+        },
+        attributes: {
+          exclude: ["createdAt", "updatedAt", "admin_id", "product_id"],
+        },
+        include: {
+          model: PSize,
+          as: "pSizeProductSizes",
+          attributes: {
+            exclude: [
+              "createdAt",
+              "updatedAt",
+              "admin_id",
+              "product_id",
+              "qty",
+            ],
+          },
+        },
+      });
+    }
+
+    const query = await Product.findAll({
+      attributes: {
+        exclude: [
+          "description",
+          "sizeAndFit",
+          "fabricAndCare",
+          "admin_id",
+          "createdAt",
+          "updatedAt",
+          "productImages_id",
+          "category_id",
+          "isFavorite",
+        ],
+      },
+      include,
+      where: { isPublished: true, isRecycleBin: false },
+      order: [["id", "Desc"]],
+    });
+
+    // console.log("----------------- END clientShowFilteredProducts");
 
     return res.status(200).send({ msg: "success", query });
   } catch (error) {
@@ -317,9 +517,11 @@ const clientGetMenuAsync = async (req, res) => {
 const clientGetSizesFilters = async (req, res) => {
   try {
     const query = await PSize.findAll({
-      attributes: {
-        exclude: ["createdAt", "updatedAt", "admin_id", "product_id", "qty"],
-      },
+      // attributes: [
+      //   "name",
+      //   [Sequelize.fn("SUM", Sequelize.col("qty")), "totalQty"],
+      // ],
+      group: ["name"],
       order: [["id", "Asc"]],
     });
 
@@ -336,4 +538,5 @@ module.exports = {
   clientGetProductFilters,
   clientGetMenuAsync,
   clientGetSizesFilters,
+  clientShowFilteredProducts,
 };

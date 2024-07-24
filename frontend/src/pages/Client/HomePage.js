@@ -96,20 +96,7 @@ const HomePage = () => {
 
           <ProductsCarousel />
 
-          <Link
-            to="/collections"
-            style={{
-              border: "1px solid #000",
-              padding: "10px 30px",
-              backgroundColor: "transparent",
-              marginTop: "20px",
-              textDecoration: "none",
-              color: "#000",
-            }}
-          >
-            {" "}
-            View All{" "}
-          </Link>
+        
         </section>
 
         <section className="homePage__2ndBox">

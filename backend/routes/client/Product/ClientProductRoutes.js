@@ -10,6 +10,10 @@ router.get(
 );
 
 router.get("/allListedProducts", productController.clientAllListedProducts);
+router.get(
+  "/filteredProducts",
+  productController.clientShowFilteredProducts
+);
 router.get("/singleProduct/:id", productController.clientGetSingleProduct);
 router.get("/productFilters", productController.clientGetProductFilters);
 router.get("/getMenu", productController.clientGetMenuAsync);

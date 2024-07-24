@@ -1,70 +1,134 @@
 import React, { useEffect, useState, useContext } from "react";
 import Header from "../../components/Client/Header";
-
-import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { FaRegHeart } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import SideBarAllFilters from "../../components/Client/ProductsFilterPage/SideBarAllFilters";
 import { useDispatch, useSelector } from "react-redux";
-import { getChildFilterAsync } from "../../Redux/AdminSlices/Filter/childFilterSlice";
-import { getParentFilterAsync } from "../../Redux/AdminSlices/Filter/parentFilterSlice";
 import { AppContext } from "../../context/AppContext";
-import { getProductSizeAsync } from "../../Redux/AdminSlices/Sizes/SizesSlice";
 import {
-  clientAllListedProductsAsync,
   clientGetProductFiltersAsync,
   clientGetSizesFiltersAsync,
+  clientShowFilteredProductsAsync,
+  sortNewestFirstAllProducts,
+  sortOldestFirstAllProducts,
+  sortPriceHighToLowProducts,
+  sortPriceLowToHighProducts,
 } from "../../Redux/ClientSlices/clientProductSlice";
 import {
   calculateProductDiscount,
   convertInInr,
 } from "../../utils/productDiscountCalculate";
 
+import LeftSideComponent from "../../components/Client/ProductsFilterPage/LeftSideComponent";
+import { useProductsFilterFunctions } from "../../customHooks/ProductsFilterPage/ProductFilterCustomHook";
+
 const ProductFilterPage = () => {
+  const location = useLocation();
+  const dispatch = useDispatch();
+  // const navigate = useNavigate();
+
+  const {
+    selectedFilters,
+    setSelectedFilters,
+    productsIsFilteringLoader,
+    // setproductsIsFilteringLoader,
+    // handleFilterChange,
+    removeFilter,
+    // handleCheckboxChange,
+    // handlePriceChange,
+    // handleSizeChange,
+    // updateURL,
+  } = useProductsFilterFunctions();
+
   const client_allProductsRedux = useSelector(
     (state) => state.client_product.allProducts
   );
 
-  const client_productFiltersRedux = useSelector(
-    (state) => state.client_product.productFilters
-  );
-
-  const client_sizesFiltersRedux = useSelector(
-    (state) => state.client_product.sizesFilters
-  );
-
-  // console.log("clientProductFiltersRedux - ", clientProductFiltersRedux);
   const { setisLoadingTopProgress } = useContext(AppContext);
 
-  // console.log("adminParentFilterRedux - ", adminParentFilterRedux.query);
-  const dispatch = useDispatch();
-  const [isFilterChildRadiosVisible, setIsFilterChildRadiosVisible] = useState(
-    {}
-  );
+  // const [productsIsFilteringLoader, setproductsIsFilteringLoader] =
+  //   useState(false);
 
-  // console.log("isFilterChildRadiosVisible - ", isFilterChildRadiosVisible);
-  const handleFilterToggle = (id) => {
-    setIsFilterChildRadiosVisible((prevState) => ({
-      ...prevState,
-      [id]: !prevState[id],
-    }));
-  };
+  const [whichTypeOfSortingSelected, setwhichTypeOfSortingSelected] =
+    useState("Low to high");
 
-  async function fetchFilter() {
+  async function fetchData(filters) {
     setisLoadingTopProgress(30);
 
     await dispatch(clientGetProductFiltersAsync());
 
     await dispatch(clientGetSizesFiltersAsync());
 
-    await dispatch(clientAllListedProductsAsync());
+    await dispatch(
+      clientShowFilteredProductsAsync({
+        filters,
+      })
+    );
 
     setisLoadingTopProgress(100);
   }
 
+  function sortingOnChange(option) {
+    if (option === "Newest First") {
+      dispatch(sortNewestFirstAllProducts());
+    }
+
+    if (option === "Oldest First") {
+      dispatch(sortOldestFirstAllProducts());
+    }
+
+    if (option === "Low to high") {
+      setwhichTypeOfSortingSelected("Low to high");
+      dispatch(sortPriceLowToHighProducts());
+    }
+
+    if (option === "High to low") {
+      setwhichTypeOfSortingSelected("High to low");
+      dispatch(sortPriceHighToLowProducts());
+    }
+  }
+
   useEffect(() => {
-    fetchFilter();
-  }, []);
+    const searchParams = new URLSearchParams(location.search);
+    // console.log("searchParams - ", searchParams);
+    const category = searchParams.getAll("filter.category");
+    const color = searchParams.getAll("filter.color");
+    const size = searchParams.getAll("filter.size");
+    const priceGte = searchParams.get("filter.price.gte");
+    const priceLte = searchParams.get("filter.price.lte");
+
+    const filters = {
+      category,
+      color,
+      size,
+      price: {
+        gte: priceGte,
+        lte: priceLte,
+      },
+    };
+
+    fetchData(filters);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    // console.log("searchParams - ", searchParams);
+    const category = searchParams.getAll("filter.category");
+    const color = searchParams.getAll("filter.color");
+    const size = searchParams.getAll("filter.size");
+    const priceGte = searchParams.get("filter.price.gte");
+    const priceLte = searchParams.get("filter.price.lte");
+
+    setSelectedFilters({
+      category,
+      color,
+      size,
+      price: {
+        gte: priceGte,
+        lte: priceLte,
+      },
+    });
+  }, [location.search]);
 
   return (
     <>
@@ -73,254 +137,324 @@ const ProductFilterPage = () => {
       <div className="pFilterPage">
         <div className="row">
           <div className="col-12  col-md-3 d-none d-md-block">
-            <div className="pFilterPage__left">
-              <div className="">
-                <h6 className="pFilterPage__left__title">Filter</h6>
-              </div>
-
-              <div className="pFilterPage__left__filtersBox">
-                {(function () {
-                  try {
-                    return (
-                      client_productFiltersRedux.query &&
-                      client_productFiltersRedux.query.map((data, index) => {
-                        return (
-                          <div
-                            className="pFilterPage__left__filtersBox__card"
-                            key={index}
-                          >
-                            <div
-                              className="pFilterPage__left__filtersBox__card__wrapper"
-                              onClick={() => handleFilterToggle(index)}
-                            >
-                              <div className="pFilterPage__left__filtersBox__card__title">
-                                <p> {data.name && data.name} </p>
-                              </div>
-                              <div className="pFilterPage__left__filtersBox__card__icon">
-                                {" "}
-                                {isFilterChildRadiosVisible[index] ? (
-                                  <IoIosArrowUp />
-                                ) : (
-                                  <IoIosArrowDown />
-                                )}{" "}
-                              </div>
-                            </div>
-
-                            <div
-                              className={`pFilterPage__left__filtersBox__card__childRadios ${
-                                isFilterChildRadiosVisible[index]
-                                  ? "visible"
-                                  : "hidden"
-                              } `}
-                            >
-                              {data.filterChildData &&
-                                data.filterChildData.map((subData, subIdx) => {
-                                  return (
-                                    <div
-                                      className="pFilterPage__left__filtersBox__card__childRadios__card"
-                                      key={subIdx}
-                                    >
-                                      {" "}
-                                      <input
-                                        type="checkbox"
-                                        name="categoryCloth"
-                                        id={`${subData.name}${subData.id}`}
-                                        className="pFilterPage__left__filtersBox__card__childRadios__card__checkBox"
-                                      />{" "}
-                                      <label
-                                        htmlFor={`${subData.name}${subData.id}`}
-                                        className="pFilterPage__left__filtersBox__card__childRadios__card__label"
-                                      >
-                                        {subData.name} (5)
-                                      </label>
-                                    </div>
-                                  );
-                                })}
-                            </div>
-                          </div>
-                        );
-                      })
-                    );
-                  } catch (error) {
-                    console.log("Filter Error - ", error);
-                  }
-                })()}
-
-                <div className="pFilterPage__left__filtersBox__card">
-                  <div
-                    className="pFilterPage__left__filtersBox__card__wrapper"
-                    onClick={() => handleFilterToggle("sizes")}
-                  >
-                    <div className="pFilterPage__left__filtersBox__card__title">
-                      <p> Sizes </p>
-                    </div>
-                    <div className="pFilterPage__left__filtersBox__card__icon">
-                      {" "}
-                      {isFilterChildRadiosVisible["sizes"] ? (
-                        <IoIosArrowUp />
-                      ) : (
-                        <IoIosArrowDown />
-                      )}{" "}
-                    </div>
-                  </div>
-
-                  <div
-                    className={`pFilterPage__left__filtersBox__card__sizes   ${
-                      isFilterChildRadiosVisible["sizes"] ? "visible" : "hidden"
-                    } `}
-                  >
-                    {(function () {
-                      try {
-                        return (
-                          client_sizesFiltersRedux.query &&
-                          client_sizesFiltersRedux.query.map((size, idx) => {
-                            return (
-                              <Link
-                                className="pFilterPage__left__filtersBox__card__sizes__card"
-                                key={idx}
-                              >
-                                {size.name && size.name} (000)
-                              </Link>
-                            );
-                          })
-                        );
-                      } catch (error) {
-                        console.log("Error - ", error.message);
-                      }
-                    })()}
-                  </div>
-                </div>
-              </div>
-            </div>
+            <LeftSideComponent />
           </div>
 
           <div className="col-12 d-block d-md-none">
-            <SideBarAllFilters />
+            <SideBarAllFilters sortingOnChange={sortingOnChange} />
           </div>
 
           <div className="col-12 col-md-9">
             <div className="pFilterPage__right">
-              <div className="pFilterPage__right__header">
+              {/* for desktop Mode  */}
+              <div className="pFilterPage__right__header d-none d-md-block">
                 <div className="pFilterPage__right__header__1st">
-                  <h6>Casuals</h6>
+                  {/* <h6>Casuals</h6> */}
                 </div>
                 <div className="pFilterPage__right__header__2nd">
                   <div>
                     <p
                       style={{
-                        fontSize: "12px",
-                        fontWeight: "500",
+                        fontSize: "14px",
+                        fontWeight: "600",
                         color: "#131212",
                       }}
                     >
-                      499 Products
+                      {client_allProductsRedux?.query &&
+                        client_allProductsRedux?.query.length}{" "}
+                      Products
                     </p>
                   </div>
                   <div>
                     <select
                       className="form-select form-select-sm"
-                      aria-label=".form-select-sm example"
-                      id="openselecr"
-                      name="sdfasdfs"
+                      onChange={(e) => sortingOnChange(e.target.value)}
                     >
-                      <option>Open this select menu</option>
-                      <option value="1">One</option>
-                      <option value="2">Two</option>
-                      <option value="3">Three</option>
+                      <option>Sort It</option>
+                      <option value="Oldest First"> Oldest First</option>
+                      <option value="Newest First"> Newest First</option>
+                      <option value="Low to high">Price - Low to high</option>
+                      <option value="High to low">Price - High to low</option>
                     </select>
                   </div>
                 </div>
               </div>
+              {/* For mobile mode  */}
 
-              <div className="pFilterPage__right__body">
-                {/* <p> {client_allProductsRedux.query  } </p> */}
-                <div className=" row ">
-                  {(function () {
-                    try {
-                      return (
-                        client_allProductsRedux.query &&
-                        client_allProductsRedux.query.map((product, index) => {
-                          const sortedProductSizes = [
-                            ...(product.productSizesProduct || []),
-                          ].sort((a, b) => a.mrp - b.mrp);
+              <div className="pFilterPage__right__header d-block d-md-none">
+                {/* <div className="pFilterPage__right__header__1st">
+                  <h6>selected -</h6>
+                </div> */}
+                <div
+                  className="pFilterPage__right__header__2nd"
+                  style={{ marginBottom: "10px" }}
+                >
+                  <div>
+                    <div className="pFilterPage__left__pathNames">
+                      {selectedFilters.category.map((category, idx) => (
+                        <div
+                          className="pFilterPage__left__pathNames__wrapper"
+                          key={idx}
+                        >
+                          <p className="pFilterPage__left__pathNames__wrapper__text">
+                            {category}
+                          </p>
+                          <span
+                            className="pFilterPage__left__pathNames__wrapper__icon"
+                            onClick={() => removeFilter("category", category)}
+                          >
+                            &#10006;
+                          </span>{" "}
+                        </div>
+                      ))}
+                      {selectedFilters.color.map((color, idx) => (
+                        <div
+                          className="pFilterPage__left__pathNames__wrapper"
+                          key={idx}
+                        >
+                          <p className="pFilterPage__left__pathNames__wrapper__text">
+                            {color}
+                          </p>
+                          <span
+                            className="pFilterPage__left__pathNames__wrapper__icon"
+                            onClick={() => removeFilter("color", color)}
+                          >
+                            &#10006;
+                          </span>{" "}
+                        </div>
+                      ))}
+                      {selectedFilters.size.map((size, idx) => (
+                        <div
+                          className="pFilterPage__left__pathNames__wrapper"
+                          key={idx}
+                        >
+                          <p className="pFilterPage__left__pathNames__wrapper__text">
+                            Size - {size}
+                          </p>
+                          <span
+                            className="pFilterPage__left__pathNames__wrapper__icon"
+                            onClick={() => removeFilter("size", size)}
+                          >
+                            &#10006;
+                          </span>{" "}
+                        </div>
+                      ))}
 
-                          if (
-                            product.isPublished === true &&
-                            product.isRecycleBin === false
-                          ) {
-                            return (
-                              <div
-                                className="col-6 col-lg-4 col-xl-3 mb-2 p-1"
-                                // style={{ paddingLeft : "0px" }}
-                                key={index}
-                              >
-                                <div className="pFilterPage__right__body__card">
-                                  <div
-                                    className="pFilterPage__right__body__card__favIcon"
-                                    onClick={() => alert("Click on Fav Icon")}
-                                  >
-                                    <FaRegHeart />{" "}
-                                  </div>
-                                  <Link
-                                    to={`/product/${
-                                      product.productCategory &&
-                                      product.productCategory.name
-                                    }/${product.id}/${product.name}`}
-                                  >
-                                    <img
-                                      // src="https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FDR896ACBL_1.jpg%3Fv%3D1689061795&w=1920&q=75"
-                                      src={
-                                        product.productImage &&
-                                        product.productImage.url1
-                                      }
-                                      className="pFilterPage__right__body__card__image"
-                                      alt="dress"
-                                    />
-                                    <p className="pFilterPage__right__body__card__productTitle">
-                                      {product.name &&
-                                        product.name.substring(0, 30) + "..."}
-                                    </p>
-                                  </Link>
-
-                                  <div className="pFilterPage__right__body__card__prices">
-                                    <p>
-                                      {calculateProductDiscount(
-                                        sortedProductSizes.length > 0
-                                          ? sortedProductSizes[0].mrp
-                                          : 0,
-                                        sortedProductSizes.length > 0
-                                          ? sortedProductSizes[0]
-                                              .discountPercent
-                                          : 0
-                                      )}
-                                    </p>
-                                    <p
-                                      style={{ textDecoration: "line-through" }}
-                                    >
-                                      {convertInInr(
-                                        sortedProductSizes.length > 0
-                                          ? sortedProductSizes[0].mrp
-                                          : 0
-                                      )}
-                                    </p>
-                                    <p style={{ color: "#A10E2C" }}>
-                                      {sortedProductSizes.length > 0
-                                        ? sortedProductSizes[0].discountPercent
-                                        : 0}
-                                      % Off
-                                    </p>
-                                  </div>
-                                </div>
-                              </div>
-                            );
-                          }
-                        })
-                      );
-                    } catch (error) {
-                      console.log("Error - ", error.message);
-                    }
-                  })()}
+                      {selectedFilters.price.gte && (
+                        <div className="pFilterPage__left__pathNames__wrapper">
+                          <p className="pFilterPage__left__pathNames__wrapper__text">
+                            Price ≤ {selectedFilters.price.gte}{" "}
+                          </p>
+                          <span
+                            className="pFilterPage__left__pathNames__wrapper__icon"
+                            onClick={() => removeFilter("price", "gte")}
+                          >
+                            &#10006;
+                          </span>{" "}
+                        </div>
+                      )}
+                      {selectedFilters.price.lte && (
+                        <div className="pFilterPage__left__pathNames__wrapper">
+                          <p className="pFilterPage__left__pathNames__wrapper__text">
+                            Price ≤ {selectedFilters.price.lte}{" "}
+                          </p>
+                          <span
+                            className="pFilterPage__left__pathNames__wrapper__icon"
+                            onClick={() => removeFilter("price", "lte")}
+                          >
+                            &#10006;
+                          </span>{" "}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <div>
+                    <p
+                      style={{
+                        fontSize: "14px",
+                        fontWeight: "600",
+                        color: "#131212",
+                        textAlign: "center",
+                      }}
+                    >
+                      {client_allProductsRedux?.query &&
+                        client_allProductsRedux?.query.length}{" "}
+                      Products
+                    </p>
+                  </div>
                 </div>
+              </div>
+
+              <div>
+                {productsIsFilteringLoader && (
+                  <div className="pFilterPage__right__loader">
+                    {" "}
+                    <div className="spinner-border" role="status"></div>{" "}
+                  </div>
+                )}
+
+                {productsIsFilteringLoader === false ? (
+                  <div className="pFilterPage__right__body">
+                    <div className="row">
+                      {(function () {
+                        try {
+                          return (
+                            client_allProductsRedux.query &&
+                            client_allProductsRedux.query.map(
+                              (product, index) => {
+                                // console.log("product ----> ", product);
+
+                                const sortedProductSizes = [
+                                  ...(product.productSizesProduct || []),
+                                ];
+                                // .sort((a, b) => a.mrp - b.mrp);
+
+                                if (
+                                  product.isPublished === true &&
+                                  product.isRecycleBin === false
+                                ) {
+                                  return (
+                                    <div
+                                      className="col-6 col-lg-4 col-xl-3 mb-2 p-1"
+                                      // style={{ paddingLeft : "0px" }}
+                                      key={index}
+                                    >
+                                      <div className="pFilterPage__right__body__card">
+                                        <div
+                                          className="pFilterPage__right__body__card__favIcon"
+                                          onClick={() =>
+                                            alert("Click on Fav Icon")
+                                          }
+                                        >
+                                          <FaRegHeart />{" "}
+                                        </div>
+                                        <Link
+                                          to={`/product/${
+                                            product.productCategory &&
+                                            product.productCategory.name
+                                          }/${product.id}/${product.name}`}
+                                        >
+                                          <img
+                                            src={
+                                              product.productImage &&
+                                              product.productImage.url1
+                                            }
+                                            className="pFilterPage__right__body__card__image"
+                                            alt="dress"
+                                          />
+                                          <p className="pFilterPage__right__body__card__productTitle">
+                                            {product.name &&
+                                              product.name.substring(0, 30) +
+                                                "..."}
+                                          </p>
+
+                                          <div
+                                            className="d-flex flex-row align-items-center gap-1 "
+                                            style={{ marginTop: "-20px" }}
+                                          >
+                                            <p className="pFilterPage__right__body__card__productTitle">
+                                              {product?.productCategory?.name}{" "}
+                                              {" | "}
+                                            </p>
+
+                                            <div>
+                                              {product?.productColorsProduct &&
+                                                product?.productColorsProduct.map(
+                                                  (color, idx) => {
+                                                    return (
+                                                      <span
+                                                        key={idx}
+                                                        title={`${color?.productColorsColor?.name}`}
+                                                        style={{
+                                                          width: "15px",
+                                                          height: "15px",
+                                                          borderRadius: "50%",
+                                                          backgroundColor: `${color?.productColorsColor?.name}`,
+                                                          display:
+                                                            "inline-block",
+                                                          cursor: "pointer",
+                                                          marginRight: "5px",
+                                                          border:
+                                                            "1px solid #000",
+                                                        }}
+                                                      >
+                                                        {/* {" | "}
+
+                                                {" , "} */}
+                                                      </span>
+                                                    );
+                                                  }
+                                                )}
+                                            </div>
+                                          </div>
+
+                                          <p
+                                            className="pFilterPage__right__body__card__productTitle"
+                                            style={{ marginTop: "-10px" }}
+                                          >
+                                            Sizes -
+                                            {product?.productSizesProduct &&
+                                              product?.productSizesProduct.map(
+                                                (psize, idx) => {
+                                                  return (
+                                                    <span key={idx}>
+                                                      {
+                                                        psize?.pSizeProductSizes
+                                                          ?.name
+                                                      }
+                                                      {" , "}
+                                                    </span>
+                                                  );
+                                                }
+                                              )}
+                                          </p>
+                                        </Link>
+
+                                        <div className="pFilterPage__right__body__card__prices">
+                                          <p>
+                                            {calculateProductDiscount(
+                                              sortedProductSizes.length > 0
+                                                ? sortedProductSizes[0].mrp
+                                                : 0,
+                                              sortedProductSizes.length > 0
+                                                ? sortedProductSizes[0]
+                                                    .discountPercent
+                                                : 0
+                                            )}
+                                          </p>
+                                          <p
+                                            style={{
+                                              textDecoration: "line-through",
+                                            }}
+                                          >
+                                            {convertInInr(
+                                              sortedProductSizes.length > 0
+                                                ? sortedProductSizes[0].mrp
+                                                : 0
+                                            )}
+                                          </p>
+                                          <p style={{ color: "#A10E2C" }}>
+                                            {sortedProductSizes.length > 0
+                                              ? sortedProductSizes[0]
+                                                  .discountPercent
+                                              : 0}
+                                            % Off
+                                          </p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  );
+                                }
+                              }
+                            )
+                          );
+                        } catch (error) {
+                          console.log("Error - ", error.message);
+                        }
+                      })()}
+                    </div>
+                  </div>
+                ) : null}
               </div>
             </div>
           </div>

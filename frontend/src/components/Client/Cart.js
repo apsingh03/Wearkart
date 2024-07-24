@@ -23,6 +23,9 @@ const Cart = ({ setcartIsHover }) => {
   const dispatch = useDispatch();
 
   const user_userCart = useSelector((state) => state.user_userCart.data);
+  const clientIsLogged = useSelector(
+    (state) => state.client_auth.loggedData.isUserLogged
+  );
 
   const { setisLoadingTopProgress } = useContext(AppContext);
   let calculateTotalCartMrp = 0;
@@ -31,7 +34,9 @@ const Cart = ({ setcartIsHover }) => {
   async function fetchData() {
     setisLoadingTopProgress(30);
 
-    await dispatch(getUserCartAsync());
+    if (clientIsLogged) {
+      await dispatch(getUserCartAsync());
+    }
 
     setisLoadingTopProgress(100);
   }

@@ -2,9 +2,14 @@ import React, { useEffect, useState, useContext } from "react";
 import { RxCross2 } from "react-icons/rx";
 import { FaPlus, FaMinus } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+import { TiTick } from "react-icons/ti";
 import { AppContext } from "../../../context/AppContext";
-import { getParentFilterAsync } from "../../../Redux/AdminSlices/Filter/parentFilterSlice";
 import { useDispatch, useSelector } from "react-redux";
+import {
+  clientGetProductFiltersAsync,
+  clientGetSizesFiltersAsync,
+} from "../../../Redux/ClientSlices/clientProductSlice";
+import { useProductsFilterFunctions } from "../../../customHooks/ProductsFilterPage/ProductFilterCustomHook";
 
 const SideFilter = ({ setIsFilterSideBarVisible }) => {
   const [isSubMenuToggle, setisSubMenuToggle] = useState({});
@@ -18,76 +23,58 @@ const SideFilter = ({ setIsFilterSideBarVisible }) => {
     }));
   };
 
-  const adminParentFilterRedux = useSelector(
-    (state) => state.admin_parentFilter.data
+  const client_sizesFiltersRedux = useSelector(
+    (state) => state.client_product.sizesFilters
   );
 
-  console.log("adminParentFilterRedux - ", adminParentFilterRedux);
+  // console.log("client_sizesFiltersRedux - ", client_sizesFiltersRedux);
 
-  const { isLoadingTopProgress, setisLoadingTopProgress } =
-    useContext(AppContext);
+  const client_productFiltersRedux = useSelector(
+    (state) => state.client_product.productFilters
+  );
+
+  // console.log("client_productFiltersRedux - ", client_productFiltersRedux);
+
+  const { setisLoadingTopProgress } = useContext(AppContext);
 
   async function fetchFilter() {
     setisLoadingTopProgress(30);
 
-    const actionResultParent = await dispatch(getParentFilterAsync());
+    await dispatch(clientGetProductFiltersAsync());
 
-    if (actionResultParent.payload.msg === "success") {
-      setisLoadingTopProgress(100);
-    }
+    await dispatch(clientGetSizesFiltersAsync());
+
+    setisLoadingTopProgress(100);
   }
+
+  const {
+    selectedFilters,
+    setSelectedFilters,
+    productsIsFilteringLoader,
+    setproductsIsFilteringLoader,
+    // handleFilterChange,
+    // removeFilter,
+    handleCheckboxChange,
+    // handlePriceChange,
+    handleSizeChange,
+    // updateURL,
+  } = useProductsFilterFunctions();
 
   useEffect(() => {
     fetchFilter();
   }, []);
-
-  const menuData = [
-    {
-      id: 1,
-      catName: "Category 1",
-      subMenu: [
-        { id: 1, subName: "cat 1.1", url: "" },
-        { id: 2, subName: "cat 1.2", url: "" },
-        { id: 3, subName: "cat 1.3", url: "" },
-        { id: 4, subName: "cat 1.4", url: "" },
-        { id: 5, subName: "cat 1.5", url: "" },
-        { id: 6, subName: "cat 1.6", url: "" },
-      ],
-    },
-
-    {
-      id: 2,
-      catName: "Category 2",
-      subMenu: [
-        { id: 1, subName: "cat 2.1", url: "" },
-        { id: 2, subName: "cat 2.2", url: "" },
-        { id: 3, subName: "cat 2.3", url: "" },
-        { id: 4, subName: "cat 2.4", url: "" },
-        { id: 5, subName: "cat 2.5", url: "" },
-        { id: 6, subName: "cat 2.6", url: "" },
-      ],
-    },
-
-    {
-      id: 3,
-      catName: "Category 3",
-      subMenu: [
-        { id: 1, subName: "cat 3.1", url: "" },
-        { id: 2, subName: "cat 3.2", url: "" },
-        { id: 3, subName: "cat 3.3", url: "" },
-        { id: 4, subName: "cat 3.4", url: "" },
-        { id: 5, subName: "cat 3.5", url: "" },
-        { id: 6, subName: "cat 3.6", url: "" },
-      ],
-    },
-  ];
 
   return (
     <div className="filterMenu">
       <div className="filterMenu__header">
         <div className="d-flex flex-row" style={{ gap: "10px" }}>
           <h6 className="filterMenu__header__title">Filter</h6>
-          <h6 className="filterMenu__header__countingText">0</h6>
+          <h6 className="filterMenu__header__countingText">
+            {" "}
+            {selectedFilters?.category.length +
+              selectedFilters?.color.length +
+              selectedFilters?.size.length}{" "}
+          </h6>
         </div>
 
         <div
@@ -98,44 +85,73 @@ const SideFilter = ({ setIsFilterSideBarVisible }) => {
         </div>
       </div>
       <div className="filterMenu__body">
-        {adminParentFilterRedux.query &&
-          adminParentFilterRedux.query.map((data, idx) => {
+        {client_productFiltersRedux.query &&
+          client_productFiltersRedux.query.map((filter, idx) => {
             return (
               <div
                 className="filterMenu__body__card"
                 key={idx}
-                onClick={() => handleToggle(data.id)}
+                onClick={() => handleToggle(filter.id)}
               >
                 <div className="filterMenu__body__card__parent ">
                   <div>
                     <span className="filterMenu__body__card__parent__catName">
-                      {data.name}
+                      {filter?.name}
                     </span>
                   </div>
 
                   <div>
                     <span>
-                      {isSubMenuToggle[data.id] ? <FaMinus /> : <FaPlus />}
+                      {isSubMenuToggle[filter.id] ? <FaMinus /> : <FaPlus />}
                     </span>
                   </div>
                 </div>
 
                 <div
                   className={`filterMenu__body__child  ${
-                    isSubMenuToggle[data.id]
+                    isSubMenuToggle[filter.id]
                       ? "subMenuActive"
                       : "subMenuNotActive"
                   } `}
                 >
-                  {data.childData &&
-                    data.childData.map((subMenuData, subMenuIdx) => {
+                  {filter.filterChildData &&
+                    filter.filterChildData.map((subFilter, subFilterIdx) => {
                       return (
                         <div
-                          key={subMenuIdx}
-                          className="filterMenu__body__child__card"
+                          className="pFilterPage__left__filtersBox__card__childRadios__card"
+                          key={subFilterIdx}
                         >
-                          {" "}
-                          <Link to="#"> {subMenuData.name} </Link>{" "}
+                          <input
+                            type="checkbox"
+                            // name="filterCategory"
+                            onChange={(e) =>
+                              handleCheckboxChange(
+                                e,
+                                filter?.name.toLowerCase(),
+                                subFilter?.name
+                              )
+                            }
+                            id={`${subFilter?.name}${subFilter?.id}`}
+                            checked={
+                              selectedFilters[filter?.name.toLowerCase()] &&
+                              selectedFilters[
+                                filter?.name.toLowerCase()
+                              ].includes(subFilter?.name)
+                            }
+                            className="pFilterPage__left__filtersBox__card__childRadios__card__checkBox"
+                          />
+                          <label
+                            htmlFor={`${subFilter?.name}${subFilter?.id}`}
+                            className=" filterMenu__body__child__card__label"
+                          >
+                            {subFilter?.name}{" "}
+                            {selectedFilters[filter?.name.toLowerCase()] &&
+                            selectedFilters[
+                              filter?.name.toLowerCase()
+                            ].includes(subFilter?.name)
+                              ? true
+                              : false}
+                          </label>
                         </div>
                       );
                     })}
@@ -143,15 +159,68 @@ const SideFilter = ({ setIsFilterSideBarVisible }) => {
               </div>
             );
           })}
+
+        <div
+          className="filterMenu__body__card"
+          onClick={() => handleToggle(76867)}
+        >
+          <div className="filterMenu__body__card__parent ">
+            <div>
+              <span className="filterMenu__body__card__parent__catName">
+                Size
+              </span>
+            </div>
+
+            <div>
+              <span>{isSubMenuToggle[76867] ? <FaMinus /> : <FaPlus />}</span>
+            </div>
+          </div>
+
+          <div
+            className={`filterMenu__body__child  ${
+              isSubMenuToggle[76867] ? "subMenuActive" : "subMenuNotActive"
+            } `}
+          >
+            {(function () {
+              try {
+                return (
+                  client_sizesFiltersRedux.query &&
+                  client_sizesFiltersRedux.query.map((size, idx) => {
+                    return (
+                      <div
+                        key={idx}
+                        className="filterMenu__body__child__card"
+                        onClick={(e) => handleSizeChange(e, size?.name)}
+                      >
+                        <Link>
+                          {size?.name}
+                          {selectedFilters["size"] &&
+                          selectedFilters["size"].includes(size?.name) ? (
+                            <TiTick size={20} color="#000" />
+                          ) : null}
+                        </Link>
+                      </div>
+                    );
+                  })
+                );
+              } catch (error) {
+                console.log("Error - ", error.message);
+              }
+            })()}
+          </div>
+        </div>
       </div>
 
       <div className="filterMenu__footer">
-        <div className="filterMenu__footer__cancelBtn">
+        <div
+          className="filterMenu__footer__cancelBtn"
+          onClick={() => setIsFilterSideBarVisible((prev) => !prev)}
+        >
           <span>cancel</span>
         </div>
 
         <div className="filterMenu__footer__applyBtn">
-          <span>apply</span>
+          <span>XYZ</span>
         </div>
       </div>
     </div>

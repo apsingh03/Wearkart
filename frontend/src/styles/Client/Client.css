@@ -406,7 +406,7 @@ body {
 }
 
 .homePage__3rdBox #myTab button {
-  border-bottom: 1px solid #1c1a1a;
+  border-bottom: 0px solid #1c1a1a;
   border-top: none;
   border-left: none;
   border-right: none;
@@ -418,6 +418,10 @@ body {
   border-top: none;
   border-left: none;
   border-right: none;
+}
+
+.homePage__3rdBox #myTab button.active {
+  border-bottom: 2px solid #000;
 }
 
 .homePage__3rdBox__wrapper {
@@ -716,12 +720,6 @@ body {
   overflow-x: hidden;
 }
 
-.pFilterPage__left {
-  /* height: 100%;
-    position: fixed;
-    width: 20%; */
-}
-
 .pFilterPage__left__title {
   font-size: 20px;
   font-weight: 500;
@@ -729,15 +727,45 @@ body {
 }
 
 .pFilterPage__left {
-  height: 100vh;
+  min-height: 100vh;
   overflow-y: scroll;
   padding: 0px 10px;
 }
 
+.pFilterPage__left__pathNames {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+
+}
+
+.pFilterPage__left__pathNames__wrapper {
+  border: 1px solid #1312129c;
+  padding: 5px;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  height: 32px;
+  align-items: flex-start;
+}
+
+.pFilterPage__left__pathNames__wrapper__text {
+  font-size: 14px;
+  font-weight: 500;
+  color: #131212;
+}
+
+.pFilterPage__left__pathNames__wrapper__icon {
+  /* font-size: 15px; */
+  cursor: pointer;
+}
+
 .pFilterPage__left__filtersBox {
-  /* padding: 10px; */
-  /* background-color: #ddd; */
-  margin-top: 55px;
+
+  margin-top: 20px;
 }
 
 .pFilterPage__left__filtersBox__card {
@@ -811,6 +839,15 @@ body {
   color: #131212;
 }
 
+.pFilterPage__left__filtersBox__card__childRadios__card__label {
+  color: #131212;
+  margin-left: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: var(--default-font);
+}
+
 .pFilterPage__left__filtersBox__card__sizes {
   display: flex !important;
   flex-direction: row;
@@ -833,6 +870,19 @@ body {
   color: #131212;
   border: 1px solid #2b2828;
   font-size: 12px;
+  border-radius: 5px;
+  background-color: none;
+  transition: background-color 0.8s ease;
+}
+
+.pFilterPage__left__filtersBox__card__sizes__card.active {
+  background-color: #131212;
+  color: #fff;
+}
+
+.pFilterPage__left__filtersBox__card__sizes__card.active:hover {
+  background-color: #434040;
+  color: #fff;
 }
 
 .pFilterPage__left__filtersBox__card__sizes__card:hover {
@@ -842,6 +892,15 @@ body {
 .pFilterPage__right {
   /* background-color: #534e5c; */
   padding: 5px;
+}
+
+.pFilterPage__right__loader {
+  height: 50vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .pFilterPage__right__header {
@@ -1005,6 +1064,7 @@ body {
   flex-direction: row;
   align-items: baseline;
   gap: 10px;
+  cursor: pointer;
 }
 
 .sideBarFilter__divs__card__children__body__card__text {
@@ -1031,7 +1091,7 @@ body {
   /* justify-content: space-between; */
   font-family: var(--default-font);
   position: absolute;
-  top: -107px;
+  /* top: -107px; */
   z-index: 1;
   left: 0;
 
@@ -1161,6 +1221,32 @@ body {
   width: 100%;
 }
 
+.filterMenu__body__child__card__label {
+  font-size: 16px;
+  font-weight: 500;
+  color: #131212;
+  font-family: "Source Sans 3";
+  text-decoration: none;
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.filterMenu__body__child__card__label::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 2px;
+  background-color: #131212;
+  bottom: -1px;
+  left: 0;
+  transition: width 0.3s ease;
+}
+
+.filterMenu__body__child__card__label:hover::after {
+  width: 100%;
+}
+
 .filterMenu__footer {
   padding: 10px;
   position: absolute;
@@ -1187,6 +1273,7 @@ body {
   font-size: 14px;
   font-weight: 600;
   color: #000;
+  cursor: pointer;
 }
 
 .filterMenu__footer__applyBtn {
@@ -1202,6 +1289,7 @@ body {
   font-weight: 600;
   color: #fff;
   background-color: #29282b;
+  cursor: pointer;
 }
 
 /* 
@@ -1309,7 +1397,7 @@ body {
   display: flex;
   flex-direction: row;
   padding: 5px;
-  height: 100vh;
+  min-height: 100vh;
 }
 
 .productDetail__left_imageGrid {

@@ -484,6 +484,38 @@ const ProductsCarousel = () => {
                       })()
                     )}
                 </div>
+
+                <div style={{ marginTop: "30px", textAlign: "center" }}>
+                  {(function () {
+                    const selectedCategoryName =
+                      categoryWiseProductsRedux.query &&
+                      categoryWiseProductsRedux.query.find(
+                        (category, index) => {
+                          return index === currentCategoryIndex;
+                        }
+                      );
+
+                    try {
+                      return (
+                        <Link
+                          to={`/collections?filter.category=${selectedCategoryName?.name}`}
+                          style={{
+                            border: "1px solid #000",
+                            padding: "10px 30px",
+                            backgroundColor: "transparent",
+                            textDecoration: "none",
+                            color: "#000",
+                          }}
+                        >
+                          {" "}
+                          View All{" "}
+                        </Link>
+                      );
+                    } catch (error) {
+                      console.log("Error - ", error.message);
+                    }
+                  })()}
+                </div>
               </>
             );
           } catch (error) {
