@@ -24,7 +24,7 @@ const clientGetCategoryWiseProduct = async (req, res) => {
     // console.log("-------clientGetCategoryWiseProduct");
     const query = await Category.findAll({
       attributes: {
-        exclude: ["createdAt", "updatedAt"],
+        exclude: ["createdAt", "updatedAt", "admin_id"],
       },
       where: { isFavorite: true },
       include: [
@@ -50,7 +50,7 @@ const clientGetCategoryWiseProduct = async (req, res) => {
               model: ProductImages,
               as: "productImage",
               attributes: {
-                exclude: ["admin_id", "product_id"],
+                exclude: ["admin_id", "product_id", "url3", "url4", "url5"],
               },
             },
             // {
