@@ -15,6 +15,14 @@ import productSlice from "./AdminSlices/Product/ProductSlice";
 import clientProductSlice from "./ClientSlices/clientProductSlice";
 import UserCartSlice from "./UserSlices/Cart/UserCartRedux";
 import ordersSlice from "./AdminSlices/Orders/OrderSlice";
+import parentBannerCarouselSlice from "./AdminSlices/BannerCarousel/parentBannerCarouselSlice";
+import childBannerCarouselSlice from "./AdminSlices/BannerCarousel/childBannerCarouselSlice";
+import parentActressCarouselSlice from "./AdminSlices/ActressCarousel/parentActressCarouselSlice";
+import childActressCarouselSlice from "./AdminSlices/ActressCarousel/childActressCarouselSlice";
+import parentTestimonialSlice from "./AdminSlices/Testimonial/parentTestimonialSlice";
+import childTestimonialSlice from "./AdminSlices/Testimonial/childTestimonialSlice";
+import fourImagesBannerSlice from "./AdminSlices/FourImagesBanner/FourImagesBannerSlice";
+import favoriteProductSlice from "./UserSlices/FavoriteProduct/FavoriteProductSlice";
 
 export const store = configureStore({
   reducer: {
@@ -30,6 +38,13 @@ export const store = configureStore({
     admin_fabric: fabricSlice,
     admin_product: productSlice,
     admin_orders: ordersSlice,
+    admin_parentBannerCarousel: parentBannerCarouselSlice,
+    admin_childBannerCarousel: childBannerCarouselSlice,
+    admin_parentActressCarousel: parentActressCarouselSlice,
+    admin_childActressCarousel: childActressCarouselSlice,
+    admin_parentTestimonial: parentTestimonialSlice,
+    admin_childTestimonial: childTestimonialSlice,
+    admin_fourImagesBanner: fourImagesBannerSlice,
 
     // Client Slices
     client_product: clientProductSlice,
@@ -37,5 +52,6 @@ export const store = configureStore({
     // User Slices
     client_auth: userAuthSlice,
     user_userCart: UserCartSlice,
+    user_favoriteProduct: favoriteProductSlice,
   },
 });

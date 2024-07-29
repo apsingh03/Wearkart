@@ -18,6 +18,7 @@ import ClientProtectedRoutes from "./components/Client/ClientProtectedRoutes";
 import AdminProtectedRoutes from "./components/Admin/AdminProtectedRoutes";
 import SideBarAllFilters from "./components/Client/ProductsFilterPage/SideBarAllFilters";
 import SideFilter from "./components/Client/ProductsFilterPage/SideFilter";
+import WishList from "./components/Client/WishList";
 function App() {
   // console.log("process.env - ", process.env);
   const {
@@ -104,6 +105,10 @@ function App() {
         <Route
           path="/account"
           element={<ClientProtectedRoutes element={<ClientDashboard />} />}
+        />
+        <Route
+          path="/wishlist"
+          element={<ClientProtectedRoutes element={<WishList />} />}
         />
 
         {/* ADMIN Routes  */}

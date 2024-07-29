@@ -7,6 +7,7 @@ export const AppProvider = ({ children }) => {
   const [cartIsHover, setcartIsHover] = useState(false);
   const [isLoadingTopProgress, setisLoadingTopProgress] = useState(0);
   const [isFilterSideBarVisible, setIsFilterSideBarVisible] = useState(false);
+  const [isLoadingWishList, setisLoadingWishList] = useState(false);
 
   return (
     <AppContext.Provider
@@ -19,6 +20,8 @@ export const AppProvider = ({ children }) => {
         setisLoadingTopProgress,
         isFilterSideBarVisible,
         setIsFilterSideBarVisible,
+        isLoadingWishList,
+        setisLoadingWishList,
       }}
     >
       {children}

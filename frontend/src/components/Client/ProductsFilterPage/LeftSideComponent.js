@@ -29,11 +29,11 @@ const LeftSideComponent = () => {
   // const { setisLoadingTopProgress } = useContext(AppContext);
 
   const client_sizesFiltersRedux = useSelector(
-    (state) => state.client_product.sizesFilters
+    (state) => state.client_product?.sizesFilters
   );
 
   const client_productFiltersRedux = useSelector(
-    (state) => state.client_product.productFilters
+    (state) => state.client_product?.productFilters
   );
 
   const [isFilterChildRadiosVisible, setIsFilterChildRadiosVisible] = useState(

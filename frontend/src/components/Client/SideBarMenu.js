@@ -30,11 +30,9 @@ const SideBarMenu = ({ setisActiveSideBarMenu }) => {
   async function fetchData() {
     setisLoadingTopProgress(30);
 
-    const actionResultParent = await dispatch(getParentMenuAsync());
+    await dispatch(getParentMenuAsync());
 
-    if (actionResultParent.payload.msg === "success") {
-      setisLoadingTopProgress(100);
-    }
+    setisLoadingTopProgress(100);
   }
 
   useEffect(() => {

@@ -102,6 +102,62 @@ export const clientGetSizesFiltersAsync = createAsyncThunk(
   }
 );
 
+export const clientGetBannerCarouselAsync = createAsyncThunk(
+  "client/clientGetBannerCarousel",
+  async () => {
+    try {
+      const response = await axios.get(
+        `${HOSTNAME}/client/product/bannerCarousel/`
+      );
+      return response.data;
+    } catch (error) {
+      console.log("clientGetBannerCarouselAsync Error - ", error.response);
+    }
+  }
+);
+
+export const clientGetActressCarouselAsync = createAsyncThunk(
+  "client/clientGetActressCarousel",
+  async () => {
+    try {
+      const response = await axios.get(
+        `${HOSTNAME}/client/product/actressCarousel/`
+      );
+      return response.data;
+    } catch (error) {
+      console.log("clientGetActressCarouselAsync Error - ", error.response);
+    }
+  }
+);
+
+export const clientGetTestimonialAsync = createAsyncThunk(
+  "client/clientGetTestimonial",
+  async () => {
+    try {
+      const response = await axios.get(
+        `${HOSTNAME}/client/product/testimonial/`
+      );
+      return response.data;
+    } catch (error) {
+      console.log("clientGetTestimonialAsync Error - ", error.response);
+    }
+  }
+);
+
+export const clientGetFourBannerImagesAsync = createAsyncThunk(
+  "client/clientGetFourBannerImages",
+  async () => {
+    try {
+      const response = await axios.get(
+        `${HOSTNAME}/client/product/fourBannerImages/`
+      );
+      return response.data;
+    } catch (error) {
+      console.log("clientGetFourBannerImagesAsync Error - ", error.response);
+    }
+  }
+);
+
 const initialState = {
   categoryWiseProducts: [],
   allProducts: [],
@@ -109,6 +165,10 @@ const initialState = {
   productFilters: [],
   headerMenu: [],
   sizesFilters: [],
+  bannerCarousel: [],
+  actressCarousel: [],
+  testimonial: [],
+  fourBannerImages: [],
   isLoading: false,
   isError: false,
 };
@@ -195,7 +255,6 @@ export const clientProductSlice = createSlice({
       })
       .addCase(clientAllListedProductsAsync.fulfilled, (state, action) => {
         state.isLoading = false;
-        // console.log("clientAllListedProductsAsync - ", action.payload);
         state.allProducts = action.payload;
       })
       .addCase(clientAllListedProductsAsync.rejected, (state, action) => {
@@ -207,7 +266,6 @@ export const clientProductSlice = createSlice({
       })
       .addCase(clientShowFilteredProductsAsync.fulfilled, (state, action) => {
         state.isLoading = false;
-        // console.log("clientShowFilteredProductsAsync - ", action.payload);
         state.allProducts = action.payload;
       })
       .addCase(clientShowFilteredProductsAsync.rejected, (state, action) => {
@@ -225,7 +283,6 @@ export const clientProductSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
       })
-
       .addCase(clientGetSingleProductAsync.pending, (state, action) => {
         state.isLoading = true;
       })
@@ -237,7 +294,6 @@ export const clientProductSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
       })
-
       .addCase(clientGetMenuAsync.pending, (state, action) => {
         state.isLoading = true;
       })
@@ -257,6 +313,53 @@ export const clientProductSlice = createSlice({
         state.sizesFilters = action.payload;
       })
       .addCase(clientGetSizesFiltersAsync.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+      })
+      .addCase(clientGetBannerCarouselAsync.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(clientGetBannerCarouselAsync.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.bannerCarousel = action.payload;
+      })
+      .addCase(clientGetBannerCarouselAsync.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+      })
+
+      .addCase(clientGetActressCarouselAsync.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(clientGetActressCarouselAsync.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.actressCarousel = action.payload;
+      })
+      .addCase(clientGetActressCarouselAsync.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+      })
+
+      .addCase(clientGetTestimonialAsync.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(clientGetTestimonialAsync.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.testimonial = action.payload;
+      })
+      .addCase(clientGetTestimonialAsync.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+      })
+
+      .addCase(clientGetFourBannerImagesAsync.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(clientGetFourBannerImagesAsync.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.fourBannerImages = action.payload;
+      })
+      .addCase(clientGetFourBannerImagesAsync.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
       });

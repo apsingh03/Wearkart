@@ -22,7 +22,6 @@ import {
   createUserCartAsync,
   getUserCartAsync,
 } from "../../Redux/UserSlices/Cart/UserCartRedux";
-import { displayRazorpay } from "../../paymentGateway/PaymentGateway";
 
 const ProductDetailPage = () => {
   const dispatch = useDispatch();
@@ -33,6 +32,8 @@ const ProductDetailPage = () => {
   const clientIsLogged = useSelector(
     (state) => state.client_auth.loggedData.isUserLogged
   );
+
+  const user_userCart = useSelector((state) => state.user_userCart.data);
 
   // console.log("clientIsLogged - ", clientIsLogged);
 
@@ -46,7 +47,7 @@ const ProductDetailPage = () => {
 
   // console.log("clientSingleProductRedux - ", clientSingleProductRedux);
 
-  async function fetchFilter() {
+  async function fetchData() {
     setisLoadingTopProgress(30);
 
     // await dispatch(getParentFilterAsync());
@@ -58,18 +59,13 @@ const ProductDetailPage = () => {
       })
     );
 
-    await dispatch(getUserCartAsync());
-
     setisLoadingTopProgress(100);
   }
 
   async function addProductInCart(id) {
     setisLoadingTopProgress(30);
 
-    // console.log("selectColorCodeId - ", selectColorCodeId);
-    // console.log("selectSizeCodeId - ", selectSizeCodeId);
-
-    if (clientIsLogged === null) {
+    if (clientIsLogged === false) {
       toast.error("You Need to Login First");
     } else {
       if (selectColorCodeId === undefined) {
@@ -98,7 +94,7 @@ const ProductDetailPage = () => {
   }
 
   useEffect(() => {
-    fetchFilter();
+    fetchData();
     const handleScroll = () => {
       setScrollTop(document.scrollingElement.scrollTop);
     };
@@ -199,8 +195,8 @@ const ProductDetailPage = () => {
                             <div className="productDetail__right__2nd__discountBox">
                               <p className="productDetail__right__2nd__discountBox__price">
                                 {calculateProductDiscount(
-                                  sortedProductSizes[0].mrp,
-                                  sortedProductSizes[0].discountPercent
+                                  sortedProductSizes[0]?.mrp,
+                                  sortedProductSizes[0]?.discountPercent
                                 )}
                               </p>
                               <p className="productDetail__right__2nd__discountBox__mrp">
@@ -290,11 +286,6 @@ const ProductDetailPage = () => {
                                     );
                                     return (
                                       <span style={{ fontWeight: "bold" }}>
-                                        {/* Id -{" "}
-                                        {selectedColor?.productColorsColor?.id}
-                                        {" , "}
-                                         */}
-                                    
                                         {
                                           selectedColor?.productColorsColor
                                             ?.name
@@ -358,7 +349,7 @@ const ProductDetailPage = () => {
                                         {/* id -{" "}
                                         {selectedSize?.pSizeProductSizes?.id}{" "}
                                         {" , "}  */}
-                                       
+
                                         {selectedSize?.pSizeProductSizes?.name}
                                       </span>
                                     );
@@ -455,12 +446,36 @@ const ProductDetailPage = () => {
                           </div>
 
                           <div className="productDetail__right__6thcheckoutBtns">
-                            <div
-                              onClick={() => addProductInCart(product.id)}
-                              className="productDetail__right__6thcheckoutBtns__cartBtn"
-                            >
-                              <span>add to cart</span>
-                            </div>
+                            {(function () {
+                              const userCartItems =
+                                user_userCart?.query?.[0]
+                                  ?.userCartUserCartItem || [];
+
+                              const alreadyInCart = userCartItems.some(
+                                (data) => {
+                                  return data.product_id === product?.id;
+                                }
+                              );
+
+                              try {
+                                return alreadyInCart ? (
+                                  <div className="productDetail__right__6thcheckoutBtns__cartBtn">
+                                    <span>Item Already In Cart</span>
+                                  </div>
+                                ) : (
+                                  <div
+                                    onClick={() =>
+                                      addProductInCart(product?.id)
+                                    }
+                                    className="productDetail__right__6thcheckoutBtns__cartBtn"
+                                  >
+                                    <span>add to cart</span>
+                                  </div>
+                                );
+                              } catch (error) {
+                                console.log("Error - ", error.message);
+                              }
+                            })()}
 
                             <div
                               className="productDetail__right__6thcheckoutBtns__buyNowBtn"

@@ -85,12 +85,49 @@ db.userFavoriteProduct = require("./user/UserFavoriteProductModel.js")(
   sequelize,
   DataTypes
 );
+// Front end Models
+db.actressCarousel = require("./admin/ActressCarousel/ActressCarouselModel.js")(
+  sequelize,
+  DataTypes
+);
 
-// -------------------
+db.actressCarouselImages =
+  require("./admin/ActressCarousel/ActressCarouselImagesModel.js")(
+    sequelize,
+    DataTypes
+  );
+
+db.bannerCarousel = require("./admin/BannerCarousel/BannerCarouselModel.js")(
+  sequelize,
+  DataTypes
+);
+
+db.bannerCarouselImages =
+  require("./admin/BannerCarousel/BannerCarouselImagesModel.js")(
+    sequelize,
+    DataTypes
+  );
+
+db.fourImagesBanner =
+  require("./admin/FourImagesBanner/FourImagesBannerModel.js")(
+    sequelize,
+    DataTypes
+  );
+
+db.testimonial = require("./admin/Testimonial/TestimonialModel.js")(
+  sequelize,
+  DataTypes
+);
+
+db.testimonialDetails =
+  require("./admin/Testimonial/TestimonialDetailsModel.js")(
+    sequelize,
+    DataTypes
+  );
+
 // --------------------------------- Filter Relations
-// -------------------
 
-// parentFilter --> childFilter
+// childFilter --> parentFilter
 db.parentFilter.hasMany(db.childFilter, {
   foreignKey: "parent_id",
   as: "filterChildData",
@@ -101,11 +138,9 @@ db.childFilter.belongsTo(db.parentFilter, {
   as: "filterChildData",
 });
 
-// -------------------
 // --------------------------------- Menu Relations
-// -------------------
 
-// parentMenu --> childMenu
+// childMenu --> parentMenu
 db.parentMenu.hasMany(db.childMenu, {
   foreignKey: "parent_id",
   as: "menuChildData",
@@ -116,11 +151,9 @@ db.childMenu.belongsTo(db.parentMenu, {
   as: "menuChildData",
 });
 
-// -------------------
 // --------------------------------- Products
-// -------------------
 
-// //  productImages -> product
+//  productImages -> product
 db.product.hasMany(db.productImages, {
   foreignKey: "product_id",
   as: "imageProduct",
@@ -130,7 +163,7 @@ db.productImages.belongsTo(db.product, {
   as: "imageProduct",
 });
 
-// //  product -> productImages
+//  product -> productImages
 db.productImages.hasMany(db.product, {
   foreignKey: "productImages_id",
   as: "productImage",
@@ -233,7 +266,7 @@ db.productFabrics.belongsTo(db.product, {
   as: "productFabricsProduct",
 });
 
-// productFabrics -> color
+// productFabrics -> fabric
 db.fabric.hasMany(db.productFabrics, {
   foreignKey: "fabric_id",
   as: "productFabricsFabric",
@@ -244,7 +277,7 @@ db.productFabrics.belongsTo(db.fabric, {
   as: "productFabricsFabric",
 });
 
-// Product to ProductSizes: One-to-many relationship
+// productSizes to product: One-to-many relationship
 db.product.hasMany(db.productSizes, {
   foreignKey: "product_id",
   as: "productSizesProduct",
@@ -351,6 +384,40 @@ db.product.hasMany(db.userFavoriteProduct, {
 db.userFavoriteProduct.belongsTo(db.product, {
   foreignKey: "product_id",
   as: "productUserFavoriteProduct",
+});
+
+// ---------------------------------------------------------------
+// -------- FRONT END relations
+// --------------------------------------------------------------
+
+db.actressCarousel.hasMany(db.actressCarouselImages, {
+  foreignKey: "parent_id",
+  as: "actressCarouselActressCarouselImages",
+});
+
+db.actressCarouselImages.belongsTo(db.actressCarousel, {
+  foreignKey: "parent_id",
+  as: "actressCarouselImagesActressCarousel",
+});
+
+db.bannerCarousel.hasMany(db.bannerCarouselImages, {
+  foreignKey: "parent_id",
+  as: "bannerCarouselBannerCarouselImages",
+});
+
+db.bannerCarouselImages.belongsTo(db.bannerCarousel, {
+  foreignKey: "parent_id",
+  as: "bannerCarouselImagesBannerCarousel",
+});
+
+db.testimonial.hasMany(db.testimonialDetails, {
+  foreignKey: "parent_id",
+  as: "testimonialTestimonialDetails",
+});
+
+db.testimonialDetails.belongsTo(db.testimonial, {
+  foreignKey: "parent_id",
+  as: "testimonialDetailsTestimonial",
 });
 
 // db.sequelize.sync({ force: false }).then(() => {

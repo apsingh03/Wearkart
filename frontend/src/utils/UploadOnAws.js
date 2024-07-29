@@ -40,7 +40,7 @@ export const uploadProductImageOnAws = async (selectedFiles) => {
               console.log(`Something went wrong -- \n`, err);
               reject(err);
             } else {
-            //   console.log("Image URL - ", s3response.Location);
+              //   console.log("Image URL - ", s3response.Location);
               resolve(s3response.Location);
             }
           });
@@ -56,6 +56,32 @@ export const uploadProductImageOnAws = async (selectedFiles) => {
   }
 };
 
-// module.exports = {
-//   uploadProductImageOnAws,
-// };
+export const uploadImageOnAws = async (fileName) => {
+  try {
+    const newFileName = generateUniqueFileName(fileName?.name);
+    // console.log("newFileName - ", newFileName);
+
+    const params = {
+      Bucket: BUCKET_NAME,
+      Key: newFileName,
+      Body: fileName,
+      // ACL: "public-read",
+    };
+
+    const s3response = await new Promise((resolve, reject) => {
+      s3Bucket.upload(params, (err, s3response) => {
+        if (err) {
+          console.log(`Something went wrong -- \n`, err);
+          reject(err);
+        } else {
+          //   console.log("Image URL - ", s3response.Location);
+          resolve(s3response.Location);
+        }
+      });
+    });
+
+    return s3response;
+  } catch (error) {
+    console.log(`uploadProductImageOnAws Error ${error}`);
+  }
+};

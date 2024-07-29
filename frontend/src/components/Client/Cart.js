@@ -17,7 +17,8 @@ import {
   calculateProductDiscount,
   convertInInr,
 } from "../../utils/productDiscountCalculate";
-import { displayRazorpay } from "../../paymentGateway/PaymentGateway";
+// import { displayRazorpay } from "../../paymentGateway/PaymentGateway";
+import { usePaymentGateway } from "../../customHooks/paymentGateway/PaymentGatewayCustomHook";
 
 const Cart = ({ setcartIsHover }) => {
   const dispatch = useDispatch();
@@ -30,6 +31,12 @@ const Cart = ({ setcartIsHover }) => {
   const { setisLoadingTopProgress } = useContext(AppContext);
   let calculateTotalCartMrp = 0;
   let calculateTotalCartAfterDiscount = 0;
+
+  const {
+    displayRazorpay,
+    isLoadingPaymentGateway,
+    setisLoadingPaymentGateway,
+  } = usePaymentGateway();
 
   async function fetchData() {
     setisLoadingTopProgress(30);
@@ -299,7 +306,16 @@ const Cart = ({ setcartIsHover }) => {
                 alt="indian Flag"
               />{" "}
             </span>
-            <span className="cart__footer__checkoutBtn__text">checkout</span>
+            <span className="cart__footer__checkoutBtn__text">
+              checkout{" "}
+              {isLoadingPaymentGateway ? (
+                <span
+                  style={{ marginLeft: "10px" }}
+                  class="spinner-border spinner-border-sm"
+                  role="status"
+                ></span>
+              ) : null}{" "}
+            </span>
             <span className="cart__footer__checkoutBtn__rightIcon">
               {" "}
               <MdChevronRight />{" "}

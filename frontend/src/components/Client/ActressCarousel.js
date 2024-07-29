@@ -1,41 +1,79 @@
-import React from "react";
+import React, { useRef } from "react";
+import { Link } from "react-router-dom";
 
-// import modelImages from "../utils/imagesArrays"
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
-const ActressCarousel = () => {
-  const modelImages = [
-    "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FbannerFile-1717565604673.png%3Fv%3D1717565609&w=1920&q=75",
-    "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FbannerFile-1717565675192.png%3Fv%3D1717565679&w=1920&q=75",
-    "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FbannerFile-1719386153935.png%3Fv%3D1719386158&w=1920&q=75",
-    "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FbannerFile-1717565705248.png%3Fv%3D1717565709&w=1920&q=75",
-    "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FbannerFile-1717565711365.png%3Fv%3D1717565715&w=1920&q=75",
-    "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FbannerFile-1719385629866.png%3Fv%3D1719385633&w=1920&q=75",
-    "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FbannerFile-1717565692946.png%3Fv%3D1717565697&w=1920&q=75",
-    "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FbannerFile-1717565711365.png%3Fv%3D1717565715&w=1920&q=75",
-    "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FbannerFile-1717565723156.png%3Fv%3D1717565727&w=1920&q=75",
-  ];
+const ActressCarousel = ({ actressCarouselRedux }) => {
+  const carouselRef = useRef(null);
 
-  return (
-    <>
-      <section className="actressCarousel">
-        {modelImages &&
-          modelImages.map((data, idx) => {
+  const scroll = (direction) => {
+    if (carouselRef.current) {
+      const scrollAmount = direction === "left" ? -300 : 300;
+      carouselRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
+    }
+  };
+
+  try {
+    if (!actressCarouselRedux) return null;
+
+    return (
+      <div className="actressCarouselContainer">
+        <button
+          className="scrollButton prevButton"
+          onClick={() => scroll("left")}
+        >
+          <IoIosArrowBack size={25} color="#fff" />
+        </button>
+        <div className="actressCarousel" ref={carouselRef}>
+          {actressCarouselRedux.map((parentCarousel, parentIdx) => {
             return (
-              <div className="actressCarousel__card" key={idx}>
-                <div className="actressCarousel__card__imgBox">
-                  <img
-                    alt="isadmfas"
-                    src={`${data}`}
-                    className="actressCarousel__card__imgBox__image"
-                  />
+              <section className="actressCarouselSection" key={parentIdx}>
+                <div className="actressCarouselContent">
+                  {parentCarousel?.actressCarouselActressCarouselImages?.map(
+                    (childData, childIdx) => {
+                      return (
+                        <div className="actressCarousel__card" key={childIdx}>
+                          <div className="actressCarousel__card__imgBox">
+                            <Link to={`${childData?.routeLink}`}>
+                              <img
+                                alt={childData?.imageAlt || "Image"}
+                                src={childData?.imageSrc || ""}
+                                style={{
+                                  width: `${parentCarousel?.width || "100px"}`,
+                                  height: `${
+                                    parentCarousel?.height || "100px"
+                                  }`,
+                                  objectFit:
+                                    parentCarousel?.objectFit || "cover",
+                                  borderRadius: "50%",
+                                }}
+                              />
+                            </Link>
+                          </div>
+                          <p className="actressCarousel__card__title">
+                            {childData?.name || "Unknown"}
+                          </p>
+                        </div>
+                      );
+                    }
+                  )}
                 </div>
-                <p className="actressCarousel__card__title">Dresses </p>
-              </div>
+              </section>
             );
           })}
-      </section>
-    </>
-  );
+        </div>
+        <button
+          className="scrollButton nextButton"
+          onClick={() => scroll("right")}
+        >
+          <IoIosArrowForward size={25} color="#fff" />
+        </button>
+      </div>
+    );
+  } catch (error) {
+    console.error("Error - ", error.message);
+    return <div>Error loading carousel</div>;
+  }
 };
 
 export default ActressCarousel;

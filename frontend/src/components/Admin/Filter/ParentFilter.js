@@ -36,11 +36,9 @@ const ParentFilter = () => {
 
   async function fetchParentFilter() {
     setisLoadingTopProgress(30);
-    const actionResult = await dispatch(getParentFilterAsync());
+    await dispatch(getParentFilterAsync());
 
-    if (actionResult.payload.msg === "success") {
-      setisLoadingTopProgress(100);
-    }
+    setisLoadingTopProgress(100);
   }
 
   async function deleteHandler(event, id) {

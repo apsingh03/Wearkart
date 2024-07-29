@@ -1,22 +1,20 @@
 const express = require("express");
 const router = express.Router();
 
-const productController = require("../../../controller/client/Product/clientProductController.js");
+const controller = require("../../../controller/client/Product/clientProductController.js");
 
 // client/product/CurrentRoutes
-router.get(
-  "/categoryWiseProduct",
-  productController.clientGetCategoryWiseProduct
-);
+router.get("/categoryWiseProduct", controller.clientGetCategoryWiseProduct);
 
-router.get("/allListedProducts", productController.clientAllListedProducts);
-router.get(
-  "/filteredProducts",
-  productController.clientShowFilteredProducts
-);
-router.get("/singleProduct/:id", productController.clientGetSingleProduct);
-router.get("/productFilters", productController.clientGetProductFilters);
-router.get("/getMenu", productController.clientGetMenuAsync);
-router.get("/sizesFilters", productController.clientGetSizesFilters);
+router.get("/allListedProducts", controller.clientAllListedProducts);
+router.get("/filteredProducts", controller.clientShowFilteredProducts);
+router.get("/singleProduct/:id", controller.clientGetSingleProduct);
+router.get("/productFilters", controller.clientGetProductFilters);
+router.get("/getMenu", controller.clientGetMenuAsync);
+router.get("/sizesFilters", controller.clientGetSizesFilters);
+router.get("/bannerCarousel", controller.clientGetBannerCarousel);
+router.get("/actressCarousel", controller.clientGetActressCarousel);
+router.get("/testimonial", controller.clientGetTestimonial);
+router.get("/fourBannerImages", controller.clientGetFourBannerImages);
 
 module.exports = router;

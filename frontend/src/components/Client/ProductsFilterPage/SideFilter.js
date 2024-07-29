@@ -24,13 +24,13 @@ const SideFilter = ({ setIsFilterSideBarVisible }) => {
   };
 
   const client_sizesFiltersRedux = useSelector(
-    (state) => state.client_product.sizesFilters
+    (state) => state.client_product?.sizesFilters
   );
 
   // console.log("client_sizesFiltersRedux - ", client_sizesFiltersRedux);
 
   const client_productFiltersRedux = useSelector(
-    (state) => state.client_product.productFilters
+    (state) => state.client_product?.productFilters
   );
 
   // console.log("client_productFiltersRedux - ", client_productFiltersRedux);
@@ -85,8 +85,8 @@ const SideFilter = ({ setIsFilterSideBarVisible }) => {
         </div>
       </div>
       <div className="filterMenu__body">
-        {client_productFiltersRedux.query &&
-          client_productFiltersRedux.query.map((filter, idx) => {
+        {client_productFiltersRedux?.query &&
+          client_productFiltersRedux?.query.map((filter, idx) => {
             return (
               <div
                 className="filterMenu__body__card"

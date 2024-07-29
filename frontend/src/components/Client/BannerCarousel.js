@@ -1,71 +1,103 @@
-import React, { useState } from "react";
-
+import React, { useEffect, useState } from "react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
-const BannerCarousel = () => {
-  const [imageCurrentIndex, setimageCurrentIndex] = useState(3);
-  //   console.log("imageCurrentIndex - ", imageCurrentIndex);
+const BannerCarousel = ({ bannerCarouselRedux }) => {
+  const [imageCurrentIndex, setimageCurrentIndex] = useState(0);
 
-  // const bannerImages = [
-  //   "https://img.freepik.com/free-vector/gradient-sale-background_23-2148860977.jpg?t=st=1719484408~exp=1719488008~hmac=1c23202f83f5fbc9b89690fc966a9b3ce1870b587ca307d878fa63f436949500&w=826",
-  //   "https://img.freepik.com/free-vector/abstract-fashion-monsoon-sale-banner-offer-discount-business-background-free-vector_1340-22464.jpg?t=st=1719484410~exp=1719488010~hmac=620c8237854ba8b2124b9a7a3a545358c0358173b7792da055e0ffa64fa60d59&w=1060",
-  //   "https://img.freepik.com/premium-vector/modern-sale-banner-template_105164-147.jpg?w=1060",
-  //   "https://img.freepik.com/premium-vector/summer-sale-banner_7993-3736.jpg?w=996",
-  //   "https://img.freepik.com/free-vector/black-friday-sale-web-banner_1409-957.jpg?w=1060&t=st=1719484362~exp=1719484962~hmac=b4c6f090ff7ca6d12cf5121ce3533e70a773029a1ce210006060876f615a1db4",
-  //   "https://marketplace.canva.com/EAFBe-_WG8k/1/0/1600w/canva-gold-minimalist-fashion-stylist-service-medium-banner-9yTc9dnW3fE.jpg",
-  //   "https://www.picmaker.com/templates/_next/image?url=https%3A%2F%2Fstatic.picmaker.com%2Fscene-prebuilts%2Fthumbnails%2FYCA-0022.png&w=3840&q=75",
-  // ];
-
-  const bannerImages = [
-    "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FbannerFile-1719384247491.jpg%3Fv%3D1719384252&w=1920&q=75",
-    "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FbannerFile-1719384939141.jpg%3Fv%3D1719384943&w=1920&q=75",
-    "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FbannerFile-1719384092843.jpg%3Fv%3D1719384097&w=1920&q=75",
-    "https://www.fablestreet.com/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0486%2F0634%2F7416%2Ffiles%2FbannerFile-1719808060892.jpg%3Fv%3D1719808066&w=1920&q=75",
-  ];
-
-  function prevOnClick() {
+  function prevOnClick(dynamicBannerImagesLength) {
     if (imageCurrentIndex <= 0) {
-      setimageCurrentIndex(bannerImages.length - 1);
+      setimageCurrentIndex(dynamicBannerImagesLength - 1);
     } else {
       setimageCurrentIndex((prev) => prev - 1);
     }
   }
 
-  function nextOnClick() {
-    // console.log("prevOnClick");
-
-    if (imageCurrentIndex === bannerImages.length - 1) {
+  function nextOnClick(dynamicBannerImagesLength) {
+    if (imageCurrentIndex === dynamicBannerImagesLength - 1) {
       setimageCurrentIndex(0);
     } else {
       setimageCurrentIndex((prev) => prev + 1);
     }
   }
 
+  // console.log("bannerImages - ", bannerImages);
+
+  useEffect(() => {
+    let interval;
+    if (bannerCarouselRedux && bannerCarouselRedux) {
+      bannerCarouselRedux &&
+        bannerCarouselRedux.forEach((carouselParent) => {
+          const dynamicBannerImages =
+            carouselParent.bannerCarouselBannerCarouselImages;
+
+          if (carouselParent.animation) {
+            const dynamicBannerImagesLength = dynamicBannerImages.length;
+
+            interval = setInterval(() => {
+              setimageCurrentIndex(
+                (prev) => (prev + 1) % dynamicBannerImagesLength
+              );
+            }, carouselParent?.timer);
+          }
+        });
+    }
+
+    return () => clearInterval(interval); // Cleanup interval on component unmount
+  }, [bannerCarouselRedux && bannerCarouselRedux]);
+
   return (
     <div className="bannerCarousel">
-      <div className="bannerCarousel__btns">
-        <button
-          className="bannerCarousel__btns__prev"
-          onClick={() => prevOnClick()}
-        >
-          <IoIosArrowBack />
-        </button>
-        <button
-          className="bannerCarousel__btns__next"
-          onClick={() => nextOnClick()}
-        >
-          <IoIosArrowForward />
-        </button>
-      </div>
+      {(function () {
+        try {
+          return (
+            bannerCarouselRedux &&
+            bannerCarouselRedux.map((carouselParent, parentIdx) => {
+              const dynamicBannerImages =
+                carouselParent.bannerCarouselBannerCarouselImages &&
+                carouselParent.bannerCarouselBannerCarouselImages;
 
-      <div className="bannerCarousel_imgBox">
-        <img
-          src={`${bannerImages[imageCurrentIndex]}`}
-          // alt={`Banner Image Slide Index - ${imageCurrentIndex}`}
-          alt="dsfasdfasas"
-          className="bannerCarousel_imgBox__image"
-        />
-      </div>
+              const dynamicBannerImagesLength = dynamicBannerImages.length;
+
+              return (
+                <div key={parentIdx}>
+                  <div
+                    className="bannerCarousel_imgBox"
+                    style={{ height: `${carouselParent?.height}` }}
+                  >
+                    <div className="bannerCarousel__btns">
+                      <button
+                        className="bannerCarousel__btns__prev"
+                        onClick={() => prevOnClick(dynamicBannerImagesLength)}
+                      >
+                        <IoIosArrowBack />
+                      </button>
+                      <button
+                        className="bannerCarousel__btns__next"
+                        onClick={() => nextOnClick(dynamicBannerImagesLength)}
+                      >
+                        <IoIosArrowForward />
+                      </button>
+                    </div>
+
+                    <img
+                      src={`${dynamicBannerImages[imageCurrentIndex]?.imageSrc}`}
+                      alt={`${dynamicBannerImages[imageCurrentIndex]?.imageAlt}`}
+                      className="bannerCarousel_imgBox__image"
+                      style={{
+                        height: `${carouselParent?.height}`,
+                        width: `${carouselParent?.width}`,
+                        objectFit: `${carouselParent?.objectFit}`,
+                      }}
+                    />
+                  </div>
+                </div>
+              );
+            })
+          );
+        } catch (error) {
+          console.log("Error - ", error.message);
+        }
+      })()}
     </div>
   );
 };

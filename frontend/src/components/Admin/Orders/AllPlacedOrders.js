@@ -58,7 +58,7 @@ const AllPlacedOrders = (props) => {
     setisLoadingTopProgress(30);
 
     const action = await dispatch(getOrdersAsync());
-    if (action.payload.msg && action.payload.msg === "success") {
+    if (action.payload?.msg && action.payload?.msg === "success") {
       setallPlacedOrders(action.payload.query);
     }
     setisLoadingTopProgress(100);
@@ -84,8 +84,8 @@ const AllPlacedOrders = (props) => {
           })
         );
         if (
-          actionResult.payload.msg &&
-          actionResult.payload.msg === "success"
+          actionResult.payload?.msg &&
+          actionResult.payload?.msg === "success"
         ) {
           toast.success("Delivery Updated");
           setisUpdateDeliveryStatus(false);

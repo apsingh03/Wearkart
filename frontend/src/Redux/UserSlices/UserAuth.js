@@ -61,7 +61,7 @@ const initialState = {
     isUserLogged:
       localStorage.getItem("clientLoggedToken") !== null
         ? jwtDecode(localStorage.getItem("clientLoggedToken")).isUserLogged
-        : null,
+        : false,
     id:
       localStorage.getItem("clientLoggedToken") !== null
         ? jwtDecode(localStorage.getItem("clientLoggedToken")).id

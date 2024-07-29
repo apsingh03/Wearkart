@@ -1,15 +1,15 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { Routes, Route } from "react-router-dom";
 import "../../styles/Admin/Admin.css";
 import { FaRegUserCircle } from "react-icons/fa";
-import { RxHamburgerMenu } from "react-icons/rx";
+// import { RxHamburgerMenu } from "react-icons/rx";
 import { FaChevronRight, FaChevronDown } from "react-icons/fa";
 import { FaSolarPanel } from "react-icons/fa";
 import { IoNotifications } from "react-icons/io5";
 import { Squash as Hamburger } from "hamburger-react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 // components
 import VenDashboard from "../../components/Admin/VenDashboard";
 import AddProduct from "../../components/Admin/Product/AddProduct";
@@ -24,13 +24,19 @@ import Color from "../../components/Admin/Color/Color";
 import Fabric from "../../components/Admin/Fabric/Fabric";
 import RecycleBin from "../../components/Admin/Product/RecycleBin";
 import AllPlacedOrders from "../../components/Admin/Orders/AllPlacedOrders";
+import ParentBannerCarousel from "../../components/Admin/BannerCarousel/ParentBannerCarousel";
+import ChildBannerCarousel from "../../components/Admin/BannerCarousel/ChildBannerCarousel";
+import ChildActressCarousel from "../../components/Admin/ActressCarousel/ChildActressCarousel";
+import ParentActressCarousel from "../../components/Admin/ActressCarousel/ParentActressCarousel";
+import ParentTestimonial from "../../components/Admin/Testimonial/ParentTestimonial";
+import ChildTestimonial from "../../components/Admin/Testimonial/ChildTestimonial";
+import FourImagesBanner from "../../components/Admin/FourImagesBanner/FourImagesBanner";
 
 const AdminJunction = () => {
   const adminAuth = useSelector((state) => state.admin_auth.loggedData);
 
   const [sideNavIconToggle, setSideNavIconToggle] = useState({});
   const [isOpenHamBurger, setisOpenHamBurger] = useState(false);
-
   const [hamBurgerMenuToggle, sethamBurgerMenuToggle] = useState(true);
 
   const navigation = useNavigate();
@@ -92,10 +98,36 @@ const AdminJunction = () => {
     {
       id: 4,
       category: "Frontend ",
-      title: "UI Elements",
+      title: "Carousels Elements",
       subMenu: [
-        { name: "Banner Carousel", url: "" },
-        { name: "Actress Carousel", url: "" },
+        {
+          name: "Parent Banner Carousel",
+          url: "bannerCarousel/parent/parentBannerCarousel",
+        },
+        {
+          name: "Child Banner Carousel",
+          url: "bannerCarousel/child/childBannerCarousel",
+        },
+        {
+          name: "Parent Actress Carousel",
+          url: "actressCarousel/parent/parentActressCarousel",
+        },
+        {
+          name: "Child Actress Carousel",
+          url: "actressCarousel/child/childActressCarousel",
+        },
+        {
+          name: "Parent Testimonial Carousel",
+          url: "testimonial/parent/parentTestimonial",
+        },
+        {
+          name: "Child Testimonial Carousel",
+          url: "testimonial/child/childTestimonial",
+        },
+        {
+          name: "Four Images Banner",
+          url: "fourImagesBanner",
+        },
       ],
     },
   ];
@@ -267,6 +299,34 @@ const AdminJunction = () => {
 
               {/* Orders */}
               <Route path="/placedOrders" element={<AllPlacedOrders />} />
+
+              {/* Front End UI */}
+              <Route
+                path="bannerCarousel/parent/parentBannerCarousel"
+                element={<ParentBannerCarousel />}
+              />
+              <Route
+                path="bannerCarousel/child/childBannerCarousel"
+                element={<ChildBannerCarousel />}
+              />
+              <Route
+                path="actressCarousel/parent/parentActressCarousel"
+                element={<ParentActressCarousel />}
+              />
+              <Route
+                path="actressCarousel/child/childActressCarousel"
+                element={<ChildActressCarousel />}
+              />
+              <Route
+                path="testimonial/parent/parentTestimonial"
+                element={<ParentTestimonial />}
+              />
+              <Route
+                path="testimonial/child/childTestimonial"
+                element={<ChildTestimonial />}
+              />
+
+              <Route path="fourImagesBanner" element={<FourImagesBanner />} />
             </Routes>
           </div>
         </div>

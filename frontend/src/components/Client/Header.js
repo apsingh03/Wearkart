@@ -10,6 +10,8 @@ import { GiHamburgerMenu } from "react-icons/gi";
 import { AppContext } from "../../context/AppContext";
 import { useDispatch, useSelector } from "react-redux";
 import { clientGetMenuAsync } from "../../Redux/ClientSlices/clientProductSlice";
+import { getUserFavoriteProductAsync } from "../../Redux/UserSlices/FavoriteProduct/FavoriteProductSlice";
+import { getUserCartAsync } from "../../Redux/UserSlices/Cart/UserCartRedux";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -17,6 +19,10 @@ const Header = () => {
   const clientIsLogged = useSelector((state) => state.client_auth.loggedData);
   const user_userCartLength = useSelector(
     (state) => state.user_userCart?.cartLength
+  );
+
+  const user_favoriteProductLength = useSelector(
+    (state) => state.user_favoriteProduct.favoriteLength
   );
 
   const adminIsLogged = useSelector(
@@ -49,6 +55,14 @@ const Header = () => {
     setisLoadingTopProgress(30);
 
     await dispatch(clientGetMenuAsync());
+
+    if (clientIsLogged.isUserLogged) {
+      await dispatch(getUserFavoriteProductAsync());
+    }
+
+    if (clientIsLogged.isUserLogged) {
+      await dispatch(getUserCartAsync());
+    }
 
     setisLoadingTopProgress(100);
   }
@@ -168,9 +182,31 @@ const Header = () => {
               <Link
                 className="header__4thContainer__userIcon"
                 title="Favorites"
-                to="/account"
+                to="/wishlist"
+                style={{ position: "relative" }}
               >
                 <FaRegHeart />
+                {clientIsLogged.isUserLogged ? (
+                  <span
+                    style={{
+                      height: "25px",
+                      width: "25px",
+                      backgroundColor: "#000",
+                      color: "#fff",
+                      borderRadius: "50%",
+                      textAlign: "center",
+                      fontSize: "16px",
+                      position: "absolute",
+                      top: "-10px",
+                      left: "25px",
+                      fontSize: "10px",
+                      fontWeight: "bold",
+                      alignContent: "center",
+                    }}
+                  >
+                    {user_favoriteProductLength}
+                  </span>
+                ) : null}
               </Link>
             ) : (
               <Link className="header__4thContainer__userIcon" to="/signin">

@@ -1,7 +1,8 @@
 import React, { useState, useRef, useMemo, useEffect, useContext } from "react";
 import { BsFillImageFill, BsFillStarFill, BsStar } from "react-icons/bs";
-import { MdFavorite } from "react-icons/md";
+
 import {
+  MdFavorite,
   MdFavoriteBorder,
   MdPublishedWithChanges,
   MdUnpublished,

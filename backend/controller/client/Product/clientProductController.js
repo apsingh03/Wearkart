@@ -1,3 +1,4 @@
+const { where } = require("sequelize");
 const db = require("../../../models");
 
 // Tables
@@ -18,6 +19,13 @@ const ChildFilter = db.childFilter;
 const ParentFilter = db.parentFilter;
 const ParentMenu = db.parentMenu;
 const ChildMenu = db.childMenu;
+const BannerCarousel = db.bannerCarousel;
+const BannerCarouselImages = db.bannerCarouselImages;
+const ActressCarousel = db.actressCarousel;
+const ActressCarouselImages = db.actressCarouselImages;
+const Testimonial = db.testimonial;
+const TestimonialDetails = db.testimonialDetails;
+const FourImagesBanner = db.fourImagesBanner;
 
 const clientGetCategoryWiseProduct = async (req, res) => {
   try {
@@ -531,6 +539,105 @@ const clientGetSizesFilters = async (req, res) => {
   }
 };
 
+/*
+
+const bannerCarousel = db.bannerCarousel;
+const bannerCarouselImages = db.bannerCarouselImages;
+const actressCarousel = db.actressCarousel;
+const actressCarouselImages = db.actressCarouselImages;
+const testimonial = db.testimonial;
+const testimonialDetails = db.testimonialDetails;
+const fourImagesBanner = db.testimonialDetails;
+
+*/
+const clientGetBannerCarousel = async (req, res) => {
+  try {
+    const query = await BannerCarousel.findAll({
+      attributes: {
+        exclude: ["createdAt", "updatedAt", "admin_id"],
+      },
+      where: { isFavorite: true },
+      include: {
+        model: BannerCarouselImages,
+        as: "bannerCarouselBannerCarouselImages",
+        attributes: {
+          exclude: ["createdAt", "updatedAt", "admin_id", "parent_id"],
+        },
+        where: { isFavorite: true },
+      },
+      order: [["id", "Asc"]],
+    });
+
+    return res.status(200).send({ msg: "success", query });
+  } catch (error) {
+    return res.status(500).send({ error: error.message });
+  }
+};
+
+const clientGetActressCarousel = async (req, res) => {
+  try {
+    const query = await ActressCarousel.findAll({
+      attributes: {
+        exclude: ["createdAt", "updatedAt", "admin_id"],
+      },
+      where: { isFavorite: true },
+      include: {
+        model: ActressCarouselImages,
+        as: "actressCarouselActressCarouselImages",
+        attributes: {
+          exclude: ["createdAt", "updatedAt", "admin_id", "parent_id"],
+        },
+        where: { isFavorite: true },
+      },
+      order: [["id", "Asc"]],
+    });
+
+    return res.status(200).send({ msg: "success", query });
+  } catch (error) {
+    return res.status(500).send({ error: error.message });
+  }
+};
+
+const clientGetTestimonial = async (req, res) => {
+  try {
+    const query = await Testimonial.findAll({
+      attributes: {
+        exclude: ["createdAt", "updatedAt", "admin_id"],
+      },
+      where: { isFavorite: true },
+      include: {
+        model: TestimonialDetails,
+        as: "testimonialTestimonialDetails",
+        attributes: {
+          exclude: ["createdAt", "updatedAt", "admin_id", "parent_id"],
+        },
+        where: { isFavorite: true },
+      },
+      order: [["id", "Asc"]],
+    });
+
+    return res.status(200).send({ msg: "success", query });
+  } catch (error) {
+    return res.status(500).send({ error: error.message });
+  }
+};
+
+const clientGetFourBannerImages = async (req, res) => {
+  try {
+    const query = await FourImagesBanner.findAll({
+      attributes: {
+        exclude: ["createdAt", "updatedAt", "admin_id"],
+      },
+      where: { isFavorite: true },
+      order: [["id", "Asc"]],
+    });
+
+    return res.status(200).send({ msg: "success", query });
+  } catch (error) {
+    return res.status(500).send({ error: error.message });
+  }
+};
+
 module.exports = {
   clientGetCategoryWiseProduct,
   clientAllListedProducts,
@@ -539,4 +646,8 @@ module.exports = {
   clientGetMenuAsync,
   clientGetSizesFilters,
   clientShowFilteredProducts,
+  clientGetBannerCarousel,
+  clientGetActressCarousel,
+  clientGetTestimonial,
+  clientGetFourBannerImages,
 };

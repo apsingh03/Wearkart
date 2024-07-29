@@ -48,15 +48,10 @@ const ChildMenu = () => {
   async function fetchFilter() {
     setisLoadingTopProgress(30);
 
-    const actionResultParent = await dispatch(getParentMenuAsync());
-    const actionResultChild = await dispatch(getChildMenuAsync());
+    await dispatch(getParentMenuAsync());
+    await dispatch(getChildMenuAsync());
 
-    if (
-      actionResultParent.payload.msg === "success" ||
-      actionResultChild.payload.msg === "success"
-    ) {
-      setisLoadingTopProgress(100);
-    }
+    setisLoadingTopProgress(100);
   }
 
   async function deleteHandler(event, id) {

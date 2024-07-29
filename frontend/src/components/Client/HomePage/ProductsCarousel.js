@@ -1,33 +1,17 @@
 import React, { useEffect, useState, useContext } from "react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { AppContext } from "../../../context/AppContext";
-import { clientGetCategoryWiseProductAsync } from "../../../Redux/ClientSlices/clientProductSlice";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import ProductCarouselCategoryProduct from "./ProductCarouselCategoryProduct";
 
-const ProductsCarousel = () => {
-  const dispatch = useDispatch();
-
-  const categoryWiseProductsRedux = useSelector(
-    (state) => state.client_product.categoryWiseProducts
-  );
-
-  const { setisLoadingTopProgress } = useContext(AppContext);
+const ProductsCarousel = ({ categoryWiseProductsRedux }) => {
   // we need those for responsive products per page
   const [currentIndex, setCurrentIndex] = useState(0);
   const [itemsPerPage, setitemsPerPage] = useState(4);
   const [isScreenAtMd, setIsScreenAtMd] = useState(window.innerWidth < 768);
   const [isScreenAtSm, setIsScreenAtSm] = useState(window.innerWidth < 576);
 
-  async function fetchData() {
-    setisLoadingTopProgress(30);
-    await dispatch(clientGetCategoryWiseProductAsync());
-    setisLoadingTopProgress(100);
-  }
-
   useEffect(() => {
-    fetchData();
     // according to window width we are calculating Products per Page
     if (isScreenAtMd) {
       setitemsPerPage(3);
@@ -56,15 +40,15 @@ const ProductsCarousel = () => {
 
   useEffect(() => {
     const favoriteCategory =
-      categoryWiseProductsRedux.query &&
-      categoryWiseProductsRedux.query.find(
+      categoryWiseProductsRedux &&
+      categoryWiseProductsRedux.find(
         (category) => category.isFavorite === true
       );
     // console.log("favoriteCategory - ", favoriteCategory);
     if (favoriteCategory) {
       setCurrentCategoryIndex(favoriteCategory.id);
     }
-  }, [categoryWiseProductsRedux.query]);
+  }, [categoryWiseProductsRedux]);
 
   // when category mounted it will fetch the categorySubProducts length
   let subProductCategoryLength = 0;
@@ -89,8 +73,8 @@ const ProductsCarousel = () => {
             return (
               <>
                 <ul className="nav nav-tabs" id="myTab" role="tablist">
-                  {categoryWiseProductsRedux.query &&
-                    categoryWiseProductsRedux.query.map((category, index) =>
+                  {categoryWiseProductsRedux &&
+                    categoryWiseProductsRedux.map((category, index) =>
                       (function () {
                         if (category.isFavorite === true) {
                           // setCurrentCategoryIndex(category.id);
@@ -131,8 +115,8 @@ const ProductsCarousel = () => {
                 </ul>
 
                 <div className="tab-content" id="myTabContent">
-                  {categoryWiseProductsRedux.query &&
-                    categoryWiseProductsRedux.query.map((category, index) => {
+                  {categoryWiseProductsRedux &&
+                    categoryWiseProductsRedux.map((category, index) => {
                       // setting categoryProduct length for next btn handler
                       if (category.id === currentCategoryIndex) {
                         subProductCategoryLength =
@@ -190,12 +174,10 @@ const ProductsCarousel = () => {
                 <div style={{ marginTop: "30px", textAlign: "center" }}>
                   {(function () {
                     const selectedCategoryName =
-                      categoryWiseProductsRedux.query &&
-                      categoryWiseProductsRedux.query.find(
-                        (category, index) => {
-                          return category.id === currentCategoryIndex;
-                        }
-                      );
+                      categoryWiseProductsRedux &&
+                      categoryWiseProductsRedux.find((category, index) => {
+                        return category.id === currentCategoryIndex;
+                      });
 
                     try {
                       return (

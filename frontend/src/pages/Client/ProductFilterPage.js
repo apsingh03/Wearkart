@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import Header from "../../components/Client/Header";
 import { FaRegHeart } from "react-icons/fa";
+import { MdFavorite } from "react-icons/md";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import SideBarAllFilters from "../../components/Client/ProductsFilterPage/SideBarAllFilters";
 import { useDispatch, useSelector } from "react-redux";
@@ -21,6 +22,7 @@ import {
 
 import LeftSideComponent from "../../components/Client/ProductsFilterPage/LeftSideComponent";
 import { useProductsFilterFunctions } from "../../customHooks/ProductsFilterPage/ProductFilterCustomHook";
+import { createUserFavoriteProductAsync } from "../../Redux/UserSlices/FavoriteProduct/FavoriteProductSlice";
 
 const ProductFilterPage = () => {
   const location = useLocation();
@@ -44,10 +46,16 @@ const ProductFilterPage = () => {
     (state) => state.client_product.allProducts
   );
 
-  const { setisLoadingTopProgress } = useContext(AppContext);
+  const user_favoriteProductRedux = useSelector(
+    (state) => state.user_favoriteProduct.data?.query
+  );
 
-  // const [productsIsFilteringLoader, setproductsIsFilteringLoader] =
-  //   useState(false);
+  const clientIsLogged = useSelector(
+    (state) => state.client_auth.loggedData.isUserLogged
+  );
+
+  const { setisLoadingTopProgress, isLoadingWishList, setisLoadingWishList } =
+    useContext(AppContext);
 
   const [whichTypeOfSortingSelected, setwhichTypeOfSortingSelected] =
     useState("Low to high");
@@ -85,6 +93,29 @@ const ProductFilterPage = () => {
     if (option === "High to low") {
       setwhichTypeOfSortingSelected("High to low");
       dispatch(sortPriceHighToLowProducts());
+    }
+  }
+
+  const [whichProductForFavorite, setwhichProductForFavorite] = useState({});
+
+  async function handleFavoriteBtn(id) {
+    if (clientIsLogged) {
+      setisLoadingWishList(true);
+
+      setwhichProductForFavorite((prevState) => ({
+        ...prevState,
+        [id]: !prevState[id],
+      }));
+
+      const actionResult = await dispatch(
+        createUserFavoriteProductAsync({ product_id: id })
+      );
+
+      if (actionResult.payload?.msg === "success") {
+        setisLoadingWishList(false);
+      }
+    } else {
+      alert("You Need to Login ");
     }
   }
 
@@ -320,13 +351,56 @@ const ProductFilterPage = () => {
                                       key={index}
                                     >
                                       <div className="pFilterPage__right__body__card">
-                                        <div
-                                          className="pFilterPage__right__body__card__favIcon"
-                                          onClick={() =>
-                                            alert("Click on Fav Icon")
-                                          }
-                                        >
-                                          <FaRegHeart />{" "}
+                                        <div className="pFilterPage__right__body__card__favIcon">
+                                          {(function () {
+                                            const alreadyFavorite =
+                                              user_favoriteProductRedux &&
+                                              user_favoriteProductRedux.some(
+                                                (data) => {
+                                                  return (
+                                                    data.product_id ===
+                                                    product?.id
+                                                  );
+                                                }
+                                              );
+
+                                            try {
+                                              return alreadyFavorite ? (
+                                                <span title="Its Favorite">
+                                                  <MdFavorite />
+                                                </span>
+                                              ) : (
+                                                <>
+                                                  {whichProductForFavorite[
+                                                    product?.id
+                                                  ] ? (
+                                                    isLoadingWishList ? (
+                                                      <div
+                                                        className="spinner-border spinner-border-sm"
+                                                        role="status"
+                                                      ></div>
+                                                    ) : null
+                                                  ) : (
+                                                    <span
+                                                      title="Favorite It"
+                                                      onClick={() =>
+                                                        handleFavoriteBtn(
+                                                          product?.id
+                                                        )
+                                                      }
+                                                    >
+                                                      <FaRegHeart />
+                                                    </span>
+                                                  )}
+                                                </>
+                                              );
+                                            } catch (error) {
+                                              console.log(
+                                                "Error - ",
+                                                error.message
+                                              );
+                                            }
+                                          })()}
                                         </div>
                                         <Link
                                           to={`/product/${
@@ -343,11 +417,8 @@ const ProductFilterPage = () => {
                                             alt="dress"
                                           />
                                           <p className="pFilterPage__right__body__card__productTitle">
-                                            {product.name &&
-                                              product.name.substring(0, 30) +
-                                                "..."}
+                                            {product?.name}
                                           </p>
-
                                           <div
                                             className="d-flex flex-row align-items-center gap-1 "
                                             style={{ marginTop: "-20px" }}
@@ -387,7 +458,6 @@ const ProductFilterPage = () => {
                                                 )}
                                             </div>
                                           </div>
-
                                           <p
                                             className="pFilterPage__right__body__card__productTitle"
                                             style={{ marginTop: "-10px" }}
