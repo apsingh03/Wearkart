@@ -23,6 +23,7 @@ import parentTestimonialSlice from "./AdminSlices/Testimonial/parentTestimonialS
 import childTestimonialSlice from "./AdminSlices/Testimonial/childTestimonialSlice";
 import fourImagesBannerSlice from "./AdminSlices/FourImagesBanner/FourImagesBannerSlice";
 import favoriteProductSlice from "./UserSlices/FavoriteProduct/FavoriteProductSlice";
+import clientDebounceSearchSlice from "./ClientSlices/clientDebounceSearchSlice";
 
 export const store = configureStore({
   reducer: {
@@ -48,6 +49,7 @@ export const store = configureStore({
 
     // Client Slices
     client_product: clientProductSlice,
+    client_debounceSearch: clientDebounceSearchSlice,
 
     // User Slices
     client_auth: userAuthSlice,

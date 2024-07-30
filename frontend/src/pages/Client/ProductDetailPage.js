@@ -127,7 +127,7 @@ const ProductDetailPage = () => {
       <Header />
 
       <section className="productDetail">
-        <div className="col-12 row">
+        <div className="row">
           <div className="col-12 col-sm-12 col-md-6 col-lg-5 ">
             <div className="productDetail__left">
               <div className="productDetail__left_imageGrid">

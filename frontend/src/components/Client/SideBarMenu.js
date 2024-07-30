@@ -6,16 +6,17 @@ import { FaPlus, FaMinus } from "react-icons/fa6";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { AppContext } from "../../context/AppContext";
-import { getParentMenuAsync } from "../../Redux/AdminSlices/Menu/parentMenuSlice";
+
+import { clientGetMenuAsync } from "../../Redux/ClientSlices/clientProductSlice";
 
 const SideBarMenu = ({ setisActiveSideBarMenu }) => {
   const dispatch = useDispatch();
 
   const [isSubMenuToggle, setisSubMenuToggle] = useState({});
 
-  const admin_parentMenuRedux = useSelector(
-    (state) => state.admin_parentMenu.data
-  );
+   const client_headerMenuRedux = useSelector(
+     (state) => state.client_product.headerMenu
+   );
   // console.log("admin_parentMenuRedux - ", admin_parentMenuRedux);
 
   const { setisLoadingTopProgress } = useContext(AppContext);
@@ -30,7 +31,7 @@ const SideBarMenu = ({ setisActiveSideBarMenu }) => {
   async function fetchData() {
     setisLoadingTopProgress(30);
 
-    await dispatch(getParentMenuAsync());
+    await dispatch(clientGetMenuAsync());
 
     setisLoadingTopProgress(100);
   }
@@ -53,8 +54,8 @@ const SideBarMenu = ({ setisActiveSideBarMenu }) => {
         {(function () {
           try {
             return (
-              admin_parentMenuRedux.query &&
-              admin_parentMenuRedux.query.map((menuData, menuIdx) => {
+              client_headerMenuRedux.query &&
+              client_headerMenuRedux.query.map((menuData, menuIdx) => {
                 return (
                   <div
                     className="sideMenu__body__card"

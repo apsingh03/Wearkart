@@ -19,6 +19,8 @@ import AdminProtectedRoutes from "./components/Admin/AdminProtectedRoutes";
 import SideBarAllFilters from "./components/Client/ProductsFilterPage/SideBarAllFilters";
 import SideFilter from "./components/Client/ProductsFilterPage/SideFilter";
 import WishList from "./components/Client/WishList";
+import SideBarDebounceSearch from "./components/Client/SideBarDebounceSearch";
+
 function App() {
   // console.log("process.env - ", process.env);
   const {
@@ -30,6 +32,8 @@ function App() {
     setisLoadingTopProgress,
     isFilterSideBarVisible,
     setIsFilterSideBarVisible,
+    isActiveSideBarDebounce,
+    setisActiveSideBarDebounce,
   } = useContext(AppContext);
 
   const [scrollTop, setScrollTop] = useState(10);
@@ -91,6 +95,12 @@ function App() {
 
       {isFilterSideBarVisible && (
         <SideFilter setIsFilterSideBarVisible={setIsFilterSideBarVisible} />
+      )}
+
+      {isActiveSideBarDebounce && (
+        <SideBarDebounceSearch
+          setisActiveSideBarDebounce={setisActiveSideBarDebounce}
+        />
       )}
 
       <Routes>

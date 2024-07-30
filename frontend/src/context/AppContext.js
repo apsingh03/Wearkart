@@ -8,6 +8,11 @@ export const AppProvider = ({ children }) => {
   const [isLoadingTopProgress, setisLoadingTopProgress] = useState(0);
   const [isFilterSideBarVisible, setIsFilterSideBarVisible] = useState(false);
   const [isLoadingWishList, setisLoadingWishList] = useState(false);
+  const [isLoadingDebounceSearch, setisLoadingDebounceSearch] = useState(false);
+  const [isActiveDebounceChildContainer, setisActiveDebounceChildContainer] =
+    useState(false);
+
+  const [isActiveSideBarDebounce, setisActiveSideBarDebounce] = useState(false);
 
   return (
     <AppContext.Provider
@@ -22,6 +27,12 @@ export const AppProvider = ({ children }) => {
         setIsFilterSideBarVisible,
         isLoadingWishList,
         setisLoadingWishList,
+        isLoadingDebounceSearch,
+        setisLoadingDebounceSearch,
+        isActiveDebounceChildContainer,
+        setisActiveDebounceChildContainer,
+        isActiveSideBarDebounce,
+        setisActiveSideBarDebounce,
       }}
     >
       {children}

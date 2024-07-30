@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { clientGetMenuAsync } from "../../Redux/ClientSlices/clientProductSlice";
 import { getUserFavoriteProductAsync } from "../../Redux/UserSlices/FavoriteProduct/FavoriteProductSlice";
 import { getUserCartAsync } from "../../Redux/UserSlices/Cart/UserCartRedux";
+import DebounceSearch from "./DebounceSearch";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -39,6 +40,9 @@ const Header = () => {
     cartIsHover,
     setcartIsHover,
     setisLoadingTopProgress,
+    isActiveDebounceChildContainer,
+    setisActiveDebounceChildContainer,
+    setisActiveSideBarDebounce,
   } = useContext(AppContext);
 
   function onClickToggleCart() {
@@ -75,7 +79,7 @@ const Header = () => {
     <>
       <header>
         <div className="promotionContainer">
-          <h6 className="promotionContainer__title">Flat 50% Off</h6>
+          <span className="promotionContainer__title">Flat 50% Off</span>
         </div>
 
         <div className="header">
@@ -94,7 +98,7 @@ const Header = () => {
             <div
               className="header__searchIcon "
               style={{ cursor: "pointer" }}
-              onClick={() => setisActiveSideBarMenu(true)}
+              onClick={() => setisActiveSideBarDebounce(true)}
             >
               <span>
                 {" "}
@@ -110,7 +114,7 @@ const Header = () => {
             </Link>
           </div>
 
-          <div className="header__2ndContainer">
+          <div className="header__2ndContainer ">
             {(function () {
               try {
                 return (
@@ -146,17 +150,7 @@ const Header = () => {
           </div>
 
           <div className="header__3rdContainer">
-            <div className="header__3rdContainer__inputWrapper">
-              <span className="header__3rdContainer__icons">
-                <IoSearch />
-              </span>
-              <input
-                type="text"
-                className="header__3rdContainer__input"
-                placeholder="Search"
-                id="SearchBox"
-              />
-            </div>
+            <DebounceSearch />
           </div>
 
           <div className="header__4thContainer">

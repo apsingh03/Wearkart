@@ -539,17 +539,6 @@ const clientGetSizesFilters = async (req, res) => {
   }
 };
 
-/*
-
-const bannerCarousel = db.bannerCarousel;
-const bannerCarouselImages = db.bannerCarouselImages;
-const actressCarousel = db.actressCarousel;
-const actressCarouselImages = db.actressCarouselImages;
-const testimonial = db.testimonial;
-const testimonialDetails = db.testimonialDetails;
-const fourImagesBanner = db.testimonialDetails;
-
-*/
 const clientGetBannerCarousel = async (req, res) => {
   try {
     const query = await BannerCarousel.findAll({
