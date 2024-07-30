@@ -23,6 +23,12 @@ import { usePaymentGateway } from "../../customHooks/paymentGateway/PaymentGatew
 const Cart = ({ setcartIsHover }) => {
   const dispatch = useDispatch();
 
+  const [isDisabledCartIncreaseBtn, setisDisabledCartIncreaseBtn] =
+    useState(false);
+
+  const [isDisabledCartDecreaseBtn, setisDisabledCartDecreaseBtn] =
+    useState(false);
+
   const user_userCart = useSelector((state) => state.user_userCart.data);
   const clientIsLogged = useSelector(
     (state) => state.client_auth.loggedData.isUserLogged
@@ -75,7 +81,34 @@ const Cart = ({ setcartIsHover }) => {
     ) {
       alert("You can't add more than stock qty");
     } else {
-      await dispatch(updateUserCartQtyAsync({ cartItem_id, qtyMessage }));
+      // console.log(cartItem_id, qtyMessage);
+
+      if (qtyMessage === "Increase") {
+        setisDisabledCartIncreaseBtn(true);
+      }
+
+      if (qtyMessage === "Decrease") {
+        setisDisabledCartDecreaseBtn(true);
+      }
+
+      const actionResult = await dispatch(
+        updateUserCartQtyAsync({ cartItem_id, qtyMessage })
+      );
+      if (
+        actionResult.payload?.msg &&
+        actionResult.payload?.msg === "success"
+      ) {
+        const { qtyMessage } = actionResult.meta.arg;
+
+        if (qtyMessage === "Increase") {
+          setisDisabledCartIncreaseBtn(false);
+        }
+
+        if (qtyMessage === "Decrease") {
+          setisDisabledCartDecreaseBtn(false);
+        }
+        console.log("actionResult - ", qtyMessage, actionResult);
+      }
     }
 
     setisLoadingTopProgress(100);
@@ -215,14 +248,18 @@ const Cart = ({ setcartIsHover }) => {
                         <div className="cart__body__card__product__btns">
                           <div className="cart__body__card__product__btns_qtyGrp">
                             <div
-                              className="cart__body__card__product__btns_qtyGrp__icon"
+                              className={`cart__body__card__product__btns_qtyGrp__icon ${
+                                isDisabledCartDecreaseBtn ? "disabled" : null
+                              } `}
                               onClick={() =>
-                                handleCartQty(
-                                  cartItem?.id,
-                                  "Decrease",
-                                  cartItem?.qty,
-                                  matchingSize?.pSizeProductSizes?.qty
-                                )
+                                isDisabledCartDecreaseBtn === false
+                                  ? handleCartQty(
+                                      cartItem?.id,
+                                      "Decrease",
+                                      cartItem?.qty,
+                                      matchingSize?.pSizeProductSizes?.qty
+                                    )
+                                  : null
                               }
                             >
                               <RiSubtractFill />
@@ -231,14 +268,18 @@ const Cart = ({ setcartIsHover }) => {
                               {cartItem?.qty}
                             </p>
                             <div
-                              className="cart__body__card__product__btns_qtyGrp__icon"
+                              className={`cart__body__card__product__btns_qtyGrp__icon ${
+                                isDisabledCartIncreaseBtn ? "disabled" : null
+                              } `}
                               onClick={() =>
-                                handleCartQty(
-                                  cartItem?.id,
-                                  "Increase",
-                                  cartItem?.qty,
-                                  matchingSize?.pSizeProductSizes?.qty
-                                )
+                                isDisabledCartIncreaseBtn === false
+                                  ? handleCartQty(
+                                      cartItem?.id,
+                                      "Increase",
+                                      cartItem?.qty,
+                                      matchingSize?.pSizeProductSizes?.qty
+                                    )
+                                  : null
                               }
                             >
                               <FaPlus />

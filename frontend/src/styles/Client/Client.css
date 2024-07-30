@@ -785,6 +785,11 @@ body {
   cursor: pointer;
 }
 
+.cart__body__card__product__btns_qtyGrp__icon.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
 .cart__body__card__product__btns_qtyGrp__qty {
   font-size: 14px;
   font-weight: 600;
