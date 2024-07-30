@@ -134,7 +134,7 @@ const Cart = ({ setcartIsHover }) => {
           <div
             onClick={() => [
               setcartIsHover(false),
-              (document.body.style.overflowY = "auto"),
+              // (document.body.style.overflowY = "auto"),
             ]}
           >
             <span className="cart__header__top__closeIcon">

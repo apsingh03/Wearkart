@@ -78,6 +78,29 @@ function App() {
 
   // console.log("scrollTop - ", scrollTop);
 
+  useEffect(() => {
+    // When user clicks on sidebar Component overflow Y should be hidden
+    if (
+      isActiveSideBarMenu ||
+      cartIsHover ||
+      isFilterSideBarVisible ||
+      isActiveSideBarDebounce
+    ) {
+      document.body.style.overflowY = "hidden";
+    } else {
+      document.body.style.overflowY = "auto";
+    }
+
+    // console.log(
+
+    // );
+  }, [
+    isActiveSideBarMenu,
+    cartIsHover,
+    isFilterSideBarVisible,
+    isActiveSideBarDebounce,
+  ]);
+
   return (
     <>
       <LoadingBar

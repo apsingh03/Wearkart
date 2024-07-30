@@ -2331,17 +2331,22 @@ body {
   transition: none;
 }
 
+.wishlistContainer {
+  padding: 50px 25px;
+}
+
 .wishlist {
   padding: 40px 20px;
   display: flex;
   flex-direction: row;
   gap: 10px;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 .wishlist__card {
   position: relative;
-  width: 250px;
+  width: 275px;
   height: auto;
 }
 
@@ -2489,6 +2494,10 @@ body {
   .header__hamburger {
     display: block;
   }
+
+  .wishlist__card {
+    width: 200px;
+  }
 }
 
 /* lg */
@@ -2513,9 +2522,17 @@ body {
     padding: 0 30px;
   }
 
-  /* .bannerCarousel_imgBox {
-        height: auto;
-    } */
+  .wishlistContainer {
+    padding: 40px 0px;
+  }
+
+  .wishlist__card {
+    width: 230px;
+  }
+
+
+
+
 }
 
 /* md */
@@ -2556,7 +2573,21 @@ body {
   .account__body {
     padding: 0 20px;
   }
+
+  .authPage {
+    width: 80%;
+  }
+
+     .wishlist {
+       padding: 10px;
+     }
+
+  .wishlist__card {
+    width: 180px;
+  }
+
 }
+
 
 /* sm */
 @media only screen and (max-width: 576px) {
@@ -2590,5 +2621,20 @@ body {
 
   .account__body {
     padding: 0 10px;
+  }
+
+  .authPage {
+    width: 100%;
+  }
+  .wishlistContainer {
+    padding:20px 0;
+  } 
+
+    .wishlist {
+      padding: 10px;
+    }
+
+  .wishlist__card {
+    width: 210px;
   }
 }

@@ -139,7 +139,7 @@ const AdminJunction = () => {
           <div className="admin__header__1st">
             <h6 className="admin__header__1st__brandName">
               {" "}
-              <Link to="/admin/"> Brand Name</Link>
+              <Link to="/admin/">Admin Panel</Link>
             </h6>
 
             <div

@@ -50,7 +50,7 @@ const WishList = () => {
   return (
     <>
       <Header />
-      <div style={{ padding: "50px 25px" }}>
+      <div className="wishlistContainer">
         <h4 className="text-center mb-3">Your Wishlist</h4>
 
         <div className="wishlist">

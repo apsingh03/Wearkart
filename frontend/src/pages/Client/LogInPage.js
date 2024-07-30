@@ -102,6 +102,7 @@ const LogInPage = () => {
                 <div className="form-group mb-3">
                   <div className="d-flex align-items-baseline">
                     <label htmlFor="email">Email address</label>
+
                     <p className="authPage__inputFieldError px-3">
                       {errors.email && touched.email && errors.email}
                       {logInEmailError && logInEmailError}
@@ -118,6 +119,7 @@ const LogInPage = () => {
                       className="form-control"
                       id="email"
                       name="email"
+                      placeholder="user@gmail.com"
                       onClick={() => setlogInEmailError("")}
                       onChange={handleChange}
                       onBlur={handleBlur}
@@ -157,6 +159,7 @@ const LogInPage = () => {
                       className="form-control"
                       id="password"
                       name="password"
+                      placeholder="user"
                       onClick={() => setlogInPasswordError("")}
                       onChange={handleChange}
                       onBlur={handleBlur}

@@ -137,6 +137,7 @@ const SignUpLoginPage = () => {
                         className="form-control"
                         id="loginEmail"
                         name="loginEmail"
+                        placeholder="admin@gmail.com"
                         onClick={() => setLoginErrors({ email: "" })}
                         onChange={handleChange}
                         onBlur={handleBlur}
@@ -178,6 +179,7 @@ const SignUpLoginPage = () => {
                         className="form-control"
                         id="loginPassword"
                         name="loginPassword"
+                        placeholder="admin"
                         onClick={() => setLoginErrors({ password: "" })}
                         onChange={handleChange}
                         onBlur={handleBlur}

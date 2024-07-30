@@ -48,10 +48,10 @@ const Header = () => {
   function onClickToggleCart() {
     if (cartIsHover) {
       setcartIsHover(false);
-      document.body.style.overflowY = "auto";
+      // document.body.style.overflowY = "auto";
     } else {
       setcartIsHover(true);
-      document.body.style.overflowY = cartIsHover ? "auto" : "hidden";
+      // document.body.style.overflowY = cartIsHover ? "auto" : "hidden";
     }
   }
 
