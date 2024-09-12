@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useContext } from "react";
-import Header from "../../components/Client/Header";
+import React, { useEffect, useState, useContext, Suspense } from "react";
+
 // import { Link } from "react-router-dom";
 
 import { FaRegHeart, FaWhatsapp } from "react-icons/fa";
@@ -20,8 +20,10 @@ import { toast } from "react-toastify";
 import { useLocation } from "react-router-dom";
 import {
   createUserCartAsync,
-  getUserCartAsync,
+  // getUserCartAsync,
 } from "../../Redux/UserSlices/Cart/UserCartRedux";
+
+const Header = React.lazy(() => import("../../components/Client/Header"));
 
 const ProductDetailPage = () => {
   const dispatch = useDispatch();
@@ -124,7 +126,16 @@ const ProductDetailPage = () => {
 
   return (
     <>
+      {/* <Suspense
+        fallback={
+          <div
+            className="spinner-border spinner-border-sm text-center"
+            role="status"
+          ></div>
+        }
+      > */}
       <Header />
+      {/* </Suspense> */}
 
       <section className="productDetail">
         <div className="row">
@@ -154,6 +165,7 @@ const ProductDetailPage = () => {
                                   src={data}
                                   alt="Actress"
                                   className="productDetail__left_imageGrid__card__image"
+                                  loading="lazy"
                                 />
                               </div>
                             );
@@ -161,7 +173,11 @@ const ProductDetailPage = () => {
                         </div>
 
                         <div className="productDetail__left__image">
-                          <img src={productImages[0]} alt="Actress" />
+                          <img
+                            src={productImages[0]}
+                            alt="Actress"
+                            loading="lazy"
+                          />
                         </div>
                       </>
                     );

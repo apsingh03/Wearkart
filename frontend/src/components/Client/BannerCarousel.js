@@ -88,6 +88,7 @@ const BannerCarousel = ({ bannerCarouselRedux }) => {
                         width: `${carouselParent?.width}`,
                         objectFit: `${carouselParent?.objectFit}`,
                       }}
+                      loading="lazy"
                     />
                   </div>
                 </div>

@@ -7,6 +7,8 @@ const DressesCarousel = ({ actressCarouselRedux }) => {
   useEffect(() => {
     const carousel = carouselRef.current;
 
+    // console.log("carousel - ", carousel);
+
     if (!carousel) return;
 
     let isDown = false;
@@ -14,6 +16,8 @@ const DressesCarousel = ({ actressCarouselRedux }) => {
     let scrollLeft;
 
     const handleMouseDown = (e) => {
+      console.log("handleMouseDown pageX - ", e.pageX);
+        console.log("handleMouseDown carousel - ", carousel.offsetLeft);
       isDown = true;
       carousel.classList.add("active");
       startX = e.pageX - carousel.offsetLeft;
@@ -75,6 +79,7 @@ const DressesCarousel = ({ actressCarouselRedux }) => {
                           alt={`${childData?.imageAlt}`}
                           src={`${childData?.imageSrc}`}
                           className="dressesCarouselAtlg__wrapper__card__imgBox__image"
+                          loading="lazy"
                         />
                       </Link>
                     </div>

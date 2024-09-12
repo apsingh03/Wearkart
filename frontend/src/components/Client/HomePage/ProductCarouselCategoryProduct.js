@@ -47,6 +47,7 @@ const ProductCarouselCategoryProduct = ({
                         src={product.productImage.url1}
                         className="homePage__3rdBox__productsBox__card__image"
                         alt="Product"
+                        loading="lazy"
                       />
                     </Link>
                     <p className="homePage__3rdBox__productsBox__card__productTitle">

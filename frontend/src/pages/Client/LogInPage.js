@@ -1,16 +1,17 @@
-import React, { useContext, useState } from "react";
-import Header from "../../components/Client/Header";
-import Footer from "../../components/Client/Footer";
-import { Formik, Form, Field } from "formik";
+import React, { useContext, useState, Suspense } from "react";
+import { Formik } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
-import { FaUser, FaMobile } from "react-icons/fa";
+// import { FaUser, FaMobile } from "react-icons/fa";
 import { MdEmail, MdPassword } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { AppContext } from "../../context/AppContext";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { loginClientAsync } from "../../Redux/UserSlices/UserAuth";
+
+const Header = React.lazy(() => import("../../components/Client/Header"));
+const Footer = React.lazy(() => import("../../components/Client/Footer"));
 
 const LogInPage = () => {
   const [logInEmailError, setlogInEmailError] = useState("");
@@ -32,6 +33,14 @@ const LogInPage = () => {
 
   return (
     <>
+      {/* <Suspense
+        fallback={
+          <div
+            className="spinner-border spinner-border-sm text-center"
+            role="status"
+          ></div>
+        }
+      > */}
       <Header />
       <div className="d-flex flex-row justify-content-center align-items-center">
         <div className="authPage">
@@ -188,6 +197,7 @@ const LogInPage = () => {
         </div>
       </div>
       <Footer />
+      {/* </Suspense> */}
     </>
   );
 };

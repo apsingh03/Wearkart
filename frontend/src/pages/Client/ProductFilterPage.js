@@ -1,8 +1,7 @@
-import React, { useEffect, useState, useContext } from "react";
-import Header from "../../components/Client/Header";
+import React, { useEffect, useState, useContext, Suspense } from "react";
 import { FaRegHeart } from "react-icons/fa";
 import { MdFavorite } from "react-icons/md";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import SideBarAllFilters from "../../components/Client/ProductsFilterPage/SideBarAllFilters";
 import { useDispatch, useSelector } from "react-redux";
 import { AppContext } from "../../context/AppContext";
@@ -23,6 +22,7 @@ import {
 import LeftSideComponent from "../../components/Client/ProductsFilterPage/LeftSideComponent";
 import { useProductsFilterFunctions } from "../../customHooks/ProductsFilterPage/ProductFilterCustomHook";
 import { createUserFavoriteProductAsync } from "../../Redux/UserSlices/FavoriteProduct/FavoriteProductSlice";
+const Header = React.lazy(() => import("../../components/Client/Header"));
 
 const ProductFilterPage = () => {
   const location = useLocation();
@@ -163,7 +163,16 @@ const ProductFilterPage = () => {
 
   return (
     <>
+      {/* <Suspense
+        fallback={
+          <div
+            className="spinner-border spinner-border-sm text-center"
+            role="status"
+          ></div>
+        }
+      > */}
       <Header />
+      {/* </Suspense> */}
 
       <div className="pFilterPage">
         <div className="row">
@@ -415,6 +424,7 @@ const ProductFilterPage = () => {
                                             }
                                             className="pFilterPage__right__body__card__image"
                                             alt="dress"
+                                            loading="lazy"
                                           />
                                           <p className="pFilterPage__right__body__card__productTitle">
                                             {product?.name}

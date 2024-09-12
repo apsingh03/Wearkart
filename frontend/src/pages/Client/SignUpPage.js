@@ -1,21 +1,21 @@
-import React, { useContext, useState } from "react";
-import Header from "../../components/Client/Header";
-import Footer from "../../components/Client/Footer";
-import { Formik, Form, Field } from "formik";
+import React, { useContext, useState, Suspense } from "react";
+import { Formik } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { FaUser, FaMobile } from "react-icons/fa";
+import { FaUser } from "react-icons/fa";
 import { MdEmail, MdPassword } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { createClientAsync } from "../../Redux/UserSlices/UserAuth";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { AppContext } from "../../context/AppContext";
+
+const Header = React.lazy(() => import("../../components/Client/Header"));
+const Footer = React.lazy(() => import("../../components/Client/Footer"));
 
 const SignUpPage = () => {
   const [SignUpErrors, setSignUpErrors] = useState({ email: "" });
-  const { isLoadingTopProgress, setisLoadingTopProgress } =
-    useContext(AppContext);
+  const { setisLoadingTopProgress } = useContext(AppContext);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -35,6 +35,14 @@ const SignUpPage = () => {
 
   return (
     <>
+      {/* <Suspense
+        fallback={
+          <div
+            className="spinner-border spinner-border-sm text-center"
+            role="status"
+          ></div>
+        }
+      > */}
       <Header />
       <div className="d-flex flex-row justify-content-center align-items-center">
         <div className="authPage">
@@ -194,6 +202,7 @@ const SignUpPage = () => {
         </div>
       </div>
       <Footer />
+      {/* </Suspense> */}
     </>
   );
 };

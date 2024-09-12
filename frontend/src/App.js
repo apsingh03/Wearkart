@@ -1,28 +1,43 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
-import HomePage from "./pages/Client/HomePage";
-import Typography from "./components/Client/Typography";
-import Cart from "./components/Client/Cart";
 import { useState } from "react";
-import ProductFilterPage from "./pages/Client/ProductFilterPage";
-import ProductDetailPage from "./pages/Client/ProductDetailPage";
-import LogInPage from "./pages/Client/LogInPage";
-import SignUpPage from "./pages/Client/SignUpPage";
-import SignUpLoginPage from "./pages/Admin/SignUpLoginPage";
-import AdminJunction from "./pages/Admin/AdminJunction";
-import SideBarMenu from "./components/Client/SideBarMenu";
 import { AppContext } from "./context/AppContext";
-import ClientDashboard from "./pages/Client/ClientDashboard";
 import LoadingBar from "react-top-loading-bar";
-import ClientProtectedRoutes from "./components/Client/ClientProtectedRoutes";
-import AdminProtectedRoutes from "./components/Admin/AdminProtectedRoutes";
-import SideBarAllFilters from "./components/Client/ProductsFilterPage/SideBarAllFilters";
-import SideFilter from "./components/Client/ProductsFilterPage/SideFilter";
-import WishList from "./components/Client/WishList";
-import SideBarDebounceSearch from "./components/Client/SideBarDebounceSearch";
+
+// Lazy load components
+const ProductFilterPage = lazy(() =>
+  import("./pages/Client/ProductFilterPage")
+);
+const HomePage = lazy(() => import("./pages/Client/HomePage"));
+const Typography = lazy(() => import("./components/Client/Typography"));
+const Cart = lazy(() => import("./components/Client/Cart"));
+const ProductDetailPage = lazy(() =>
+  import("./pages/Client/ProductDetailPage")
+);
+const LogInPage = lazy(() => import("./pages/Client/LogInPage"));
+const SignUpPage = lazy(() => import("./pages/Client/SignUpPage"));
+const SignUpLoginPage = lazy(() => import("./pages/Admin/SignUpLoginPage"));
+const AdminJunction = lazy(() => import("./pages/Admin/AdminJunction"));
+const SideBarMenu = lazy(() => import("./components/Client/SideBarMenu"));
+const ClientDashboard = lazy(() => import("./pages/Client/ClientDashboard"));
+const ClientProtectedRoutes = lazy(() =>
+  import("./components/Client/ClientProtectedRoutes")
+);
+const AdminProtectedRoutes = lazy(() =>
+  import("./components/Admin/AdminProtectedRoutes")
+);
+const SideBarAllFilters = lazy(() =>
+  import("./components/Client/ProductsFilterPage/SideBarAllFilters")
+);
+const SideFilter = lazy(() =>
+  import("./components/Client/ProductsFilterPage/SideFilter")
+);
+const WishList = lazy(() => import("./components/Client/WishList"));
+const SideBarDebounceSearch = lazy(() =>
+  import("./components/Client/SideBarDebounceSearch")
+);
 
 function App() {
-  // console.log("process.env - ", process.env);
   const {
     isActiveSideBarMenu,
     setisActiveSideBarMenu,
@@ -38,48 +53,21 @@ function App() {
 
   const [scrollTop, setScrollTop] = useState(10);
 
-  // console.log("scrollTop - ", scrollTop);
-
   useEffect(() => {
     const handleScroll = () => {
       setScrollTop(document.scrollingElement.scrollTop);
     };
 
-    // Set initial scroll position
     setScrollTop(document.scrollingElement.scrollTop);
 
-    // Add event listener for scroll
-    window.addEventListener("scroll", function () {
-      setScrollTop(document.scrollingElement.scrollTop);
-    });
+    window.addEventListener("scroll", handleScroll);
 
-    // if (scrollTop >= 70) {
-    //   console.log("working");
-    //   document.querySelector(".header").style.position = "fixed";
-    //   document.querySelector(".header").style.top = 0;
-    //   document.querySelector(".header").style.width = "100%";
-    //   document.querySelector(".header").style.zIndex = 1;
-    //   document.querySelector(".bannerCarousel").style.marginTop = "70px";
-    // }
-
-    // if (scrollTop <= 70) {
-    //   document.querySelector(".header").style.position = "relative";
-    //   document.querySelector(".header").style.top = 0;
-    //   document.querySelector(".header").style.width = "100%";
-    //   document.querySelector(".header").style.zIndex = 1;
-    //   document.querySelector(".bannerCarousel").style.marginTop = "0";
-    // }
-
-    // Clean up the event listener on component unmount
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, [scrollTop]);
 
-  // console.log("scrollTop - ", scrollTop);
-
   useEffect(() => {
-    // When user clicks on sidebar Component overflow Y should be hidden
     if (
       isActiveSideBarMenu ||
       cartIsHover ||
@@ -90,10 +78,6 @@ function App() {
     } else {
       document.body.style.overflowY = "auto";
     }
-
-    // console.log(
-
-    // );
   }, [
     isActiveSideBarMenu,
     cartIsHover,
@@ -111,6 +95,14 @@ function App() {
         onLoaderFinished={() => setisLoadingTopProgress(0)}
       />
 
+      {/* <Suspense
+        fallback={
+          <div
+            className="spinner-border spinner-border-sm text-center"
+            role="status"
+          ></div>
+        }
+      > */}
       {cartIsHover ? <Cart setcartIsHover={setcartIsHover} /> : null}
       {isActiveSideBarMenu ? (
         <SideBarMenu setisActiveSideBarMenu={setisActiveSideBarMenu} />
@@ -151,6 +143,7 @@ function App() {
           element={<AdminProtectedRoutes element={<AdminJunction />} />}
         />
       </Routes>
+      {/* </Suspense> */}
     </>
   );
 }

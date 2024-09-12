@@ -47,6 +47,7 @@ const ActressCarousel = ({ actressCarouselRedux }) => {
                                     parentCarousel?.objectFit || "cover",
                                   borderRadius: "50%",
                                 }}
+                                loading="lazy"
                               />
                             </Link>
                           </div>

@@ -1,11 +1,7 @@
-import React, { useEffect, useContext } from "react";
-import Header from "../../components/Client/Header";
-import BannerCarousel from "../../components/Client/BannerCarousel";
-import ActressCarousel from "../../components/Client/ActressCarousel";
+import React, { useEffect, useContext, Suspense } from "react";
 import { Link } from "react-router-dom";
 // import { FaLocationDot } from "react-icons/fa6";
-import ProductsCarousel from "../../components/Client/HomePage/ProductsCarousel";
-import Footer from "../../components/Client/Footer";
+
 import { SlLocationPin } from "react-icons/sl";
 import { useDispatch, useSelector } from "react-redux";
 import { AppContext } from "../../context/AppContext";
@@ -16,8 +12,31 @@ import {
   clientGetFourBannerImagesAsync,
   clientGetTestimonialAsync,
 } from "../../Redux/ClientSlices/clientProductSlice";
-import Testimonial from "../../components/Client/Testimonial";
-import DressesCarouselAtLg from "../../components/Client/HomePage/DressesCarouselAtLg";
+
+const Header = React.lazy(() => import("../../components/Client/Header"));
+const Footer = React.lazy(() => import("../../components/Client/Footer"));
+
+const Testimonial = React.lazy(() =>
+  import("../../components/Client/Testimonial")
+);
+const DressesCarouselAtLg = React.lazy(() =>
+  import("../../components/Client/HomePage/DressesCarouselAtLg")
+);
+const ProductsCarousel = React.lazy(() =>
+  import("../../components/Client/HomePage/ProductsCarousel")
+);
+const BannerCarousel = React.lazy(() =>
+  import("../../components/Client/BannerCarousel")
+);
+const ActressCarousel = React.lazy(() =>
+  import("../../components/Client/ActressCarousel")
+);
+
+// import Testimonial from "../../components/Client/Testimonial";
+// import DressesCarouselAtLg from "../../components/Client/HomePage/DressesCarouselAtLg";
+// import ProductsCarousel from "../../components/Client/HomePage/ProductsCarousel";
+// import BannerCarousel from "../../components/Client/BannerCarousel";
+// import ActressCarousel from "../../components/Client/ActressCarousel";
 
 const HomePage = () => {
   const dispatch = useDispatch();
@@ -66,6 +85,14 @@ const HomePage = () => {
     try {
       return (
         <>
+          {/* <Suspense
+            fallback={
+              <div
+                className="spinner-border spinner-border-sm text-center"
+                role="status"
+              ></div>
+            }
+          > */}
           <Header />
 
           <section className="dressesCarouselAtlg ">
@@ -79,15 +106,15 @@ const HomePage = () => {
           <BannerCarousel
             bannerCarouselRedux={bannerCarouselRedux && bannerCarouselRedux}
           />
-          <div className="homePage">
 
+          <div className="homePage">
             <ActressCarousel
               actressCarouselRedux={
                 actressCarouselRedux && actressCarouselRedux
               }
             />
 
-             <section className="homePage__1stBox ">
+            <section className="homePage__1stBox ">
               <div className="col-12 row">
                 {(function () {
                   try {
@@ -104,6 +131,7 @@ const HomePage = () => {
                               src={`${banner?.imageSrc}`}
                               alt={`${banner?.imageAlt}`}
                               className="homePage__1stBox__card__image"
+                              //  loading="lazy"
                             />
                           </Link>
                         );
@@ -114,7 +142,7 @@ const HomePage = () => {
                   }
                 })()}
               </div>
-            </section> 
+            </section>
 
             <section className="homePage__3rdBox">
               <h4 className="homePage__3rdBox__title">Shop by Occasion</h4>
@@ -133,6 +161,7 @@ const HomePage = () => {
                     src="https://images.unsplash.com/photo-1595665593673-bf1ad72905c0?q=80&w=1928&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                     className="homePage__2ndBox__leftSidecard__image"
                     alt="Our Store "
+                    // loading="lazy"
                   />
                   {/* <div className="homePage__2ndBox__leftSidecard"></div> */}
                 </div>
@@ -170,6 +199,7 @@ const HomePage = () => {
           </div>
 
           <Footer />
+          {/* </Suspense> */}
         </>
       );
     } catch (error) {
