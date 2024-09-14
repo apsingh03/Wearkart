@@ -34,7 +34,7 @@ const Carousel = () => {
 
   // Update active index when scroll ends
   const onViewableItemsChanged = useRef(({viewableItems}) => {
-    console.log('viewableItems - ', viewableItems);
+    // console.log('viewableItems - ', viewableItems);
     if (viewableItems.length > 0) {
       setActiveIndex(viewableItems[0].index);
     }
@@ -47,7 +47,7 @@ const Carousel = () => {
   };
 
   return (
-    <View>
+    <View style={{ marginTop : 10 }} >
       <FlatList
         ref={flatListRef}
         data={images}

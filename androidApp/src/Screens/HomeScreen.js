@@ -17,7 +17,7 @@ const BottomTab = createBottomTabNavigator();
 const HomeScreen = () => {
   return (
     <>
-      <BottomTab.Navigator initialRouteName="HomeTab">
+      <BottomTab.Navigator initialRouteName="UserProfileTab">
         <BottomTab.Screen
           name="HomeTab"
           component={HomeTab}
@@ -40,7 +40,7 @@ const HomeScreen = () => {
         />
 
         <BottomTab.Screen
-          name="AllProductsTab"
+          name="ProductsExploreTab"
           component={ProductsExploreTab}
           options={{
             headerShown: false,

@@ -50,6 +50,11 @@ export const globalCss = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
   },
+  flexRowCenter: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
 
   flexColumn: {
     display: 'flex',

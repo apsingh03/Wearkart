@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import React, {useState} from 'react';
-import {windowWidth} from '../Utils/Dimensions';
+import {windowWidth} from '../../Utils/Dimensions';
 
 const Banner1 = () => {
   const {width, height} = Dimensions.get('window');
