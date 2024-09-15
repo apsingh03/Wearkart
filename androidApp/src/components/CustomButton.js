@@ -6,6 +6,8 @@ import {
   Text,
   StyleSheet,
   useWindowDimensions,
+  ActivityIndicator,
+  View,
 } from 'react-native';
 
 const CustomButton = ({
@@ -18,10 +20,12 @@ const CustomButton = ({
   fontFamily,
   fontSize,
   titleWeight,
+  indicatorIsLoading,
+  indicatorColor,
 }) => {
   return (
     <TouchableOpacity
-    activeOpacity={0.9}
+      activeOpacity={0.9}
       onPress={onPress}
       style={[
         styles.button,
@@ -31,18 +35,32 @@ const CustomButton = ({
           backgroundColor: backgroundColor || '#007BFF', // Default bg color if not provided
         },
       ]}>
-      <Text
-        style={[
-          styles.text,
-          {
-            color: textColor,
-            fontFamily: fontFamily,
-            fontSize: fontSize,
-            fontWeight: titleWeight,
-          },
-        ]}>
-        {title}
-      </Text>
+      <View
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          // justifyContent: 'center',
+        }}>
+        <Text
+          style={[
+            styles.text,
+            {
+              color: textColor,
+              fontFamily: fontFamily,
+              fontSize: fontSize,
+              fontWeight: titleWeight,
+            },
+          ]}>
+          {title}
+        </Text>
+
+        {indicatorIsLoading && (
+          <View style={{marginLeft: 10}}>
+            <ActivityIndicator size="small" color={indicatorColor || 'black'} />
+          </View>
+        )}
+      </View>
     </TouchableOpacity>
   );
 };

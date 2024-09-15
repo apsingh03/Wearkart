@@ -30,6 +30,8 @@ type SectionProps = PropsWithChildren<{
 }>;
 
 import AppNavigator from './src/AppNavigator';
+import {Provider} from 'react-redux';
+import {store} from './src/Redux/Store';
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
@@ -40,7 +42,9 @@ function App(): React.JSX.Element {
 
   return (
     <>
-      <AppNavigator />
+      <Provider store={store}>
+        <AppNavigator />
+      </Provider>
     </>
   );
 }

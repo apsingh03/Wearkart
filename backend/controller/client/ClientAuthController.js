@@ -67,7 +67,7 @@ const clientLogIn = async (req, res) => {
 
             return res
               .status(200)
-              .send({ msg: "Logged In Successfull", token });
+              .send({ msg: "Logged In Successfull", token, userObject });
           } else {
             return res.status(200).send({ msg: "Password Wrong" });
           }
