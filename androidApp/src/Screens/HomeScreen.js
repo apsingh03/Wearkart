@@ -6,7 +6,7 @@ import HomeTab from './BottomTabs/HomeTab';
 import UserProfileTab from './BottomTabs/UserProfileTab';
 import ProductsExploreTab from './BottomTabs/ProductsExploreTab';
 import CartTab from './BottomTabs/CartTab';
-import WishlistTab from './BottomTabs/WishlistTab';
+
 // icons
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -17,7 +17,7 @@ const BottomTab = createBottomTabNavigator();
 const HomeScreen = () => {
   return (
     <>
-      <BottomTab.Navigator initialRouteName="UserProfileTab">
+      <BottomTab.Navigator initialRouteName="CartTab">
         <BottomTab.Screen
           name="HomeTab"
           component={HomeTab}

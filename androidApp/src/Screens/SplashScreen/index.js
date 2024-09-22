@@ -10,15 +10,18 @@ import React, {useEffect} from 'react';
 import {windowHeight, windowWidth} from '../../Utils/Dimensions';
 import LazyLoadingImage from '../../components/LazyLoadingImage';
 // import AsyncStorage from '@react-native-async-storage/async-storage';
-
 import {GLOBALCOLOR} from '../../Utils/globalColor';
-
 import CustomButton from '../../components/CustomButton';
 
 // Icons
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import {useSelector} from 'react-redux';
+import {configureStore} from '@reduxjs/toolkit';
 
 const SplashScreen = ({navigation}) => {
+  const loggedData = useSelector(state => state.userAuth.loggedData);
+  // console.log('loggedData - ', loggedData);
+
   const loggedOrNotRedirectAccordingly = async () => {
     // const userObjectAsyncStorage = await AsyncStorage.getItem(
     //   'loggedUserObject',
@@ -34,6 +37,8 @@ const SplashScreen = ({navigation}) => {
   };
 
   useEffect(() => {
+    console.log('Splash Screen');
+
     setTimeout(() => {
       // loggedOrNotRedirectAccordingly();
     }, 2000);

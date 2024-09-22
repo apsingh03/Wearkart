@@ -31,7 +31,8 @@ type SectionProps = PropsWithChildren<{
 
 import AppNavigator from './src/AppNavigator';
 import {Provider} from 'react-redux';
-import {store} from './src/Redux/Store';
+import {store, persistor} from './src/Redux/Store';
+import {PersistGate} from 'redux-persist/integration/react';
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
@@ -39,11 +40,13 @@ function App(): React.JSX.Element {
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
-
+  console.log('App.tsx');
   return (
     <>
       <Provider store={store}>
-        <AppNavigator />
+        <PersistGate loading={null} persistor={persistor}>
+          <AppNavigator />
+        </PersistGate>
       </Provider>
     </>
   );

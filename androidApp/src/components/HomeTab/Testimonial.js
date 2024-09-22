@@ -3,31 +3,15 @@ import React from 'react';
 import {globalCss} from '../../Utils/CSS';
 import {GLOBALCOLOR} from '../../Utils/globalColor';
 import {windowHeight, windowWidth} from '../../Utils/Dimensions';
+import {Skeleton} from '@rneui/themed';
 
-const Testimonial = () => {
-  const data = [
-    {
-      id: 1,
-      url: 'https://rukminim2.flixcart.com/image/832/832/xif0q/dress/z/s/i/s-a1-zwerlon-original-imagn9uycxbhshur.jpeg?q=70&crop=false',
-      comment:
-        'The FIT!! Thats what stood out for me when I started buying FableStreet. And now I know I can order from them and get that same perfect fit, any time I want.',
-      name: 'Name 1 ',
-    },
-    {
-      id: 2,
-      url: 'https://rukminim2.flixcart.com/image/832/832/xif0q/dress/z/s/i/s-a1-zwerlon-original-imagn9uycxbhshur.jpeg?q=70&crop=false',
-      comment:
-        'FableStreet understands that every woman deserves clothing that fits her body perfectly.',
-      name: 'Name 2 ',
-    },
-    {
-      id: 3,
-      url: 'https://rukminim2.flixcart.com/image/832/832/xif0q/dress/z/s/i/s-a1-zwerlon-original-imagn9uycxbhshur.jpeg?q=70&crop=false',
-      comment:
-        'Its a relief that I have finally found a brand that makes clothes for Indian women. The fit is perfect and it falls perfectly on my curves',
-      name: 'Name 3 ',
-    },
-  ];
+// import SkeletonContent from 'react-native-skeleton-content';
+const Testimonial = ({reduxData}) => {
+  // console.log(
+  //   ' Testimonial redux - ',
+  //   reduxData && reduxData[0].testimonialTestimonialDetails,
+  // );
+
   return (
     <View>
       <View>
@@ -36,28 +20,58 @@ const Testimonial = () => {
 
       <View style={{marginTop: 10}}>
         <FlatList
-          data={data}
+          data={reduxData && reduxData[0].testimonialTestimonialDetails}
           horizontal
           showsHorizontalScrollIndicator={false}
+          keyExtractor={item => item.id.toString()} // Ensure a unique key
           renderItem={({item}) => {
+            // console.log('item - ', item);
             return (
-              <View>
+              <View style={{alignItems: 'center', marginRight: 10}}>
                 <Image
-                  source={{
-                    uri: item.url,
-                  }}
+                  source={{uri: item.imageSrc}}
+                  alt={item.imageAlt}
                   style={{
-                    width: windowWidth,
-                    height: windowHeight / 2.5,
+                    width: '100%',
+                    height: windowHeight / 1.5,
                     borderRadius: 10,
                   }}
-                  resizeMethod="cover"
+                  resizeMode="cover"
                 />
-
-                <View style={{paddingHorizontal: 20}}>
-                  <Text style={{textAlign: 'center'}}> {item.comment} ss</Text>
+                <View style={{paddingHorizontal: 10, marginTop: 10}}>
+                  <Text style={{textAlign: 'center', fontWeight: 'bold'}}>
+                    {item.customerName}
+                  </Text>
+                  <Text style={{textAlign: 'center', marginTop: 5}}>
+                    {item.customerMsg}
+                  </Text>
                 </View>
               </View>
+              // <View style={{}}>
+              //   <Image
+              //     source={{
+              //       uri: item.imageSrc,
+              //     }}
+              //     alt={item.imageAlt}
+              //     style={{
+              //       width: windowWidth,
+              //       width: '40%',
+              //       // flex: 1,
+              //       height: windowHeight / 1.5,
+              //       borderRadius: 10,
+              //     }}
+              //     resizeMode="cover"
+              //   />
+
+              //   <View style={{paddingHorizontal: 20}}>
+              //     <Text style={{textAlign: 'center'}}>
+              //       {' '}
+              //       {item.customerName}
+              //     </Text>
+
+              //     <Text style={{textAlign: 'center'}}> {item.customerMsg}</Text>
+              //   </View>
+              // </View>
             );
           }}
         />

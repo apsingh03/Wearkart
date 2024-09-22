@@ -13,7 +13,7 @@ import * as Yup from 'yup';
 import {globalCss} from '../../Utils/CSS';
 import CustomButton from '../../components/CustomButton';
 import {GLOBALCOLOR} from '../../Utils/globalColor';
-import {loginClientAsync} from '../../Redux/UserSlices/UserAuth';
+import {loginClientAsync, setLoggedData} from '../../Redux/UserSlices/UserAuth';
 import {useDispatch} from 'react-redux';
 
 const LogInScreen = ({navigation}) => {
@@ -69,7 +69,7 @@ const LogInScreen = ({navigation}) => {
               onSubmit={async (values, {setSubmitting}) => {
                 setSubmitting(true);
                 setisLoading(true);
-                console.log('values ', values);
+                // console.log('values ', values);
 
                 const actionResult = await dispatch(
                   loginClientAsync({
@@ -77,7 +77,7 @@ const LogInScreen = ({navigation}) => {
                     password: values.password,
                   }),
                 );
-                console.log('actionResult -', actionResult.payload);
+                // console.log('actionResult -', actionResult.payload);
 
                 if (actionResult.payload.msg === 'Incorrect Email') {
                   // toast.error(actionResult.payload.msg);
@@ -99,17 +99,14 @@ const LogInScreen = ({navigation}) => {
                   values.email = '';
                   values.password = '';
                   Alert.alert(actionResult.payload.msg);
+                  const {userObject, token} = actionResult.payload;
 
-                  const decoded = decodeJWT(actionResult.payload.token);
-                  console.log('decoded ', decoded);
+                  // console.log('payload - ', actionResult.payload);
 
-                  //  toast.success(actionResult.payload.msg);
-                  //  localStorage.setItem(
-                  //    'clientLoggedToken',
-                  //    actionResult.payload.token,
-                  //  );
-                  //  window.location.replace('/account');
-                  navigation.navigate('LogInScreen');
+                  dispatch(setLoggedData({userObject}));
+                  dispatch(setLoggedData({token}));
+
+                  navigation.navigate('HomeScreen');
                   setisLoading(false);
                 }
 

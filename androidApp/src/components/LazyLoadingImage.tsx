@@ -7,6 +7,7 @@ type LazyLoadingImageProps = {
   resizeMode?: 'cover' | 'contain' | 'stretch' | 'repeat' | 'center';
   height?: number;
   width?: number;
+  props?: string;
 };
 
 // const LazyLoadingImage = ({uri, source, resizeMode, height, width}) => {
@@ -17,6 +18,7 @@ const LazyLoadingImage: React.FC<LazyLoadingImageProps> = ({
   resizeMode,
   height,
   width,
+  ...props
 }) => {
   const [loading, setLoading] = useState(true);
 
@@ -38,6 +40,8 @@ const LazyLoadingImage: React.FC<LazyLoadingImageProps> = ({
         style={[styles.image, {height: '100%', width: '100%'}]} // Full width/height of the container
         resizeMode={resizeMode}
         onLoadEnd={() => setLoading(false)} // Set loading to false once image is loaded
+        {...props}
+        alt="its a image"
       />
     </View>
   );
@@ -58,6 +62,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f0f0f0', // Placeholder background color
+    // backgroundColor: '#f0f0f0', // Placeholder background color
   },
 });

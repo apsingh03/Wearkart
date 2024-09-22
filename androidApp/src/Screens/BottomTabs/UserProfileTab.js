@@ -1,11 +1,24 @@
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React from 'react';
 import {GLOBALCOLOR} from '../../Utils/globalColor';
 import {globalCss} from '../../Utils/CSS';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import ProfileTabCards from '../../components/ProfileTab/ProfileTabCards';
+import CustomButton from '../../components/CustomButton';
+import {useDispatch, useSelector} from 'react-redux';
+import {logout} from '../../Redux/UserSlices/UserAuth';
+import LazyLoadingImage from '../../components/LazyLoadingImage';
 
 const UserProfileTab = () => {
+  const loggedData = useSelector(state => state.userAuth?.userDetails?.query);
+
+  const dispatch = useDispatch();
   return (
     <View
       style={{
@@ -16,23 +29,80 @@ const UserProfileTab = () => {
         position: 'relative',
       }}>
       {/* Header */}
-      <View style={[globalCss.flexRow]}>
-        <Text
+      <View style={[globalCss.flexRow, {gap: 10, alignItems: 'center'}]}>
+        <View
           style={{
-            fontSize: 20,
-            color: GLOBALCOLOR.black2,
-            // backgroundColor: '#E5EBFC',
-            fontFamily: 'Raleway-ExtraBold',
-            padding: 5,
+            height: 75,
+            width: 75,
+            borderRadius: 200,
+            backgroundColor: '#ddd',
+            padding: 8,
           }}>
-          User Profile
-        </Text>
+          <LazyLoadingImage
+            uri={
+              'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=1780&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+            }
+            width={'100%'}
+            height={'100%'}
+            resizeMode="cover"
+            borderRadius={100}
+          />
+        </View>
+
+        <View
+          style={[globalCss.flexColumn, {gap: 5, alignItems: 'flex-start'}]}>
+          <Text
+            style={{
+              fontSize: 18,
+              color: GLOBALCOLOR.black2,
+
+              fontFamily: 'Raleway-ExtraBold',
+            }}>
+            {loggedData[0]?.fullName}
+          </Text>
+
+          <Text
+            style={{
+              fontSize: 18,
+              color: GLOBALCOLOR.black2,
+
+              fontFamily: 'Raleway-ExtraBold',
+            }}>
+            {loggedData[0]?.email}
+          </Text>
+        </View>
       </View>
 
       <View>
+        <ProfileTabCards
+          title={'Order History'}
+          routeLink="OrderHistoryScreen"
+        />
+        <ProfileTabCards title={'Wish List'} routeLink={'WishlistScreen'} />
         <ProfileTabCards title={'Profile'} />
-        <ProfileTabCards title={'Wish List'} />
+
         <ProfileTabCards title={'Settings'} />
+
+        {loggedData !== null && (
+          <View
+            style={{
+              marginTop: 50,
+            }}>
+            <TouchableOpacity
+              onPress={() => dispatch(logout())}
+              style={{
+                width: '100%',
+                backgroundColor: 'blue',
+                padding: 10,
+                elevation: 50,
+              }}
+              activeOpacity={0.8}>
+              <Text style={{textAlign: 'center', fontSize: 18, color: '#fff'}}>
+                Logout
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
     </View>
   );

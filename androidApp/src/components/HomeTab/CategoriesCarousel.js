@@ -4,94 +4,75 @@ import {GLOBALCOLOR} from '../../Utils/globalColor';
 import {globalCss} from '../../Utils/CSS';
 import {windowHeight, windowWidth} from '../../Utils/Dimensions';
 
-const CategoriesCarousel = () => {
-  const data = [
-    {
-      id: 1,
-      url: 'https://rukminim2.flixcart.com/image/832/832/xif0q/dress/z/s/i/s-a1-zwerlon-original-imagn9uycxbhshur.jpeg?q=70&crop=false',
-      title: 'Cloth',
-    },
-    {
-      id: 2,
-      url: 'https://rukminim2.flixcart.com/image/832/832/xif0q/dress/z/s/i/s-a1-zwerlon-original-imagn9uycxbhshur.jpeg?q=70&crop=false',
-      title: 'Jeans',
-    },
-    {
-      id: 3,
-      url: 'https://rukminim2.flixcart.com/image/832/832/xif0q/dress/z/s/i/s-a1-zwerlon-original-imagn9uycxbhshur.jpeg?q=70&crop=false',
-      title: 'Crop Top',
-    },
-    {
-      id: 4,
-      url: 'https://rukminim2.flixcart.com/image/832/832/xif0q/dress/z/s/i/s-a1-zwerlon-original-imagn9uycxbhshur.jpeg?q=70&crop=false',
-      title: 'Lower',
-    },
-    {
-      id: 5,
-      url: 'https://rukminim2.flixcart.com/image/832/832/xif0q/dress/z/s/i/s-a1-zwerlon-original-imagn9uycxbhshur.jpeg?q=70&crop=false',
-      title: 'T-shirt',
-    },
-    {
-      id: 6,
-      url: 'https://rukminim2.flixcart.com/image/832/832/xif0q/dress/z/s/i/s-a1-zwerlon-original-imagn9uycxbhshur.jpeg?q=70&crop=false',
-      title: 'Cloth',
-    },
-    {
-      id: 7,
-      url: 'https://rukminim2.flixcart.com/image/832/832/xif0q/dress/z/s/i/s-a1-zwerlon-original-imagn9uycxbhshur.jpeg?q=70&crop=false',
-      title: 'Saree',
-    },
-    {
-      id: 8,
-      url: 'https://rukminim2.flixcart.com/image/832/832/xif0q/dress/z/s/i/s-a1-zwerlon-original-imagn9uycxbhshur.jpeg?q=70&crop=false',
-      title: 'Suit',
-    },
-    {
-      id: 9,
-      url: 'https://rukminim2.flixcart.com/image/832/832/xif0q/dress/z/s/i/s-a1-zwerlon-original-imagn9uycxbhshur.jpeg?q=70&crop=false',
-      title: 'Shirts',
-    },
-    {
-      id: 10,
-      url: 'https://rukminim2.flixcart.com/image/832/832/xif0q/dress/z/s/i/s-a1-zwerlon-original-imagn9uycxbhshur.jpeg?q=70&crop=false',
-      title: 'Garments',
-    },
-  ];
+import SkeltonUi from '../SkeltonUi';
+const CategoriesCarousel = ({reduxData}) => {
+  // console.log(
+  //   'reduxData - ',
+  //   reduxData && reduxData[0]?.actressCarouselActressCarouselImages,
+  // );
+
+  const isLoading =
+    !reduxData || !reduxData[0]?.actressCarouselActressCarouselImages;
 
   return (
     <View>
-      <FlatList
-        data={data}
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        renderItem={({item, idx}) => {
-          // console.log("item - " , item)
-          return (
-            <View
-              style={[
-                globalCss.flexColumn,
-                {width: windowWidth / 4, marginRight: 10},
-              ]}>
-              <Image
-                source={{uri: item.url}}
-                style={{width: 100, height: 100, borderRadius: 100}}
-                resizeMethod="contain"
-              />
-              <View style={{marginTop: 10}}>
-                <Text
-                  style={{
-                    fontSize: 14,
-                    color: GLOBALCOLOR.black2,
-                    fontFamily: 'Raleway-ExtraBold',
-                  }}>
-                  {item.title}
-                </Text>
+      {isLoading ? (
+        <FlatList
+          data={['', '', '', '', '', '', '', '', '', '']}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          renderItem={({item, idx}) => {
+            // console.log("item - " , item)
+            return (
+              <View
+                style={[
+                  globalCss.flexColumn,
+                  {width: windowWidth / 4, marginRight: 10},
+                ]}>
+                <SkeltonUi circle={true} width={100} height={100} />
               </View>
-            </View>
-          );
-        }}
-      />
+            );
+          }}
+        />
+      ) : (
+        <FlatList
+          data={reduxData && reduxData[0]?.actressCarouselActressCarouselImages}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          renderItem={({item, idx}) => {
+            // console.log("item - " , item)
+            return (
+              <View
+                style={[
+                  globalCss.flexColumn,
+                  {width: windowWidth / 4, marginRight: 10},
+                ]}>
+                <Image
+                  source={{
+                    uri:
+                      item.imageSrc ||
+                      'https://images.unsplash.com/photo-1617957743103-310accdfb999?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                  }}
+                  style={{width: 100, height: 100, borderRadius: 100}}
+                  resizeMode="cover"
+                />
+                <View style={{marginTop: 10}}>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: GLOBALCOLOR.black2,
+                      fontFamily: 'Raleway-ExtraBold',
+                    }}>
+                    {item.name}
+                  </Text>
+                </View>
+              </View>
+            );
+          }}
+        />
+      )}
     </View>
   );
 };
