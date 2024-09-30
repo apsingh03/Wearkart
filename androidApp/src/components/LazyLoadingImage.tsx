@@ -32,7 +32,7 @@ const LazyLoadingImage: React.FC<LazyLoadingImageProps> = ({
     <View style={[styles.imageContainer, {height, width}]}>
       {loading && (
         <View style={[styles.placeholder, {height, width}]}>
-          <ActivityIndicator size="small" color="#0000ff" />
+          <ActivityIndicator size="large" color="#0000ff" />
         </View>
       )}
       <Image

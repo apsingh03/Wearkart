@@ -1,36 +1,85 @@
-import {StyleSheet, Text, View, TextInput, FlatList, Image} from 'react-native';
-import React, {useEffect} from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  FlatList,
+  Image,
+  Pressable,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import {GLOBALCOLOR} from '../../Utils/globalColor';
 import {globalCss} from '../../Utils/CSS';
 import {windowHeight, windowWidth} from '../../Utils/Dimensions';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useDispatch, useSelector} from 'react-redux';
-import {clientAllListedProductsAsync} from '../../Redux/ClientSlices/clientProductSlice';
-
+import {
+  clientAllListedProductsAsync,
+  clientGetProductFiltersAsync,
+  clientGetSizesFiltersAsync,
+} from '../../Redux/ClientSlices/clientProductSlice';
+import {
+  createUserFavoriteProductAsync,
+  deleteUserFavoriteProductAsync,
+  getUserFavoriteProductAsync,
+} from '../../Redux/UserSlices/FavoriteProduct/FavoriteProductSlice';
 import {
   calculateProductDiscount,
   convertInInr,
 } from '../../Utils/productDiscountCalculate';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SkeltonUi from '../../components/SkeltonUi';
+import LazyLoadingImage from '../../components/LazyLoadingImage';
 
-const ProductsExploreTab = () => {
+const ProductsExploreTab = ({navigation}) => {
   const dispatch = useDispatch();
+  const [whichProductForFavorite, setwhichProductForFavorite] = useState({});
+  const [isLoadingWishList, setisLoadingWishList] = useState(false);
+
   const client_allProductsRedux = useSelector(
     state => state.client_product.allProducts,
   );
 
+  const user_favoriteProductRedux = useSelector(
+    state => state.user_favoriteProduct.data?.query,
+  );
+
+  const loggedData = useSelector(state => state.userAuth?.userDetails?.query);
+
   const isLoadingClient_allProductsRedux =
     !client_allProductsRedux || !client_allProductsRedux?.query;
 
-  // console.log(
-  //   'client_allProductsRedux - ',
-  //   isLoadingClient_allProductsRedux,
-  //   client_allProductsRedux?.query,
-  // );
-
   async function fetchData() {
     await dispatch(clientAllListedProductsAsync());
+    await dispatch(clientGetProductFiltersAsync());
+    await dispatch(clientGetSizesFiltersAsync());
+    await dispatch(getUserFavoriteProductAsync());
+  }
+
+  async function handleFavoriteBtn(id) {
+    if (loggedData) {
+      setisLoadingWishList(true);
+      setwhichProductForFavorite(prevState => ({
+        ...prevState,
+        [id]: true,
+      }));
+
+      const actionResult = await dispatch(
+        createUserFavoriteProductAsync({product_id: id}),
+      );
+
+      if (actionResult.payload?.msg === 'success') {
+        setisLoadingWishList(false);
+        setwhichProductForFavorite(prevState => ({
+          ...prevState,
+          [id]: false,
+        }));
+      }
+    } else {
+      alert('You Need to Login ');
+    }
   }
 
   useEffect(() => {
@@ -121,9 +170,8 @@ const ProductsExploreTab = () => {
                     style={{
                       flex: 1,
                       // margin: 10, // Adds space between the items
-                      // marginBottom : 10
                       marginRight: 5,
-                      marginBottom: 10,
+                      marginBottom: 20,
                       height: 340,
                     }}>
                     <View
@@ -142,26 +190,60 @@ const ProductsExploreTab = () => {
                             right: 5,
                             zIndex: 1,
                           }}>
-                          <MaterialIcons
-                            size={25}
-                            color={'#000'}
-                            name="favorite"
-                          />
-                        </View>
+                          {(function () {
+                            const alreadyFavorite =
+                              user_favoriteProductRedux &&
+                              user_favoriteProductRedux.some(data => {
+                                return data.product_id === item?.id;
+                              });
 
-                        <Image
-                          source={{
-                            uri: item.productImage.url1,
-                          }}
-                          style={{
-                            width: '100%',
-                            height: 200,
-                            borderTopLeftRadius: 5,
-                            borderTopRightRadius: 5,
-                          }}
-                          resizeMode="cover"
-                          alt="Product Image"
-                        />
+                            return alreadyFavorite ? (
+                              <TouchableOpacity>
+                                <MaterialIcons
+                                  size={25}
+                                  color={'#000'}
+                                  name="favorite"
+                                />
+                              </TouchableOpacity>
+                            ) : (
+                              <>
+                                {whichProductForFavorite[item?.id] ? (
+                                  isLoadingWishList ? (
+                                    <ActivityIndicator
+                                      size="small"
+                                      color="#0000ff"
+                                    />
+                                  ) : null
+                                ) : (
+                                  <TouchableOpacity
+                                    onPress={() => handleFavoriteBtn(item?.id)}>
+                                    <MaterialIcons
+                                      size={25}
+                                      color={'#000'}
+                                      name="favorite-border"
+                                    />
+                                  </TouchableOpacity>
+                                )}
+                              </>
+                            );
+                          })()}
+                        </View>
+                        <Pressable
+                          onPress={() =>
+                            navigation.navigate('ProductDetailScreen', {
+                              productId: item?.id,
+                            })
+                          }>
+                          <LazyLoadingImage
+                            uri={item?.productImage?.url1}
+                            width={'100%'}
+                            height={200}
+                            resizeMode="cover"
+                            // borderRadius={100}
+                            borderTopLeftRadius={5}
+                            borderTopRightRadius={5}
+                          />
+                        </Pressable>
                       </View>
 
                       <View style={{marginTop: 10, paddingHorizontal: 5}}>
@@ -227,10 +309,10 @@ const ProductsExploreTab = () => {
                             }}>
                             {calculateProductDiscount(
                               sortedProductSizes.length > 0
-                                ? sortedProductSizes[0].mrp
+                                ? sortedProductSizes[0]?.mrp
                                 : 0,
                               sortedProductSizes.length > 0
-                                ? sortedProductSizes[0].discountPercent
+                                ? sortedProductSizes[0]?.discountPercent
                                 : 0,
                             )}
                           </Text>

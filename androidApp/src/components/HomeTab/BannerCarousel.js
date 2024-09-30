@@ -11,6 +11,7 @@ import {
 const {width: screenWidth} = Dimensions.get('window');
 
 import SkeltonUi from '../SkeltonUi';
+import LazyLoadingImage from '../LazyLoadingImage';
 
 const Carousel = ({reduxData}) => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -45,7 +46,7 @@ const Carousel = ({reduxData}) => {
     !reduxData || !reduxData[0]?.bannerCarouselBannerCarouselImages;
 
   return (
-    <View style={{marginTop: 10}}>
+    <View style={{marginTop: -10}}>
       {isLoading ? (
         <SkeltonUi circle={false} flex={1} height={200} />
       ) : (
@@ -58,13 +59,17 @@ const Carousel = ({reduxData}) => {
             renderItem={({item}) => {
               // console.log('Item - ', item);
               return (
-                <View style={styles.carouselItem}>
-                  <Image
-                    source={{uri: item.imageSrc}}
-                    style={styles.image}
-                    resizeMode="contain"
-                  />
-                </View>
+                <>
+                  <View style={styles.carouselItem}>
+                    <LazyLoadingImage
+                      uri={item?.imageSrc}
+                      width={'100%'}
+                      height={200}
+                      resizeMode="contain"
+                      borderRadius={10}
+                    />
+                  </View>
+                </>
               );
             }}
             // The keyExtractor ensures that each item in the FlatList has a unique identifier (key),

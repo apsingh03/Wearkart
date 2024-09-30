@@ -5,6 +5,7 @@ import {globalCss} from '../../Utils/CSS';
 import {windowHeight, windowWidth} from '../../Utils/Dimensions';
 
 import SkeltonUi from '../SkeltonUi';
+import LazyLoadingImage from '../LazyLoadingImage';
 const CategoriesCarousel = ({reduxData}) => {
   // console.log(
   //   'reduxData - ',
@@ -49,7 +50,14 @@ const CategoriesCarousel = ({reduxData}) => {
                   globalCss.flexColumn,
                   {width: windowWidth / 4, marginRight: 10},
                 ]}>
-                <Image
+                <LazyLoadingImage
+                  uri={item.imageSrc}
+                  width={100}
+                  height={100}
+                  resizeMode="cover"
+                  borderRadius={200}
+                />
+                {/* <Image
                   source={{
                     uri:
                       item.imageSrc ||
@@ -57,13 +65,13 @@ const CategoriesCarousel = ({reduxData}) => {
                   }}
                   style={{width: 100, height: 100, borderRadius: 100}}
                   resizeMode="cover"
-                />
-                <View style={{marginTop: 10}}>
+                /> */}
+                <View style={{marginTop: 0}}>
                   <Text
                     style={{
                       fontSize: 14,
                       color: GLOBALCOLOR.black2,
-                      fontFamily: 'Raleway-ExtraBold',
+                      fontFamily: 'Nunito-ExtraBold',
                     }}>
                     {item.name}
                   </Text>

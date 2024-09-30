@@ -17,7 +17,7 @@ const BottomTab = createBottomTabNavigator();
 const HomeScreen = () => {
   return (
     <>
-      <BottomTab.Navigator initialRouteName="CartTab">
+      <BottomTab.Navigator initialRouteName="HomeTab">
         <BottomTab.Screen
           name="HomeTab"
           component={HomeTab}

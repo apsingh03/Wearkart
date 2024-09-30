@@ -12,12 +12,11 @@ import {useSelector} from 'react-redux';
 import ProtectedRoute from './RouteGuarding/ProtectedRoutes';
 import OrderHistoryScreen from './components/ProfileTab/OrderHistoryScreen';
 import WishlistScreen from './components/ProfileTab/WishListScreen';
+import ProductDetailScreen from './Screens/ProductDetailScreen/ProductDetailScreen';
 
 const Stack = createNativeStackNavigator();
 
 const AppNavigator = () => {
-  const loggedData = useSelector(state => state.userAuth.loggedData);
-
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName={'HomeScreen'}>
@@ -110,6 +109,14 @@ const AppNavigator = () => {
             />
           )}
         </Stack.Screen>
+
+        <Stack.Screen
+          name="ProductDetailScreen"
+          component={ProductDetailScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

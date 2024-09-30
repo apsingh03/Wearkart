@@ -25,6 +25,7 @@ import {
 } from '../../Redux/ClientSlices/clientProductSlice';
 import {Skeleton} from '@rneui/themed';
 import SkeltonUi from '../../components/SkeltonUi';
+import LazyLoadingImage from '../../components/LazyLoadingImage';
 
 const HomeTab = () => {
   const dispatch = useDispatch();
@@ -84,7 +85,7 @@ const HomeTab = () => {
               style={{
                 fontSize: 28,
                 color: GLOBALCOLOR.black2,
-                fontFamily: 'Raleway-ExtraBold',
+                fontFamily: 'Nunito-ExtraBold',
               }}>
               Shop
             </Text>
@@ -120,7 +121,7 @@ const HomeTab = () => {
             />
           </View>
 
-          <View style={{marginTop: 10}}>
+          <View style={{marginTop: 20}}>
             {isLoadingFourBannerImagesRedux === true ? (
               <FlatList
                 data={['', '', '', '']}
@@ -160,7 +161,7 @@ const HomeTab = () => {
                         height: 200,
                         marginRight: 5,
                       }}>
-                      <Image
+                      {/* <Image
                         source={{
                           uri:
                             item.imageSrc ||
@@ -173,6 +174,14 @@ const HomeTab = () => {
                           padding: 5,
                         }}
                         resizeMode="cover"
+                      /> */}
+                      <LazyLoadingImage
+                        uri={item.imageSrc}
+                        width={'100%'}
+                        height={200}
+                        resizeMode="cover"
+                        borderRadius={10}
+                        padding={5}
                       />
                     </View>
                   );

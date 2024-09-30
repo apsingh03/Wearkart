@@ -7,6 +7,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {globalCss} from '../../Utils/CSS';
@@ -25,11 +26,16 @@ import {
   convertInInr,
 } from '../../Utils/productDiscountCalculate';
 import SkeltonUi from '../../components/SkeltonUi';
-
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useIsFocused} from '@react-navigation/native';
+import {BACKENDHOSTNAME, RAZOR_KEY_ID} from '@env';
+import RazorpayCheckout from 'react-native-razorpay';
+import axios from 'axios';
+import LazyLoadingImage from '../../components/LazyLoadingImage';
 
-const CartTab = () => {
+const CartTab = ({navigation}) => {
   const dispatch = useDispatch();
+  const isFocused = useIsFocused();
 
   const [isDisabledCartIncreaseBtn, setisDisabledCartIncreaseBtn] = useState(
     {},
@@ -40,6 +46,7 @@ const CartTab = () => {
   );
 
   const [isLoadingDeleteBtn, setisLoadingDeleteBtn] = useState({});
+  const [isLoadingPaymentGateway, setIsLoadingPaymentGateway] = useState(false);
 
   const user_userCart = useSelector(state => state.user_userCart.data);
 
@@ -47,25 +54,18 @@ const CartTab = () => {
     state => state.user_userCart.isLoading,
   );
 
-  const loggedData = useSelector(state => state.userAuth.loggedData);
+  const loggedData = useSelector(state => state.userAuth);
+  // console.log('loggedData - ', loggedData);
 
   const [calculateTotalCartMrp, setcalculateTotalCartMrp] = useState(0);
   const [calculateTotalCartAfterDiscount, setcalculateTotalCartAfterDiscount] =
     useState(0);
-
-  // const {displayRazorpay, isLoadingPaymentGateway, setisLoadingPaymentGateway} =
-  //   usePaymentGateway();
-  // console.log('-----> ', getJwtToken());
 
   async function fetchData() {
     if (loggedData !== null) {
       await dispatch(getUserCartAsync());
       // console.log('calling fetchData');
     }
-
-    // const savedToken = await AsyncStorage.getItem('userAuth');
-
-    // console.log('savedToken - ', savedToken);
   }
 
   async function handleRemoveBtn(cart_id, cartItem_id) {
@@ -145,16 +145,23 @@ const CartTab = () => {
   }
 
   useEffect(() => {
-    if (loggedData !== null) {
+    // isFocused
+    if (loggedData !== null && isFocused) {
       fetchData();
     } else {
-      Alert.alert('You Need to LogIn First');
+      // Alert.alert('You Need to LogIn First');
+      console.log('You Need to LogIn First');
     }
-  }, []);
+    // console.log('Mounted Carttab', isFocused);
+
+    return () => {
+      // console.log('Unmounted Cart tab', isFocused);
+    };
+  }, [isFocused]);
 
   const userCartItems = user_userCart?.query?.[0]?.userCartUserCartItem || [];
 
-  // console.log('loading - ', isLoadingUserCartItems, userCartItems );
+  // console.log('loading - ', isLoadingUser_userCart, userCartItems);
 
   useEffect(() => {
     // calculation total carts amount
@@ -177,6 +184,97 @@ const CartTab = () => {
     setcalculateTotalCartMrp(newTotalCartMrp);
     setcalculateTotalCartAfterDiscount(newTotalCartAfterDiscount);
   }, [userCartItems]); // Recalculate totals when the cart items change
+
+  const userAuthToken = useSelector(state => state.userAuth.token);
+  const userEmail =
+    useSelector(state => state.userAuth?.userDetails?.query[0]?.email) ||
+    'Test Email';
+  const userFullName =
+    useSelector(state => state.userAuth?.userDetails?.query[0]?.fullName) ||
+    'Test Full Name';
+
+  const displayRazorpay = async () => {
+    try {
+      setIsLoadingPaymentGateway(true);
+
+      const HOSTNAME = BACKENDHOSTNAME;
+      // console.log('------ 1 ----------------');
+      // Fetch order details from your backend
+
+      const response = await axios.get(`${HOSTNAME}/purchase/buy/`, {
+        headers: {Authorization: `${userAuthToken}`},
+      });
+      // console.log('------ 2 ----------------');
+      const {order} = response.data;
+
+      const options = {
+        key: RAZOR_KEY_ID,
+        amount: order.amount,
+        currency: order.currency,
+        name: 'Clothing Booking App',
+        description: 'Test Transaction',
+        order_id: order.id,
+        prefill: {
+          name: userEmail,
+          email: userFullName,
+        },
+        theme: {
+          color: '#3399cc',
+        },
+      };
+
+      // console.log('------ 3 ----------------');
+
+      // Open Razorpay checkout
+      RazorpayCheckout.open(options)
+        .then(async data => {
+          // Handle successful payment
+          const updateTxnAction = await axios.put(
+            `${HOSTNAME}/purchase/updateCartstatus/`,
+            {
+              cartAmount: order.amount / 100,
+              order_id: options.order_id,
+              payment_id: data.razorpay_payment_id,
+              paymentStatus: 'SUCCESSFUL',
+            },
+            {
+              headers: {Authorization: `Bearer ${userToken}`},
+            },
+          );
+          // console.log('------ 4 ----------------');
+          if (updateTxnAction.data?.message === 'Transaction successful') {
+            setIsLoadingPaymentGateway(false);
+            Alert.alert('Success', 'Transaction completed successfully!');
+            // Navigate to account or desired screen
+            // e.g. navigation.replace('Account');
+          }
+        })
+        .catch(async error => {
+          // Handle failed payment
+          const updateTxnAction = await axios.put(
+            `${HOSTNAME}/purchase/updateCartstatus/`,
+            {
+              order_id: options.order_id,
+              payment_id: error?.error?.payment_id || '',
+              paymentStatus: 'FAILED',
+            },
+            {
+              headers: {Authorization: `Bearer ${userToken}`},
+            },
+          );
+          // console.log('------ 5 ----------------');
+
+          if (updateTxnAction.data?.message === 'Transaction Failed') {
+            setIsLoadingPaymentGateway(false);
+            Alert.alert('Failure', 'Payment failed. Something went wrong.');
+          }
+        });
+    } catch (error) {
+      setIsLoadingPaymentGateway(false);
+      Alert.alert('Display RazorPay Error', error.message);
+      console.log('Display RazorPay  Gateway - ', error.message);
+    }
+  };
 
   return (
     <View
@@ -311,6 +409,8 @@ const CartTab = () => {
                               color => color.color_id === item.color_id,
                             );
 
+                          // console.log('matchingSize - ', matchingSize);
+
                           return (
                             <View
                               style={[
@@ -331,17 +431,15 @@ const CartTab = () => {
                               ]}>
                               {/* 40% Width Section */}
                               <View style={{width: '40%', paddingRight: 5}}>
-                                <Image
-                                  source={{
-                                    uri: item?.productUserCartItem?.productImage
-                                      ?.url1,
-                                  }}
-                                  style={{
-                                    width: '100%',
-                                    height: 150,
-                                    borderRadius: 5,
-                                  }}
+                                <LazyLoadingImage
+                                  uri={
+                                    item?.productUserCartItem?.productImage
+                                      ?.url1
+                                  }
+                                  width={'100%'}
+                                  height={150}
                                   resizeMode="cover"
+                                  borderRadius={5}
                                 />
                               </View>
 
@@ -351,22 +449,29 @@ const CartTab = () => {
                                   globalCss.colBetweenCenter,
                                   {width: '60%', paddingLeft: 5},
                                 ]}>
-                                <Text
-                                  style={{
-                                    fontSize: 14,
-                                    color: GLOBALCOLOR.black2,
-                                    fontFamily: 'Raleway-ExtraBold',
-                                  }}
-                                  numberOfLines={2}>
-                                  {item?.productUserCartItem?.name}
-                                </Text>
+                                <Pressable
+                                  onPress={() =>
+                                    navigation.navigate('ProductDetailScreen', {
+                                      productId: item?.id,
+                                    })
+                                  }>
+                                  <Text
+                                    style={{
+                                      fontSize: 14,
+                                      color: GLOBALCOLOR.black2,
+                                      fontFamily: 'Nunito-ExtraBold',
+                                    }}
+                                    numberOfLines={2}>
+                                    {item?.id} {item?.productUserCartItem?.name}
+                                  </Text>
+                                </Pressable>
 
                                 <View style={globalCss.rowBetweenCenter}>
                                   <Text
                                     style={{
                                       fontSize: 14,
                                       color: GLOBALCOLOR.black2,
-                                      fontFamily: 'Raleway-ExtraBold',
+                                      fontFamily: 'Nunito-ExtraBold',
                                     }}>
                                     Color {' - '}
                                     {matchingColor &&
@@ -377,7 +482,7 @@ const CartTab = () => {
                                     style={{
                                       fontSize: 14,
                                       color: GLOBALCOLOR.black2,
-                                      fontFamily: 'Raleway-ExtraBold',
+                                      fontFamily: 'Nunito-ExtraBold',
                                     }}>
                                     Size {' - '}
                                     {matchingSize &&
@@ -390,7 +495,7 @@ const CartTab = () => {
                                     style={{
                                       fontSize: 14,
                                       color: '#008000',
-                                      fontFamily: 'Raleway-ExtraBold',
+                                      fontFamily: 'Nunito-ExtraBold',
                                     }}>
                                     {matchingSize &&
                                       calculateProductDiscount(
@@ -402,7 +507,7 @@ const CartTab = () => {
                                     style={{
                                       fontSize: 14,
                                       color: GLOBALCOLOR.black2,
-                                      fontFamily: 'Raleway-ExtraBold',
+                                      fontFamily: 'Nunito-ExtraBold',
                                     }}>
                                     Mrp {' - '}
                                     <Text
@@ -532,7 +637,7 @@ const CartTab = () => {
                           style={{
                             fontSize: 30,
                             color: GLOBALCOLOR.black2,
-                            fontFamily: 'Raleway-Bold',
+                            fontFamily: 'Nunito-Bold',
                           }}>
                           Cart is Empty
                         </Text>
@@ -564,7 +669,7 @@ const CartTab = () => {
           style={{
             fontSize: 14,
             color: '#900000',
-            fontFamily: 'Raleway-ExtraBold',
+            fontFamily: 'Nunito-ExtraBold',
           }}>
           Mrp {' - '}
           <Text style={{textDecorationLine: 'line-through'}}>
@@ -576,7 +681,7 @@ const CartTab = () => {
           style={{
             fontSize: 14,
             color: '#008000',
-            fontFamily: 'Raleway-ExtraBold',
+            fontFamily: 'Nunito-ExtraBold',
           }}>
           Total{' - '}
           {convertInInr(
@@ -584,17 +689,26 @@ const CartTab = () => {
           )}
         </Text>
 
-        <CustomButton
-          title="Checkout"
-          // onPress
-          // width,
-          height={40}
-          backgroundColor="#004CFF"
-          textColor="#f5f5f5"
-          fontFamily="Roboto"
-          fontSize={16}
-          titleWeight={500}
-        />
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={() => displayRazorpay()}
+          style={{
+            backgroundColor: '#004CFF',
+            color: '#fff',
+            padding: 15,
+            borderRadius: 10,
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 10,
+          }}>
+          <Text style={{color: '#fff', fontSize: 16}}>Check Out</Text>
+          {isLoadingPaymentGateway ? (
+            <View>
+              <ActivityIndicator size="small" color="#ffff" />
+            </View>
+          ) : null}
+        </TouchableOpacity>
       </View>
     </View>
   );

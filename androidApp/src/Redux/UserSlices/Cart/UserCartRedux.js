@@ -137,11 +137,11 @@ export const UserCartSlice = createSlice({
       })
 
       .addCase(updateUserCartQtyAsync.pending, (state, action) => {
-        state.isLoading = true;
+        // state.isLoading = true;
       })
 
       .addCase(updateUserCartQtyAsync.fulfilled, (state, action) => {
-        state.isLoading = false;
+        // state.isLoading = false;
 
         if (action.payload?.msg === 'success') {
           const {cartItem_id, qtyMessage} = action.meta.arg;
@@ -176,16 +176,16 @@ export const UserCartSlice = createSlice({
       })
 
       .addCase(updateUserCartQtyAsync.rejected, (state, action) => {
-        state.isLoading = false;
+        // state.isLoading = false;
         state.isError = true;
       })
 
       .addCase(deleteUserCartAsync.pending, (state, action) => {
-        state.isLoading = true;
+        // state.isLoading = true;
       })
 
       .addCase(deleteUserCartAsync.fulfilled, (state, action) => {
-        state.isLoading = false;
+        // state.isLoading = false;
         // console.log(action.meta.arg);
 
         if (action.payload?.msg === 'success') {
@@ -208,7 +208,7 @@ export const UserCartSlice = createSlice({
       })
 
       .addCase(deleteUserCartAsync.rejected, (state, action) => {
-        state.isLoading = false;
+        // state.isLoading = false;
         state.isError = true;
       });
   },

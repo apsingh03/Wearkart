@@ -9,6 +9,7 @@ const ProtectedRoute = ({
   IfNotFallbackComponent: IfNotFallbackComponent,
 }) => {
   const isUserLogged = useSelector(state => state.userAuth.loggedData);
+  // console.log('Guarding - ', isUserLogged);
   const navigation = useNavigation();
   //   console.log('isUserLogged - ', isUserLogged);
 
@@ -23,7 +24,7 @@ const ProtectedRoute = ({
   //   }
 
   // Render the component if the user is authenticated, otherwise the fallback component
-  return isUserLogged !== null ? (
+  return isUserLogged !== null  ? (
     <IfLoggedComponent navigation={navigation} />
   ) : (
     <IfNotFallbackComponent navigation={navigation} />
