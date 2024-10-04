@@ -101,7 +101,7 @@ const LogInScreen = ({navigation}) => {
                   Alert.alert(actionResult.payload.msg);
                   const {userObject, token} = actionResult.payload;
 
-                  // console.log('payload - ', actionResult.payload);
+                  console.log('payload - ', actionResult.payload);
 
                   dispatch(setLoggedData({userObject}));
                   dispatch(setLoggedData({token}));

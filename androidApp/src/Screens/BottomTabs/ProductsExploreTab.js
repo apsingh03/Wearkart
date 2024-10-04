@@ -32,14 +32,21 @@ import {
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SkeltonUi from '../../components/SkeltonUi';
 import LazyLoadingImage from '../../components/LazyLoadingImage';
+import BottomPopUp from '../../components/ExploreTab/BottomPopUp';
+import {useProductsFilterFunctions} from '../../customHooks/ProductFilterCustomHook';
 
 const ProductsExploreTab = ({navigation}) => {
   const dispatch = useDispatch();
   const [whichProductForFavorite, setwhichProductForFavorite] = useState({});
   const [isLoadingWishList, setisLoadingWishList] = useState(false);
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
 
   const client_allProductsRedux = useSelector(
     state => state.client_product.allProducts,
+  );
+
+  const isLoaderAllProducts = useSelector(
+    state => state.client_product.isLoading,
   );
 
   const user_favoriteProductRedux = useSelector(
@@ -51,10 +58,10 @@ const ProductsExploreTab = ({navigation}) => {
   const isLoadingClient_allProductsRedux =
     !client_allProductsRedux || !client_allProductsRedux?.query;
 
+  const {clearAllFilter, selectedFilters} = useProductsFilterFunctions();
+
   async function fetchData() {
     await dispatch(clientAllListedProductsAsync());
-    await dispatch(clientGetProductFiltersAsync());
-    await dispatch(clientGetSizesFiltersAsync());
     await dispatch(getUserFavoriteProductAsync());
   }
 
@@ -87,6 +94,8 @@ const ProductsExploreTab = ({navigation}) => {
     return () => {};
   }, []);
 
+  // console.log('selectedFilters - ', selectedFilters);
+
   return (
     <View
       style={{
@@ -95,6 +104,15 @@ const ProductsExploreTab = ({navigation}) => {
         backgroundColor: GLOBALCOLOR.white1,
         flex: 1,
       }}>
+      {/* Bottom Filters Popup  */}
+
+      {isBottomSheetOpen ? (
+        <BottomPopUp
+          isBottomSheetOpen={isBottomSheetOpen}
+          setIsBottomSheetOpen={setIsBottomSheetOpen}
+        />
+      ) : null}
+
       {/* Header */}
       <View style={[globalCss.rowBetweenCenter]}>
         <View>
@@ -102,7 +120,7 @@ const ProductsExploreTab = ({navigation}) => {
             style={{
               fontSize: 28,
               color: GLOBALCOLOR.black2,
-              fontFamily: 'Raleway-ExtraBold',
+              fontFamily: 'Nunito-ExtraBold',
             }}>
             Shop
           </Text>
@@ -125,13 +143,43 @@ const ProductsExploreTab = ({navigation}) => {
           />
         </View>
         <View>
-          <Ionicons name="options-sharp" size={30} color={'#231F20'} />
+          <TouchableOpacity
+            onPress={() => setIsBottomSheetOpen(!isBottomSheetOpen)}>
+            <Ionicons name="options-sharp" size={30} color={'#231F20'} />
+          </TouchableOpacity>
         </View>
       </View>
+
+      <View style={globalCss.rowBetweenCenter}>
+        <Text
+          style={{
+            fontSize: 14,
+            color: GLOBALCOLOR.black2,
+            fontFamily: 'Nunito-Bold',
+            marginVertical: 20,
+          }}>
+          Total Products {' - '}
+          {(client_allProductsRedux?.query &&
+            client_allProductsRedux?.query.length) ||
+            0}
+        </Text>
+        <TouchableOpacity onPress={() => clearAllFilter()}>
+          <Text
+            style={{
+              fontSize: 14,
+              color: GLOBALCOLOR.black2,
+              fontFamily: 'Nunito-Bold',
+              marginVertical: 20,
+            }}>
+            Clear All Filters
+          </Text>
+        </TouchableOpacity>
+      </View>
+
       {/* product cards  */}
-      {/* product.isPublished === true && product.isRecycleBin === false */}
-      <View style={{marginTop: 10, paddingHorizontal: 0}}>
-        {isLoadingClient_allProductsRedux ? (
+
+      <View style={{marginTop: 0, paddingHorizontal: 0}}>
+        {isLoaderAllProducts ? (
           <FlatList
             data={['', '', '', '', '', '', '', '', '', '']}
             numColumns={2}
@@ -157,6 +205,7 @@ const ProductsExploreTab = ({navigation}) => {
             numColumns={2}
             keyExtractor={(item, index) => index.toString()}
             showsVerticalScrollIndicator={false}
+            contentContainerStyle={{paddingBottom: 100}}
             renderItem={({item}) => {
               // console.log('item -', item);
               if (item.isPublished === true && item.isRecycleBin === false) {
@@ -252,7 +301,7 @@ const ProductsExploreTab = ({navigation}) => {
                           style={{
                             fontSize: 14,
                             color: GLOBALCOLOR.black2,
-                            fontFamily: 'Raleway-RegularBold',
+                            fontFamily: 'Nunito-Bold',
                           }}>
                           {item?.id} {item?.name}
                         </Text>
@@ -284,7 +333,7 @@ const ProductsExploreTab = ({navigation}) => {
                             style={{
                               fontSize: 12,
                               color: GLOBALCOLOR.black2,
-                              fontFamily: 'Raleway-RegularBold',
+                              fontFamily: 'Nunito-RegularBold',
                             }}>
                             Sizes{' - '}
                             {item?.productSizesProduct &&
@@ -305,7 +354,7 @@ const ProductsExploreTab = ({navigation}) => {
                             style={{
                               fontSize: 12,
                               color: GLOBALCOLOR.black2,
-                              fontFamily: 'Raleway-Bold',
+                              fontFamily: 'Nunito-Bold',
                             }}>
                             {calculateProductDiscount(
                               sortedProductSizes.length > 0
@@ -320,7 +369,7 @@ const ProductsExploreTab = ({navigation}) => {
                             style={{
                               fontSize: 12,
                               color: GLOBALCOLOR.black2,
-                              fontFamily: 'Raleway-Bold',
+                              fontFamily: 'Nunito-Bold',
                               textDecorationLine: 'line-through',
                             }}>
                             {convertInInr(
@@ -334,7 +383,7 @@ const ProductsExploreTab = ({navigation}) => {
                             style={{
                               fontSize: 12,
                               color: '#B8001F',
-                              fontFamily: 'Raleway-Bold',
+                              fontFamily: 'Nunito-Bold',
                             }}>
                             {sortedProductSizes.length > 0
                               ? sortedProductSizes[0].discountPercent

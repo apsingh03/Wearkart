@@ -1,16 +1,36 @@
 // ProtectedRoute.js
-import React from 'react';
-import {useSelector} from 'react-redux';
+import React, {useEffect} from 'react';
+import {useSelector, useDispatch} from 'react-redux';
 import {View, ActivityIndicator} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import {getUserInfoAsync} from '../Redux/UserSlices/UserAuth';
 
 const ProtectedRoute = ({
   IfLoggedComponent: IfLoggedComponent,
   IfNotFallbackComponent: IfNotFallbackComponent,
 }) => {
-  const isUserLogged = useSelector(state => state.userAuth.loggedData);
+  const isUserLogged = useSelector(state => state.userAuth.token);
+  const dispatch = useDispatch();
   // console.log('Guarding - ', isUserLogged);
+  // console.log(
+  //   '---> ',
+  //   useSelector(state => state.userAuth),
+  // );
   const navigation = useNavigation();
+
+  async function fetchData() {
+    if (isUserLogged !== null) {
+      await dispatch(getUserInfoAsync());
+    }
+  }
+
+  useEffect(() => {
+    // console.log('Protected Routes ');
+    fetchData();
+
+    return () => {};
+  }, []);
+
   //   console.log('isUserLogged - ', isUserLogged);
 
   //   If isUserLogged is undefined (loading state)
@@ -24,7 +44,7 @@ const ProtectedRoute = ({
   //   }
 
   // Render the component if the user is authenticated, otherwise the fallback component
-  return isUserLogged !== null  ? (
+  return isUserLogged !== null ? (
     <IfLoggedComponent navigation={navigation} />
   ) : (
     <IfNotFallbackComponent navigation={navigation} />

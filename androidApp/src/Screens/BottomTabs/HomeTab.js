@@ -190,9 +190,7 @@ const HomeTab = () => {
             )}
           </View>
 
-          <View style={{marginTop: 10}}>
-            <ShopByCategory />
-          </View>
+          <View style={{marginTop: 10}}>{/* <ShopByCategory /> */}</View>
 
           <View style={{marginTop: 10}}>
             {/* <Testimonial reduxData={testimonialRedux && testimonialRedux} /> */}

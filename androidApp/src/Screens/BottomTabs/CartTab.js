@@ -54,7 +54,7 @@ const CartTab = ({navigation}) => {
     state => state.user_userCart.isLoading,
   );
 
-  const loggedData = useSelector(state => state.userAuth);
+  const loggedData = useSelector(state => state.userAuth.token);
   // console.log('loggedData - ', loggedData);
 
   const [calculateTotalCartMrp, setcalculateTotalCartMrp] = useState(0);

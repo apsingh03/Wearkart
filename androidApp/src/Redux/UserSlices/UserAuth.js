@@ -85,7 +85,7 @@ export const userAuthSlice = createSlice({
   initialState,
   reducers: {
     setLoggedData(state, action) {
-      // console.log('setLoggedData - ', action.payload.userObject);
+      // console.log('setLoggedData - ', action.payload);
       state.loggedData = action.payload.userObject;
       state.token = action.payload.token;
     },
