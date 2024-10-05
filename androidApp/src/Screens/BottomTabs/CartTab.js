@@ -32,6 +32,7 @@ import {BACKENDHOSTNAME, RAZOR_KEY_ID} from '@env';
 import RazorpayCheckout from 'react-native-razorpay';
 import axios from 'axios';
 import LazyLoadingImage from '../../components/LazyLoadingImage';
+import CheckInternetUi from '../../components/CheckInternetUi';
 
 const CartTab = ({navigation}) => {
   const dispatch = useDispatch();
@@ -64,7 +65,6 @@ const CartTab = ({navigation}) => {
   async function fetchData() {
     if (loggedData !== null) {
       await dispatch(getUserCartAsync());
-      // console.log('calling fetchData');
     }
   }
 
@@ -150,7 +150,7 @@ const CartTab = ({navigation}) => {
       fetchData();
     } else {
       // Alert.alert('You Need to LogIn First');
-      console.log('You Need to LogIn First');
+      // console.log('You Need to LogIn First');
     }
     // console.log('Mounted Carttab', isFocused);
 
@@ -198,13 +198,13 @@ const CartTab = ({navigation}) => {
       setIsLoadingPaymentGateway(true);
 
       const HOSTNAME = BACKENDHOSTNAME;
-      // console.log('------ 1 ----------------');
+      console.log('------ 1 ----------------');
       // Fetch order details from your backend
 
       const response = await axios.get(`${HOSTNAME}/purchase/buy/`, {
         headers: {Authorization: `${userAuthToken}`},
       });
-      // console.log('------ 2 ----------------');
+      console.log('------ 2 ----------------');
       const {order} = response.data;
 
       const options = {
@@ -215,15 +215,15 @@ const CartTab = ({navigation}) => {
         description: 'Test Transaction',
         order_id: order.id,
         prefill: {
-          name: userEmail,
-          email: userFullName,
+          name: userEmail || 'Default Name',
+          email: userFullName || 'example@example.com',
         },
         theme: {
           color: '#3399cc',
         },
       };
 
-      // console.log('------ 3 ----------------');
+      console.log('------ 3 ----------------');
 
       // Open Razorpay checkout
       RazorpayCheckout.open(options)
@@ -238,10 +238,17 @@ const CartTab = ({navigation}) => {
               paymentStatus: 'SUCCESSFUL',
             },
             {
-              headers: {Authorization: `Bearer ${userToken}`},
+              headers: {Authorization: `${userAuthToken}`},
             },
           );
-          // console.log('------ 4 ----------------');
+          // console.log('------ then Block ----------------');
+          // console.log('cartAmount  - ', order.amount / 100);
+          // console.log('order_id  - ', options.order_id);
+          // console.log('payment_id  - ', data.razorpay_payment_id);
+
+          // console.log('options - ', options);
+
+          console.log('------ 4 ----------------', data);
           if (updateTxnAction.data?.message === 'Transaction successful') {
             setIsLoadingPaymentGateway(false);
             Alert.alert('Success', 'Transaction completed successfully!');
@@ -250,467 +257,482 @@ const CartTab = ({navigation}) => {
           }
         })
         .catch(async error => {
+          // console.log('------ catch Block ----------------');
+          // console.log('------ 5 ---------------- ', error);
+          // console.log('order_id  - ', options.order_id);
+          // console.log('error payment_id  - ', error?.error?.payment_id);
+          // console.log('payment_id  - ', error?.razorpay_payment_id);
           // Handle failed payment
           const updateTxnAction = await axios.put(
             `${HOSTNAME}/purchase/updateCartstatus/`,
             {
               order_id: options.order_id,
-              payment_id: error?.error?.payment_id || '',
+              payment_id: error?.razorpay_payment_id || '',
               paymentStatus: 'FAILED',
             },
             {
-              headers: {Authorization: `Bearer ${userToken}`},
+              headers: {Authorization: `${userAuthToken}`},
             },
           );
-          // console.log('------ 5 ----------------');
 
           if (updateTxnAction.data?.message === 'Transaction Failed') {
             setIsLoadingPaymentGateway(false);
-            Alert.alert('Failure', 'Payment failed. Something went wrong.');
+            Alert.alert('Failure', error);
           }
         });
     } catch (error) {
       setIsLoadingPaymentGateway(false);
-      Alert.alert('Display RazorPay Error', error.message);
-      console.log('Display RazorPay  Gateway - ', error.message);
+      Alert.alert('Catch RazorPay Error', error.message);
+      console.log('Catch RazorPay  Gateway - ', error.message);
     }
   };
 
   return (
-    <View
-      style={{
-        paddingHorizontal: 10,
-        paddingVertical: 10,
-        backgroundColor: '#fff',
-        flex: 1,
-        position: 'relative',
-      }}>
-      {/* Header */}
-      <View style={[globalCss.flexRow]}>
-        <Text
-          style={{
-            fontSize: 28,
-            color: GLOBALCOLOR.black2,
-            fontFamily: 'Raleway-ExtraBold',
-            marginRight: 10,
-          }}>
-          Cart
-        </Text>
-        <Text
-          style={{
-            fontSize: 25,
-            color: GLOBALCOLOR.black2,
-            backgroundColor: '#E5EBFC',
-            fontFamily: 'Raleway-ExtraBold',
-            // padding: 5,
-            borderRadius: 100,
-            height: 40,
-            width: 40,
-            textAlign: 'center',
-          }}>
-          {userCartItems?.length}
-        </Text>
-      </View>
+    <>
+      <CheckInternetUi />
+      <View
+        style={{
+          paddingHorizontal: 10,
+          paddingVertical: 10,
+          backgroundColor: '#fff',
+          flex: 1,
+          position: 'relative',
+        }}>
+        {/* Header */}
+        <View style={[globalCss.flexRow]}>
+          <Text
+            style={{
+              fontSize: 28,
+              color: GLOBALCOLOR.black2,
+              fontFamily: 'Raleway-ExtraBold',
+              marginRight: 10,
+            }}>
+            Cart
+          </Text>
+          <Text
+            style={{
+              fontSize: 25,
+              color: GLOBALCOLOR.black2,
+              backgroundColor: '#E5EBFC',
+              fontFamily: 'Raleway-ExtraBold',
+              // padding: 5,
+              borderRadius: 100,
+              height: 40,
+              width: 40,
+              textAlign: 'center',
+            }}>
+            {userCartItems?.length}
+          </Text>
+        </View>
 
-      {(function () {
-        try {
-          return (
-            <View
-              style={[globalCss.flexRow, {marginTop: 10, marginBottom: 110}]}>
-              {isLoadingUser_userCart ? (
-                <View
-                  style={[
-                    globalCss.flexRow,
-                    {
-                      marginBottom: 10,
-                      width: '100%',
-                      // flexDirection: 'row', // Set horizontal direction for the row
-                    },
-                  ]}>
-                  {/* 40% Width Section */}
-                  <View style={{width: '40%', paddingRight: 5}}>
-                    <SkeltonUi
-                      circle={false}
-                      height={150}
-                      width={'100%'}
-                      style={{borderRadius: 10}}
-                    />
-                  </View>
-
-                  {/* 60% Width Section */}
+        {(function () {
+          try {
+            return (
+              <View
+                style={[globalCss.flexRow, {marginTop: 10, marginBottom: 110}]}>
+                {isLoadingUser_userCart ? (
                   <View
                     style={[
-                      globalCss.colBetweenCenter,
-                      {width: '60%', paddingLeft: 5},
+                      globalCss.flexRow,
+                      {
+                        marginBottom: 10,
+                        width: '100%',
+                        // flexDirection: 'row', // Set horizontal direction for the row
+                      },
                     ]}>
-                    <SkeltonUi
-                      circle={false}
-                      // height={150}
-                      width={'100%'}
-                    />
-                    <View style={globalCss.rowBetweenCenter}>
+                    {/* 40% Width Section */}
+                    <View style={{width: '40%', paddingRight: 5}}>
                       <SkeltonUi
                         circle={false}
-                        // height={150}
-                        width={100}
-                      />
-
-                      <SkeltonUi
-                        circle={false}
-                        // height={150}
-                        width={100}
+                        height={150}
+                        width={'100%'}
                         style={{borderRadius: 10}}
                       />
                     </View>
 
-                    <View style={[globalCss.rowBetweenCenter]}>
+                    {/* 60% Width Section */}
+                    <View
+                      style={[
+                        globalCss.colBetweenCenter,
+                        {width: '60%', paddingLeft: 5},
+                      ]}>
                       <SkeltonUi
                         circle={false}
                         // height={150}
                         width={'100%'}
                       />
-                    </View>
+                      <View style={globalCss.rowBetweenCenter}>
+                        <SkeltonUi
+                          circle={false}
+                          // height={150}
+                          width={100}
+                        />
 
-                    <View style={{marginTop: 10}}>
-                      <View style={[globalCss.flexRow, {gap: 10}]}>
                         <SkeltonUi
                           circle={false}
-                          height={25}
-                          width={25}
-                          style={{borderRadius: 200}}
+                          // height={150}
+                          width={100}
+                          style={{borderRadius: 10}}
                         />
-                        <SkeltonUi circle={false} height={25} width={25} />
+                      </View>
+
+                      <View style={[globalCss.rowBetweenCenter]}>
                         <SkeltonUi
                           circle={false}
-                          height={25}
-                          width={25}
-                          style={{borderRadius: 200}}
+                          // height={150}
+                          width={'100%'}
                         />
+                      </View>
+
+                      <View style={{marginTop: 10}}>
+                        <View style={[globalCss.flexRow, {gap: 10}]}>
+                          <SkeltonUi
+                            circle={false}
+                            height={25}
+                            width={25}
+                            style={{borderRadius: 200}}
+                          />
+                          <SkeltonUi circle={false} height={25} width={25} />
+                          <SkeltonUi
+                            circle={false}
+                            height={25}
+                            width={25}
+                            style={{borderRadius: 200}}
+                          />
+                        </View>
                       </View>
                     </View>
                   </View>
-                </View>
-              ) : (
-                (function () {
-                  if (userCartItems.length > 0) {
-                    return (
-                      <FlatList
-                        data={userCartItems} // Replacing empty strings with valid data or text
-                        keyExtractor={(item, index) => index.toString()} // Ensure unique key for each item
-                        showsVerticalScrollIndicator={false}
-                        renderItem={({item}) => {
-                          const matchingSize =
-                            item.productUserCartItem.productSizesProduct.find(
-                              size => size.PSize_id === item.PSize_id,
-                            );
+                ) : (
+                  (function () {
+                    if (userCartItems.length > 0) {
+                      return (
+                        <FlatList
+                          data={userCartItems} // Replacing empty strings with valid data or text
+                          keyExtractor={(item, index) => index.toString()} // Ensure unique key for each item
+                          showsVerticalScrollIndicator={false}
+                          renderItem={({item}) => {
+                            const matchingSize =
+                              item.productUserCartItem.productSizesProduct.find(
+                                size => size.PSize_id === item.PSize_id,
+                              );
 
-                          const matchingColor =
-                            item.productUserCartItem.productColorsProduct.find(
-                              color => color.color_id === item.color_id,
-                            );
+                            const matchingColor =
+                              item.productUserCartItem.productColorsProduct.find(
+                                color => color.color_id === item.color_id,
+                              );
 
-                          // console.log('matchingSize - ', matchingSize);
+                            // console.log('matchingSize - ', matchingSize);
 
-                          return (
-                            <View
-                              style={[
-                                globalCss.flexRow,
-                                {
-                                  marginBottom: 15,
-                                  width: '100%',
-                                  // borderBottomWidth: 1,
-                                  // borderColor: '#ddd',
-                                  paddingVertical: 10,
-                                  paddingHorizontal: 5,
-                                  backgroundColor: 'white',
-                                  elevation: 5,
-                                  borderRadius: 5,
-
-                                  // shadowColor: 'blue',
-                                },
-                              ]}>
-                              {/* 40% Width Section */}
-                              <View style={{width: '40%', paddingRight: 5}}>
-                                <LazyLoadingImage
-                                  uri={
-                                    item?.productUserCartItem?.productImage
-                                      ?.url1
-                                  }
-                                  width={'100%'}
-                                  height={150}
-                                  resizeMode="cover"
-                                  borderRadius={5}
-                                />
-                              </View>
-
-                              {/* 60% Width Section */}
+                            return (
                               <View
                                 style={[
-                                  globalCss.colBetweenCenter,
-                                  {width: '60%', paddingLeft: 5},
+                                  globalCss.flexRow,
+                                  {
+                                    marginBottom: 15,
+                                    width: '100%',
+                                    // borderBottomWidth: 1,
+                                    // borderColor: '#ddd',
+                                    paddingVertical: 10,
+                                    paddingHorizontal: 5,
+                                    backgroundColor: 'white',
+                                    elevation: 5,
+                                    borderRadius: 5,
+
+                                    // shadowColor: 'blue',
+                                  },
                                 ]}>
-                                <Pressable
-                                  onPress={() =>
-                                    navigation.navigate('ProductDetailScreen', {
-                                      productId: item?.id,
-                                    })
-                                  }>
-                                  <Text
-                                    style={{
-                                      fontSize: 14,
-                                      color: GLOBALCOLOR.black2,
-                                      fontFamily: 'Nunito-ExtraBold',
-                                    }}
-                                    numberOfLines={2}>
-                                    {item?.id} {item?.productUserCartItem?.name}
-                                  </Text>
-                                </Pressable>
-
-                                <View style={globalCss.rowBetweenCenter}>
-                                  <Text
-                                    style={{
-                                      fontSize: 14,
-                                      color: GLOBALCOLOR.black2,
-                                      fontFamily: 'Nunito-ExtraBold',
-                                    }}>
-                                    Color {' - '}
-                                    {matchingColor &&
-                                      matchingColor.productColorsColor.name}
-                                  </Text>
-
-                                  <Text
-                                    style={{
-                                      fontSize: 14,
-                                      color: GLOBALCOLOR.black2,
-                                      fontFamily: 'Nunito-ExtraBold',
-                                    }}>
-                                    Size {' - '}
-                                    {matchingSize &&
-                                      matchingSize.pSizeProductSizes.name}
-                                  </Text>
+                                {/* 40% Width Section */}
+                                <View style={{width: '40%', paddingRight: 5}}>
+                                  <LazyLoadingImage
+                                    uri={
+                                      item?.productUserCartItem?.productImage
+                                        ?.url1
+                                    }
+                                    width={'100%'}
+                                    height={150}
+                                    resizeMode="cover"
+                                    borderRadius={5}
+                                  />
                                 </View>
 
-                                <View style={[globalCss.rowBetweenCenter]}>
-                                  <Text
-                                    style={{
-                                      fontSize: 14,
-                                      color: '#008000',
-                                      fontFamily: 'Nunito-ExtraBold',
-                                    }}>
-                                    {matchingSize &&
-                                      calculateProductDiscount(
-                                        matchingSize.mrp,
-                                        matchingSize.discountPercent,
-                                      )}
-                                  </Text>
-                                  <Text
-                                    style={{
-                                      fontSize: 14,
-                                      color: GLOBALCOLOR.black2,
-                                      fontFamily: 'Nunito-ExtraBold',
-                                    }}>
-                                    Mrp {' - '}
+                                {/* 60% Width Section */}
+                                <View
+                                  style={[
+                                    globalCss.colBetweenCenter,
+                                    {width: '60%', paddingLeft: 5},
+                                  ]}>
+                                  <Pressable
+                                    onPress={() =>
+                                      navigation.navigate(
+                                        'ProductDetailScreen',
+                                        {
+                                          productId: item?.id,
+                                        },
+                                      )
+                                    }>
                                     <Text
                                       style={{
-                                        textDecorationLine: 'line-through',
-                                        color: '#900000',
-                                      }}>
-                                      {' '}
-                                      {convertInInr(
-                                        matchingSize && matchingSize.mrp,
-                                      )}
+                                        fontSize: 14,
+                                        color: GLOBALCOLOR.black2,
+                                        fontFamily: 'Nunito-ExtraBold',
+                                      }}
+                                      numberOfLines={2}>
+                                      {item?.id}{' '}
+                                      {item?.productUserCartItem?.name}
                                     </Text>
-                                  </Text>
-                                </View>
+                                  </Pressable>
 
-                                <View style={{marginTop: 10}}>
-                                  <View
-                                    style={[
-                                      globalCss.rowBetweenCenter,
-                                      {paddingRight: 50},
-                                    ]}>
-                                    <View
-                                      style={[globalCss.flexRow, {gap: 10}]}>
-                                      {isDisabledCartDecreaseBtn[item?.id] ? (
-                                        <SkeltonUi
-                                          circle={false}
-                                          height={25}
-                                          width={25}
-                                          style={{borderRadius: 200}}
-                                        />
-                                      ) : (
-                                        <TouchableOpacity
-                                          disabled={
-                                            isDisabledCartDecreaseBtn[item?.id]
-                                          }
-                                          onPress={() =>
-                                            handleCartQty(
-                                              item?.id,
-                                              'Decrease',
-                                              item?.qty,
-                                              matchingSize?.pSizeProductSizes
-                                                ?.qty,
-                                            )
-                                          }>
-                                          <AntDesign
-                                            name="minuscircleo"
-                                            size={25}
-                                            color={'#000'}
-                                          />
-                                        </TouchableOpacity>
-                                      )}
+                                  <View style={globalCss.rowBetweenCenter}>
+                                    <Text
+                                      style={{
+                                        fontSize: 14,
+                                        color: GLOBALCOLOR.black2,
+                                        fontFamily: 'Nunito-ExtraBold',
+                                      }}>
+                                      Color {' - '}
+                                      {matchingColor &&
+                                        matchingColor.productColorsColor.name}
+                                    </Text>
 
+                                    <Text
+                                      style={{
+                                        fontSize: 14,
+                                        color: GLOBALCOLOR.black2,
+                                        fontFamily: 'Nunito-ExtraBold',
+                                      }}>
+                                      Size {' - '}
+                                      {matchingSize &&
+                                        matchingSize.pSizeProductSizes.name}
+                                    </Text>
+                                  </View>
+
+                                  <View style={[globalCss.rowBetweenCenter]}>
+                                    <Text
+                                      style={{
+                                        fontSize: 14,
+                                        color: '#008000',
+                                        fontFamily: 'Nunito-ExtraBold',
+                                      }}>
+                                      {matchingSize &&
+                                        calculateProductDiscount(
+                                          matchingSize.mrp,
+                                          matchingSize.discountPercent,
+                                        )}
+                                    </Text>
+                                    <Text
+                                      style={{
+                                        fontSize: 14,
+                                        color: GLOBALCOLOR.black2,
+                                        fontFamily: 'Nunito-ExtraBold',
+                                      }}>
+                                      Mrp {' - '}
                                       <Text
                                         style={{
-                                          fontSize: 14,
-                                          color: GLOBALCOLOR.black2,
-                                          fontFamily: 'Raleway-ExtraBold',
+                                          textDecorationLine: 'line-through',
+                                          color: '#900000',
                                         }}>
-                                        {item?.qty}
+                                        {' '}
+                                        {convertInInr(
+                                          matchingSize && matchingSize.mrp,
+                                        )}
                                       </Text>
-                                      {isDisabledCartIncreaseBtn[item?.id] ? (
-                                        <SkeltonUi
-                                          circle={false}
-                                          height={25}
-                                          width={25}
-                                          style={{borderRadius: 200}}
-                                        />
-                                      ) : (
-                                        <TouchableOpacity
-                                          disabled={
-                                            isDisabledCartIncreaseBtn[item?.id]
-                                          }
-                                          onPress={() =>
-                                            handleCartQty(
-                                              item?.id,
-                                              'Increase',
-                                              item?.qty,
-                                              matchingSize?.pSizeProductSizes
-                                                ?.qty,
-                                            )
-                                          }>
-                                          <AntDesign
-                                            name="pluscircleo"
-                                            size={25}
-                                            color={'#000'}
-                                          />
-                                        </TouchableOpacity>
-                                      )}
-                                    </View>
+                                    </Text>
+                                  </View>
 
-                                    <View>
-                                      {isLoadingDeleteBtn[item.id] ? (
-                                        <SkeltonUi
-                                          circle={false}
-                                          height={25}
-                                          width={25}
-                                          style={{borderRadius: 200}}
-                                        />
-                                      ) : (
-                                        <TouchableOpacity
-                                          onPress={() =>
-                                            handleRemoveBtn(
-                                              item.cart_id,
-                                              item.id,
-                                            )
-                                          }>
-                                          <MaterialCommunityIcons
-                                            name="delete"
-                                            color={'#000'}
-                                            size={20}
+                                  <View style={{marginTop: 10}}>
+                                    <View
+                                      style={[
+                                        globalCss.rowBetweenCenter,
+                                        {paddingRight: 50},
+                                      ]}>
+                                      <View
+                                        style={[globalCss.flexRow, {gap: 10}]}>
+                                        {isDisabledCartDecreaseBtn[item?.id] ? (
+                                          <SkeltonUi
+                                            circle={false}
+                                            height={25}
+                                            width={25}
+                                            style={{borderRadius: 200}}
                                           />
-                                        </TouchableOpacity>
-                                      )}
+                                        ) : (
+                                          <TouchableOpacity
+                                            disabled={
+                                              isDisabledCartDecreaseBtn[
+                                                item?.id
+                                              ]
+                                            }
+                                            onPress={() =>
+                                              handleCartQty(
+                                                item?.id,
+                                                'Decrease',
+                                                item?.qty,
+                                                matchingSize?.pSizeProductSizes
+                                                  ?.qty,
+                                              )
+                                            }>
+                                            <AntDesign
+                                              name="minuscircleo"
+                                              size={25}
+                                              color={'#000'}
+                                            />
+                                          </TouchableOpacity>
+                                        )}
+
+                                        <Text
+                                          style={{
+                                            fontSize: 14,
+                                            color: GLOBALCOLOR.black2,
+                                            fontFamily: 'Raleway-ExtraBold',
+                                          }}>
+                                          {item?.qty}
+                                        </Text>
+                                        {isDisabledCartIncreaseBtn[item?.id] ? (
+                                          <SkeltonUi
+                                            circle={false}
+                                            height={25}
+                                            width={25}
+                                            style={{borderRadius: 200}}
+                                          />
+                                        ) : (
+                                          <TouchableOpacity
+                                            disabled={
+                                              isDisabledCartIncreaseBtn[
+                                                item?.id
+                                              ]
+                                            }
+                                            onPress={() =>
+                                              handleCartQty(
+                                                item?.id,
+                                                'Increase',
+                                                item?.qty,
+                                                matchingSize?.pSizeProductSizes
+                                                  ?.qty,
+                                              )
+                                            }>
+                                            <AntDesign
+                                              name="pluscircleo"
+                                              size={25}
+                                              color={'#000'}
+                                            />
+                                          </TouchableOpacity>
+                                        )}
+                                      </View>
+
+                                      <View>
+                                        {isLoadingDeleteBtn[item.id] ? (
+                                          <SkeltonUi
+                                            circle={false}
+                                            height={25}
+                                            width={25}
+                                            style={{borderRadius: 200}}
+                                          />
+                                        ) : (
+                                          <TouchableOpacity
+                                            onPress={() =>
+                                              handleRemoveBtn(
+                                                item.cart_id,
+                                                item.id,
+                                              )
+                                            }>
+                                            <MaterialCommunityIcons
+                                              name="delete"
+                                              color={'#000'}
+                                              size={20}
+                                            />
+                                          </TouchableOpacity>
+                                        )}
+                                      </View>
                                     </View>
                                   </View>
                                 </View>
                               </View>
-                            </View>
-                          );
-                        }}
-                      />
-                    );
-                  } else {
-                    return (
-                      <View style={[globalCss.flexColumn, {flex: 1}]}>
-                        <Text
-                          style={{
-                            fontSize: 30,
-                            color: GLOBALCOLOR.black2,
-                            fontFamily: 'Nunito-Bold',
-                          }}>
-                          Cart is Empty
-                        </Text>
-                      </View>
-                    );
-                  }
-                })()
-              )}
-            </View>
-          );
-        } catch (error) {
-          console.log('Error - ', error.message);
-        }
-      })()}
+                            );
+                          }}
+                        />
+                      );
+                    } else {
+                      return (
+                        <View style={[globalCss.flexColumn, {flex: 1}]}>
+                          <Text
+                            style={{
+                              fontSize: 30,
+                              color: GLOBALCOLOR.black2,
+                              fontFamily: 'Nunito-Bold',
+                            }}>
+                            Cart is Empty
+                          </Text>
+                        </View>
+                      );
+                    }
+                  })()
+                )}
+              </View>
+            );
+          } catch (error) {
+            console.log('Error - ', error.message);
+          }
+        })()}
 
-      <View
-        style={[
-          globalCss.rowBetweenCenter,
-          {
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            padding: 10,
-            backgroundColor: '#F5F5F5',
-          },
-        ]}>
-        <Text
-          style={{
-            fontSize: 14,
-            color: '#900000',
-            fontFamily: 'Nunito-ExtraBold',
-          }}>
-          Mrp {' - '}
-          <Text style={{textDecorationLine: 'line-through'}}>
-            {' '}
-            {convertInInr(calculateTotalCartMrp)}{' '}
+        <View
+          style={[
+            globalCss.rowBetweenCenter,
+            {
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              padding: 10,
+              backgroundColor: '#F5F5F5',
+            },
+          ]}>
+          <Text
+            style={{
+              fontSize: 14,
+              color: '#900000',
+              fontFamily: 'Nunito-ExtraBold',
+            }}>
+            Mrp {' - '}
+            <Text style={{textDecorationLine: 'line-through'}}>
+              {' '}
+              {convertInInr(calculateTotalCartMrp)}{' '}
+            </Text>
           </Text>
-        </Text>
-        <Text
-          style={{
-            fontSize: 14,
-            color: '#008000',
-            fontFamily: 'Nunito-ExtraBold',
-          }}>
-          Total{' - '}
-          {convertInInr(
-            calculateTotalCartMrp - calculateTotalCartAfterDiscount,
-          )}
-        </Text>
+          <Text
+            style={{
+              fontSize: 14,
+              color: '#008000',
+              fontFamily: 'Nunito-ExtraBold',
+            }}>
+            Total{' - '}
+            {convertInInr(
+              calculateTotalCartMrp - calculateTotalCartAfterDiscount,
+            )}
+          </Text>
 
-        <TouchableOpacity
-          activeOpacity={0.8}
-          onPress={() => displayRazorpay()}
-          style={{
-            backgroundColor: '#004CFF',
-            color: '#fff',
-            padding: 15,
-            borderRadius: 10,
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: 10,
-          }}>
-          <Text style={{color: '#fff', fontSize: 16}}>Check Out</Text>
-          {isLoadingPaymentGateway ? (
-            <View>
-              <ActivityIndicator size="small" color="#ffff" />
-            </View>
-          ) : null}
-        </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => displayRazorpay()}
+            style={{
+              backgroundColor: '#004CFF',
+              color: '#fff',
+              padding: 15,
+              borderRadius: 10,
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: 10,
+            }}>
+            <Text style={{color: '#fff', fontSize: 16}}>Check Out</Text>
+            {isLoadingPaymentGateway ? (
+              <View>
+                <ActivityIndicator size="small" color="#ffff" />
+              </View>
+            ) : null}
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
+    </>
   );
 };
 

@@ -1,11 +1,13 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
+import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
+import axios from 'axios';
 
-const HOSTNAME = process.env.REACT_APP_BACKENDHOSTNAME;
+import {BACKENDHOSTNAME} from '@env';
+
+const HOSTNAME = BACKENDHOSTNAME;
 
 export const clientDebouncedSearchAsync = createAsyncThunk(
-  "client/clientDebouncedSearch",
-  async ({ inputQuery }) => {
+  'client/clientDebouncedSearch',
+  async ({inputQuery}) => {
     try {
       const response = await axios.get(`${HOSTNAME}/client/debounce/search/`, {
         params: {
@@ -14,9 +16,9 @@ export const clientDebouncedSearchAsync = createAsyncThunk(
       });
       return response.data;
     } catch (error) {
-      console.log("clientDebouncedSearchAsync Error - ", error.response);
+      console.log('clientDebouncedSearchAsync Error - ', error);
     }
-  }
+  },
 );
 
 const initialState = {
@@ -26,11 +28,11 @@ const initialState = {
 };
 
 export const debounceSearchSlice = createSlice({
-  name: "debounceSearchSlice",
+  name: 'debounceSearchSlice',
   initialState,
   reducers: {},
 
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder
       .addCase(clientDebouncedSearchAsync.pending, (state, action) => {
         state.isLoading = true;

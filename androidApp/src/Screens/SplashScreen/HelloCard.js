@@ -118,7 +118,7 @@ const HelloCard = ({navigation}) => {
           {/* <Pressable> */}
           <CustomButton
             title="Skip It"
-            onPress={() => navigation.navigate('HomeScreen')}
+            onPress={() => navigation.navigate('WelcomeScreen')}
             width={'100%'}
             height={50}
             backgroundColor={GLOBALCOLOR.bluePrimary}

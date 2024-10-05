@@ -22,26 +22,12 @@ const SplashScreen = ({navigation}) => {
   const loggedData = useSelector(state => state.userAuth.loggedData);
   // console.log('loggedData - ', loggedData);
 
-  const loggedOrNotRedirectAccordingly = async () => {
-    // const userObjectAsyncStorage = await AsyncStorage.getItem(
-    //   'loggedUserObject',
-    // );
-    // console.log(userObjectAsyncStorage)
-
-    // if (userObjectAsyncStorage === null) {
-    //   navigation.navigate('SignUpScreen');
-    // } else {
-    //   navigation.navigate('HomeScreen');
-    // }
-    navigation.navigate('HomeScreen');
-  };
-
   useEffect(() => {
-    console.log('Splash Screen');
+    // console.log('Splash Screen');
 
     setTimeout(() => {
-      // loggedOrNotRedirectAccordingly();
-    }, 2000);
+      navigation.navigate('WelcomeScreen');
+    }, 1000);
   }, []);
 
   return (
@@ -76,7 +62,7 @@ const SplashScreen = ({navigation}) => {
               fontFamily: 'Raleway-ExtraBold',
               textAlign: 'center',
             }}>
-            Ecommerce
+            WearKart
           </Text>
 
           <View style={{marginTop: 10}}>

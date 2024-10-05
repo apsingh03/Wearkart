@@ -22,7 +22,7 @@ export const createUserFavoriteProductAsync = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      console.log('createUserFavoriteProductAsync Error - ', error.response);
+      console.log('createUserFavoriteProductAsync Error - ', error);
     }
   },
 );
@@ -38,7 +38,7 @@ export const getUserFavoriteProductAsync = createAsyncThunk(
       });
       return response.data;
     } catch (error) {
-      console.log('getUserFavoriteProductAsync Error - ', error.response);
+      console.log('getUserFavoriteProductAsync Error - ', error);
     }
   },
 );
@@ -58,7 +58,7 @@ export const deleteUserFavoriteProductAsync = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      console.log('deleteUserFavoriteProductAsync Error - ', error.response);
+      console.log('deleteUserFavoriteProductAsync Error - ', error);
     }
   },
 );

@@ -1,6 +1,7 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import axios from 'axios';
 import {BACKENDHOSTNAME} from '@env';
+import {checkInternetConnection} from '../../Utils/NetInfo';
 
 const HOSTNAME = BACKENDHOSTNAME;
 
@@ -13,21 +14,27 @@ export const clientGetCategoryWiseProductAsync = createAsyncThunk(
       );
       return response.data;
     } catch (error) {
-      console.log('clientGetCategoryWiseProductAsync Error - ', error.response);
+      console.log('clientGetCategoryWiseProductAsync Error - ', error);
     }
   },
 );
 
 export const clientAllListedProductsAsync = createAsyncThunk(
   'client/clientAllListedProducts',
-  async () => {
+  async (_, {getState}) => {
     try {
-      const response = await axios.get(
-        `${HOSTNAME}/client/product/allListedProducts/`,
-      );
-      return response.data;
+      const isConnected = await checkInternetConnection();
+
+      if (isConnected) {
+        const response = await axios.get(
+          `${HOSTNAME}/client/product/allListedProducts/`,
+        );
+        return response.data;
+      } else {
+        return getState().client_product.allProducts;
+      }
     } catch (error) {
-      console.log('clientAllListedProductsAsync Error - ', error.response);
+      console.log('clientAllListedProductsAsync Error - ', error);
     }
   },
 );
@@ -44,7 +51,7 @@ export const clientShowFilteredProductsAsync = createAsyncThunk(
       );
       return response.data;
     } catch (error) {
-      console.log('clientShowFilteredProductsAsync Error - ', error.response);
+      console.log('clientShowFilteredProductsAsync Error - ', error);
     }
   },
 );
@@ -58,7 +65,7 @@ export const clientGetSingleProductAsync = createAsyncThunk(
       );
       return response.data;
     } catch (error) {
-      console.log('clientGetSingleProductAsync Error - ', error.response);
+      console.log('clientGetSingleProductAsync Error - ', error);
     }
   },
 );
@@ -72,7 +79,7 @@ export const clientGetProductFiltersAsync = createAsyncThunk(
       );
       return response.data;
     } catch (error) {
-      console.log('clientGetProductFiltersAsync Error - ', error.response);
+      console.log('clientGetProductFiltersAsync Error - ', error);
     }
   },
 );
@@ -84,7 +91,7 @@ export const clientGetMenuAsync = createAsyncThunk(
       const response = await axios.get(`${HOSTNAME}/client/product/getMenu/`);
       return response.data;
     } catch (error) {
-      console.log('clientGetMenuAsync Error - ', error.response);
+      console.log('clientGetMenuAsync Error - ', error);
     }
   },
 );
@@ -98,35 +105,50 @@ export const clientGetSizesFiltersAsync = createAsyncThunk(
       );
       return response.data;
     } catch (error) {
-      console.log('clientGetSizesFiltersAsync Error - ', error.response);
+      console.log('clientGetSizesFiltersAsync Error - ', error);
     }
   },
 );
 
 export const clientGetBannerCarouselAsync = createAsyncThunk(
   'client/clientGetBannerCarousel',
-  async () => {
+  async (_, {getState}) => {
     try {
-      const response = await axios.get(
-        `${HOSTNAME}/client/product/bannerCarousel/`,
-      );
-      return response.data;
+      const isConnected = await checkInternetConnection();
+      // console.log('isConnected - ', isConnected);
+
+      if (isConnected) {
+        const response = await axios.get(
+          `${HOSTNAME}/client/product/bannerCarousel/`,
+        );
+        return response.data;
+      } else {
+        // Return cached data from redux state
+        console.log('getState - ', getState);
+        return getState().client_product.bannerCarousel;
+      }
     } catch (error) {
-      console.log('clientGetBannerCarouselAsync Error - ', error.response);
+      console.log('clientGetBannerCarouselAsync Error - ', error);
     }
   },
 );
 
 export const clientGetActressCarouselAsync = createAsyncThunk(
   'client/clientGetActressCarousel',
-  async () => {
+  async (_, {getState}) => {
     try {
-      const response = await axios.get(
-        `${HOSTNAME}/client/product/actressCarousel/`,
-      );
-      return response.data;
+      const isConnected = await checkInternetConnection();
+
+      if (isConnected) {
+        const response = await axios.get(
+          `${HOSTNAME}/client/product/actressCarousel/`,
+        );
+        return response.data;
+      } else {
+        return getState().client_product.actressCarousel;
+      }
     } catch (error) {
-      console.log('clientGetActressCarouselAsync Error - ', error.response);
+      console.log('clientGetActressCarouselAsync Error - ', error);
     }
   },
 );
@@ -140,21 +162,26 @@ export const clientGetTestimonialAsync = createAsyncThunk(
       );
       return response.data;
     } catch (error) {
-      console.log('clientGetTestimonialAsync Error - ', error.response);
+      console.log('clientGetTestimonialAsync Error - ', error);
     }
   },
 );
 
 export const clientGetFourBannerImagesAsync = createAsyncThunk(
   'client/clientGetFourBannerImages',
-  async () => {
+  async (_, {getState}) => {
     try {
-      const response = await axios.get(
-        `${HOSTNAME}/client/product/fourBannerImages/`,
-      );
-      return response.data;
+      const isConnected = await checkInternetConnection();
+      if (isConnected) {
+        const response = await axios.get(
+          `${HOSTNAME}/client/product/fourBannerImages/`,
+        );
+        return response.data;
+      } else {
+        return getState().client_product.fourBannerImages;
+      }
     } catch (error) {
-      console.log('clientGetFourBannerImagesAsync Error - ', error.response);
+      console.log('clientGetFourBannerImagesAsync Error - ', error);
     }
   },
 );

@@ -12,12 +12,14 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import ProtectedRoute from '../RouteGuarding/ProtectedRoutes';
+import LogInScreen from './LogInScreen';
 
 const BottomTab = createBottomTabNavigator();
 const HomeScreen = () => {
   return (
     <>
-      <BottomTab.Navigator initialRouteName="ProductsExploreTab">
+      <BottomTab.Navigator initialRouteName="HomeTab">
         <BottomTab.Screen
           name="HomeTab"
           component={HomeTab}
@@ -61,7 +63,7 @@ const HomeScreen = () => {
         />
         <BottomTab.Screen
           name="CartTab"
-          component={CartTab}
+          // component={CartTab}
           options={{
             headerShown: false,
             tabBarLabel: 'Cart',
@@ -77,8 +79,14 @@ const HomeScreen = () => {
             tabBarIcon: ({color, size}) => (
               <Entypo name="shopping-cart" size={size} color={color} />
             ),
-          }}
-        />
+          }}>
+          {() => (
+            <ProtectedRoute
+              IfLoggedComponent={CartTab}
+              IfNotFallbackComponent={LogInScreen}
+            />
+          )}
+        </BottomTab.Screen>
 
         <BottomTab.Screen
           name="UserProfileTab"

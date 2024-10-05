@@ -229,7 +229,7 @@ const SignUpScreen = ({navigation}) => {
                           marginLeft: 10,
                           fontFamily: 'Nunito-Regular',
                         }}
-                        onPress={() => navigation.navigate('HomeScreen')}>
+                        onPress={() => navigation.navigate('WelcomeScreen')}>
                         Click Here
                       </Text>
                     </View>

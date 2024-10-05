@@ -25,7 +25,7 @@ export const createUserCartAsync = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      console.log('createUserCartAsync Error - ', error.response);
+      console.log('createUserCartAsync Error - ', error);
     }
   },
 );
@@ -45,7 +45,7 @@ export const getUserCartAsync = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      console.log('getUserCartAsync Error - ', error.response);
+      console.log('getUserCartAsync Error - ', error);
     }
   },
 );
@@ -66,7 +66,7 @@ export const updateUserCartQtyAsync = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      console.log('updateUserCartQtyAsync Error - ', error.response);
+      console.log('updateUserCartQtyAsync Error - ', error);
     }
   },
 );
@@ -87,7 +87,7 @@ export const deleteUserCartAsync = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      console.log('deleteUserCartAsync Error - ', error.response);
+      console.log('deleteUserCartAsync Error - ', error);
     }
   },
 );

@@ -20,16 +20,19 @@ const ProtectedRoute = ({
 
   async function fetchData() {
     if (isUserLogged !== null) {
+      // console.log(' Calling userInfo ');
       await dispatch(getUserInfoAsync());
     }
   }
 
   useEffect(() => {
-    // console.log('Protected Routes ');
+    // console.log('Protected Routes mounting  ');
     fetchData();
 
-    return () => {};
-  }, []);
+    return () => {
+      // console.log('Protected Routes UN mounting  ');
+    };
+  }, [isUserLogged]);
 
   //   console.log('isUserLogged - ', isUserLogged);
 

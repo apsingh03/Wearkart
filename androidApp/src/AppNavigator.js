@@ -13,25 +13,22 @@ import ProtectedRoute from './RouteGuarding/ProtectedRoutes';
 import OrderHistoryScreen from './components/ProfileTab/OrderHistoryScreen';
 import WishlistScreen from './components/ProfileTab/WishListScreen';
 import ProductDetailScreen from './Screens/ProductDetailScreen/ProductDetailScreen';
+import {createDrawerNavigator} from '@react-navigation/drawer';
+import AboutUsDrawer from './components/AboutUsDrawer';
+import WelcomeScreen from './WelcomeScreen';
+const Drawer = createDrawerNavigator();
 
 const Stack = createNativeStackNavigator();
 
 const AppNavigator = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName={'HomeScreen'}>
+      <Stack.Navigator initialRouteName={'SplashScreen'}>
         <Stack.Screen
           name="SplashScreen"
-          options={{
-            headerShown: false,
-          }}>
-          {() => (
-            <ProtectedRoute
-              IfLoggedComponent={HomeScreen}
-              IfNotFallbackComponent={SplashScreen}
-            />
-          )}
-        </Stack.Screen>
+          component={SplashScreen}
+          options={{headerShown: false}}
+        />
 
         <Stack.Screen
           name="SplashHellowCard"
@@ -59,20 +56,19 @@ const AppNavigator = () => {
 
         <Stack.Screen
           name="LogInScreen"
-          // component={LogInScreen}
           options={{
             headerShown: false,
           }}>
           {() => (
             <ProtectedRoute
-              IfLoggedComponent={HomeScreen}
+              IfLoggedComponent={WelcomeScreen}
               IfNotFallbackComponent={LogInScreen}
             />
           )}
         </Stack.Screen>
 
-        <Stack.Screen
-          name="HomeScreen"
+        {/* <Stack.Screen
+          name="WelcomeScreen"
           options={{
             headerShown: false,
           }}>
@@ -82,7 +78,12 @@ const AppNavigator = () => {
               IfNotFallbackComponent={LogInScreen}
             />
           )}
-        </Stack.Screen>
+        </Stack.Screen> */}
+        <Stack.Screen
+          name="WelcomeScreen"
+          component={WelcomeScreen} // Reference the WelcomeScreen directly
+          options={{headerShown: false}}
+        />
 
         <Stack.Screen
           name="OrderHistoryScreen"

@@ -21,7 +21,7 @@ const persistConfig = {
   //  means that only the slices listed in the whitelist
   // will be stored and rehydrated from AsyncStorage
   // (or any storage you are using) when the app is restarted.
-  whitelist: ['userAuth'], // List the slices you want to persist
+  whitelist: ['userAuth', 'client_product', 'user_favoriteProduct'], // List the slices you want to persist
   // to exclude
   // blacklist: ['someTemporarySlice'],
 };
@@ -43,6 +43,7 @@ export const store = configureStore({
   // using this to avoid this Error  - A non-serializable value was detected in an action
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
+      immutableCheck: false,
       serializableCheck: false, // Disable the serializable check
     }),
 });

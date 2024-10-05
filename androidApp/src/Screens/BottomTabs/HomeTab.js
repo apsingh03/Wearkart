@@ -6,8 +6,9 @@ import {
   TextInput,
   FlatList,
   ScrollView,
+  TouchableOpacity,
 } from 'react-native';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {globalCss} from '../../Utils/CSS';
 import {GLOBALCOLOR} from '../../Utils/globalColor';
 import {windowHeight, windowWidth} from '../../Utils/Dimensions';
@@ -26,10 +27,16 @@ import {
 import {Skeleton} from '@rneui/themed';
 import SkeltonUi from '../../components/SkeltonUi';
 import LazyLoadingImage from '../../components/LazyLoadingImage';
-
-const HomeTab = () => {
+import DebounceSearch from '../../components/DebounceSearch';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import {checkInternetConnection} from '../../Utils/NetInfo';
+import CheckInternetUi from '../../components/CheckInternetUi';
+import useNetworkStatus from '../../customHooks/useNetworkStatus';
+const HomeTab = ({navigation}) => {
   const dispatch = useDispatch();
   const loggedData = useSelector(state => state.userAuth.loggedData);
+
+  const isConnected = useNetworkStatus();
 
   const bannerCarouselRedux = useSelector(
     state => state.client_product?.bannerCarousel?.query,
@@ -56,21 +63,31 @@ const HomeTab = () => {
   );
   // console.log('testimonialRedux - ', testimonialRedux);
   async function fetchData() {
-    await dispatch(clientGetBannerCarouselAsync());
-    await dispatch(clientGetActressCarouselAsync());
-    await dispatch(clientGetFourBannerImagesAsync());
-    await dispatch(clientGetTestimonialAsync());
+    if (isConnected) {
+      // Fetch data only when online
+      await dispatch(clientGetBannerCarouselAsync());
+      await dispatch(clientGetActressCarouselAsync());
+      await dispatch(clientGetFourBannerImagesAsync());
+      // await dispatch(clientGetTestimonialAsync());
+    } else {
+      // Handle offline case if needed, or just rely on Redux's state cache
+      console.log('Offline: Fetching data from cache');
+    }
   }
 
   useEffect(() => {
-    console.log('Home Tab');
-    fetchData();
+    fetchData(); // Initial fetch
 
-    return () => {};
-  }, []);
+    // Refetch data when network comes back online
+    if (isConnected) {
+      fetchData();
+    }
+  }, [isConnected]); // Trigger fetch whenever network status changes
 
   return (
     <>
+      <CheckInternetUi />
+
       <View
         style={{
           paddingHorizontal: 10,
@@ -79,32 +96,26 @@ const HomeTab = () => {
           flex: 1,
         }}>
         {/* Header */}
-        <View style={[globalCss.rowBetweenCenter]}>
-          <View>
+        <View style={[globalCss.rowBetweenCenter, {width: '100%'}]}>
+          <TouchableOpacity
+            style={{width: '10%'}}
+            onPress={() => navigation.openDrawer()}>
+            <AntDesign name="menu-unfold" size={25} color="#545252" />
+          </TouchableOpacity>
+          <View style={{width: '30%'}}>
             <Text
               style={{
-                fontSize: 28,
+                fontSize: 20,
                 color: GLOBALCOLOR.black2,
                 fontFamily: 'Nunito-ExtraBold',
+                fontWeight: 900,
+                textAlign: 'center',
               }}>
-              Shop
+              WearKart
             </Text>
           </View>
-          <View>
-            <TextInput
-              style={{
-                borderWidth: 1,
-                borderColor: GLOBALCOLOR.black2,
-                backgroundColor: GLOBALCOLOR.white2,
-                padding: 5,
-                width: windowWidth * 0.7, // Set width to 60% of the screen width
-                borderRadius: 30, // Optional: Add border radius for smooth edges
-              }}
-              placeholder="Search"
-              placeholderTextColor="#202020"
-              keyboardType="default"
-              secureTextEntry={false}
-            />
+          <View style={{width: '60%'}}>
+            <DebounceSearch />
           </View>
         </View>
 
@@ -203,4 +214,13 @@ const HomeTab = () => {
 
 export default HomeTab;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  offlineText: {
+    color: '#fff',
+    // backgroundColor: '#0000',
+    padding: 5,
+    fontSize: 12,
+    textAlign: 'center',
+    fontFamily: 'Nunito',
+  },
+});

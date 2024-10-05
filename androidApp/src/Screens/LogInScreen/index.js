@@ -101,12 +101,12 @@ const LogInScreen = ({navigation}) => {
                   Alert.alert(actionResult.payload.msg);
                   const {userObject, token} = actionResult.payload;
 
-                  console.log('payload - ', actionResult.payload);
+                  // console.log('payload - ', actionResult.payload);
 
                   dispatch(setLoggedData({userObject}));
                   dispatch(setLoggedData({token}));
 
-                  navigation.navigate('HomeScreen');
+                  navigation.navigate('WelcomeScreen');
                   setisLoading(false);
                 }
 
@@ -122,6 +122,17 @@ const LogInScreen = ({navigation}) => {
                 isSubmitting,
               }) => (
                 <View>
+                  <View style={globalCss.flexRowCenter}>
+                    <Text>Test Login - </Text>
+                    <View
+                      style={[
+                        globalCss.flexColumn,
+                        {alignItems: 'flex-start'},
+                      ]}>
+                      <Text> Email - user@gmail.com</Text>
+                      <Text>Password - user </Text>
+                    </View>
+                  </View>
                   <View style={{marginBottom: 10}}>
                     <TextInput
                       style={[
@@ -215,7 +226,7 @@ const LogInScreen = ({navigation}) => {
                           marginLeft: 10,
                           fontFamily: 'Nunito-Regular',
                         }}
-                        onPress={() => navigation.navigate('HomeScreen')}>
+                        onPress={() => navigation.navigate('WelcomeScreen')}>
                         Click Here
                       </Text>
                     </View>

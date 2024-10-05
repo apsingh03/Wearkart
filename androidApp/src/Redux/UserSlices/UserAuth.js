@@ -16,7 +16,7 @@ export const createClientAsync = createAsyncThunk(
       // console.log(" resopnse data ", response.data);
       return response.data;
     } catch (error) {
-      console.log('createClientAsync Error - ', error.response);
+      console.log('createClientAsync Error - ', error);
     }
   },
 );
@@ -32,7 +32,7 @@ export const loginClientAsync = createAsyncThunk(
       // console.log( response.data );
       return response.data;
     } catch (error) {
-      console.log('loginClientAsync Error  ', error.response);
+      console.log('loginClientAsync Error  ', error);
     }
   },
 );
@@ -42,14 +42,16 @@ export const getUserInfoAsync = createAsyncThunk(
   async (_, {getState}) => {
     try {
       const state = getState();
+
       const userToken = state.userAuth.token;
+      // console.log('getUserInfoAsync - ', userToken);
       const response = await axios.get(`${HOSTNAME}/user/account/user`, {
         headers: {Authorization: `${userToken}`},
       });
 
       return response.data;
     } catch (error) {
-      console.log('getUserInfoAsync Error  ', error.response);
+      console.log('getUserInfoAsync Error  ', error);
     }
   },
 );
