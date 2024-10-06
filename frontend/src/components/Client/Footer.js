@@ -130,25 +130,25 @@ const Footer = () => {
         <div className="col-6 col-md-3  order-1 order-md-4 ">
           <div className="footer__4th">
             <div>
-              <h6 className="footer__4th__logo">Fable Street</h6>
+              <h6 className="footer__4th__logo">WearKart</h6>
             </div>
             <div>
               <p className="footer__4th__copyright">
                 {" "}
-                © 2024 FableStreet.com All Rights Reserved
+                © 2024 WearKart All Rights Reserved
               </p>
 
               <p className="footer__4th__contactUs">CONTACT US</p>
 
-              <p className="footer__4th__phone">Ph No: 01143078400</p>
+              <p className="footer__4th__phone">Ph No: XXXXXXXXX</p>
 
               <p className="footer__4th__address">
-                Fable Street Lifestyle Solutions Private Limited 362, Phase II,
-                Udyog Vihar, Sector 20, Gurugram, Haryana 122016
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos,
+                error vero non repudiandae sint fugiat quas illo
               </p>
 
               <p className="footer__4th__timing">
-                Timings: 10AM to 7PM, Mon to Sat
+                Timings: XX to XX, Mon to Sat
               </p>
             </div>
           </div>

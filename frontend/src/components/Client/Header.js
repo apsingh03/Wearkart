@@ -109,8 +109,7 @@ const Header = () => {
 
           <div className="header__1stContainer">
             <Link to="/" className="header__1stContainer__logo">
-              {" "}
-              WebApp{" "}
+              WearKart
             </Link>
           </div>
 
@@ -189,7 +188,7 @@ const Header = () => {
                       color: "#fff",
                       borderRadius: "50%",
                       textAlign: "center",
-                      fontSize: "16px",
+
                       position: "absolute",
                       top: "-10px",
                       left: "25px",
@@ -242,7 +241,7 @@ const Header = () => {
                     color: "#fff",
                     borderRadius: "50%",
                     textAlign: "center",
-                    fontSize: "16px",
+
                     position: "absolute",
                     top: "-10px",
                     left: "25px",
@@ -256,6 +255,16 @@ const Header = () => {
               ) : null}
             </div>
           </div>
+        </div>
+
+        <div className="p-1 bg-dark text-center ">
+          <Link
+            className="text-decoration-none fs-6 text-white"
+            to="/projectCaseStudy"
+          >
+            {" "}
+            Click Here for Project Case Study | WearKart Android APP
+          </Link>
         </div>
       </header>
     </>
