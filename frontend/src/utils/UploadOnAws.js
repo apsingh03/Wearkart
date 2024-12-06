@@ -29,7 +29,7 @@ export const uploadProductImageOnAws = async (selectedFiles) => {
 
         const params = {
           Bucket: BUCKET_NAME,
-          Key: newFileName,
+          Key: `wearcart/${newFileName}`,
           Body: file,
           // ACL: "public-read",
         };
@@ -46,7 +46,17 @@ export const uploadProductImageOnAws = async (selectedFiles) => {
           });
         });
 
-        s3Urls.push(s3response);
+        // Convert S3 URL to CloudFront URL
+        const cloudFrontUrl = s3response.replace(
+          "s3.amazonaws.com",
+          "d12del54ju2eas.cloudfront.net"
+        );
+
+        // return cloudFrontUrl; // Return CloudFront URL
+        let modifiedUrl =
+          "https://" + cloudFrontUrl.split(".").slice(1).join(".");
+
+        s3Urls.push(modifiedUrl);
       }
 
       return s3Urls;
@@ -63,7 +73,7 @@ export const uploadImageOnAws = async (fileName) => {
 
     const params = {
       Bucket: BUCKET_NAME,
-      Key: newFileName,
+      Key: `wearcart/${newFileName}`,
       Body: fileName,
       // ACL: "public-read",
     };
@@ -80,7 +90,16 @@ export const uploadImageOnAws = async (fileName) => {
       });
     });
 
-    return s3response;
+    // Convert S3 URL to CloudFront URL
+    const cloudFrontUrl = s3response.replace(
+      "s3.amazonaws.com",
+      "d12del54ju2eas.cloudfront.net"
+    );
+
+    // return cloudFrontUrl; // Return CloudFront URL
+    let modifiedUrl = "https://" + cloudFrontUrl.split(".").slice(1).join(".");
+
+    return modifiedUrl;
   } catch (error) {
     console.log(`uploadProductImageOnAws Error ${error}`);
   }
