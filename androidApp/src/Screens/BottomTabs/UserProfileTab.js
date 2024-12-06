@@ -18,17 +18,10 @@ import CheckInternetUi from '../../components/CheckInternetUi';
 
 const UserProfileTab = () => {
   // const loggedData = useSelector(state => state.userAuth?.userDetails?.query);
-  // console.log('Profile Tab - ', loggedData?.query[0]);
-  const isUserLogged = useSelector(state => state.userAuth.token);
-  const userEmail =
-    useSelector(state => state.userAuth?.userDetails?.query[0]?.email) ||
-    'Test Email';
-  const userFullName =
-    useSelector(state => state.userAuth?.userDetails?.query[0]?.fullName) ||
-    'Test Full Name';
 
-  // console.log('userEmail - ', userEmail);
-  // console.log('userFullName - ', userFullName);
+  const isUserLogged = useSelector(state => state.userAuth?.token);
+
+  const userDetailsRedux = useSelector(state => state.userAuth?.userDetails);
 
   const dispatch = useDispatch();
   return (
@@ -72,7 +65,8 @@ const UserProfileTab = () => {
 
                 fontFamily: 'Raleway-ExtraBold',
               }}>
-              {userFullName}
+              {(userDetailsRedux?.query && userDetailsRedux?.query[0]?.email) ||
+                'Please Login'}
             </Text>
 
             <Text
@@ -82,7 +76,9 @@ const UserProfileTab = () => {
 
                 fontFamily: 'Raleway-ExtraBold',
               }}>
-              {userEmail}
+              {(userDetailsRedux?.query &&
+                userDetailsRedux?.query[0]?.fullName) ||
+                'To get User Details'}
             </Text>
           </View>
         </View>

@@ -186,12 +186,8 @@ const CartTab = ({navigation}) => {
   }, [userCartItems]); // Recalculate totals when the cart items change
 
   const userAuthToken = useSelector(state => state.userAuth.token);
-  const userEmail =
-    useSelector(state => state.userAuth?.userDetails?.query[0]?.email) ||
-    'Test Email';
-  const userFullName =
-    useSelector(state => state.userAuth?.userDetails?.query[0]?.fullName) ||
-    'Test Full Name';
+
+  const userDetailsRedux = useSelector(state => state.userAuth?.userDetails);
 
   const displayRazorpay = async () => {
     try {
@@ -215,8 +211,8 @@ const CartTab = ({navigation}) => {
         description: 'Test Transaction',
         order_id: order.id,
         prefill: {
-          name: userEmail || 'Default Name',
-          email: userFullName || 'example@example.com',
+          name: userDetailsRedux?.query && userDetailsRedux?.query[0]?.fullName,
+          email: userDetailsRedux?.query && userDetailsRedux?.query[0]?.email,
         },
         theme: {
           color: '#3399cc',

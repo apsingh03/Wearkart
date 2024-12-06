@@ -14,9 +14,12 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import ProtectedRoute from '../RouteGuarding/ProtectedRoutes';
 import LogInScreen from './LogInScreen';
+import {useSelector} from 'react-redux';
 
 const BottomTab = createBottomTabNavigator();
 const HomeScreen = () => {
+  const loggedData = useSelector(state => state.userAuth.token);
+
   return (
     <>
       <BottomTab.Navigator initialRouteName="HomeTab">
@@ -61,32 +64,62 @@ const HomeScreen = () => {
             ),
           }}
         />
-        <BottomTab.Screen
-          name="CartTab"
-          // component={CartTab}
-          options={{
-            headerShown: false,
-            tabBarLabel: 'Cart',
-            tabBarInactiveBackgroundColor: '#fff',
-            tabBarActiveBackgroundColor: '#fff',
-            tabBarActiveTintColor: '#000',
-            tabBarInactiveTintColor: '#004CFF',
-            tabBarLabelStyle: {fontSize: 14},
-            tabBarStyle: {backgroundColor: 'white'},
-            tabBarBadgeStyle: {backgroundColor: 'red'},
-            // tabBarBadge: 100,
 
-            tabBarIcon: ({color, size}) => (
-              <Entypo name="shopping-cart" size={size} color={color} />
-            ),
-          }}>
-          {() => (
-            <ProtectedRoute
-              IfLoggedComponent={CartTab}
-              IfNotFallbackComponent={LogInScreen}
-            />
-          )}
-        </BottomTab.Screen>
+        {(function () {
+          if (loggedData) {
+            return (
+              <BottomTab.Screen
+                name="CartTab"
+                // component={CartTab}
+                options={{
+                  headerShown: false,
+                  tabBarLabel: 'Cart',
+                  tabBarInactiveBackgroundColor: '#fff',
+                  tabBarActiveBackgroundColor: '#fff',
+                  tabBarActiveTintColor: '#000',
+                  tabBarInactiveTintColor: '#004CFF',
+                  tabBarLabelStyle: {fontSize: 14},
+                  tabBarStyle: {backgroundColor: 'white'},
+                  tabBarBadgeStyle: {backgroundColor: 'red'},
+                  // tabBarBadge: 100,
+
+                  tabBarIcon: ({color, size}) => (
+                    <Entypo name="shopping-cart" size={size} color={color} />
+                  ),
+                }}>
+                {() => (
+                  <ProtectedRoute
+                    IfLoggedComponent={CartTab}
+                    IfNotFallbackComponent={LogInScreen}
+                  />
+                )}
+              </BottomTab.Screen>
+            );
+          } else {
+            return (
+              <BottomTab.Screen
+                name="LoginTab"
+                component={LogInScreen}
+                options={{
+                  headerShown: false,
+                  tabBarLabel: 'Login',
+                  tabBarInactiveBackgroundColor: '#fff',
+                  tabBarActiveBackgroundColor: '#fff',
+                  tabBarActiveTintColor: '#000',
+                  tabBarInactiveTintColor: '#004CFF',
+                  tabBarLabelStyle: {fontSize: 14},
+                  tabBarStyle: {backgroundColor: 'white'},
+                  tabBarBadgeStyle: {backgroundColor: 'red'},
+                  // tabBarBadge: 100,
+
+                  tabBarIcon: ({color, size}) => (
+                    <Entypo name="login" size={size} color={color} />
+                  ),
+                }}
+              />
+            );
+          }
+        })()}
 
         <BottomTab.Screen
           name="UserProfileTab"

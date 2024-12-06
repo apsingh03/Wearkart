@@ -45,7 +45,8 @@ export const getUserCartAsync = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      console.log('getUserCartAsync Error - ', error);
+      console.log('getUserCartAsync Error - ', error.message);
+      alert(error.message);
     }
   },
 );

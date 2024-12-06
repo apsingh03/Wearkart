@@ -95,6 +95,7 @@ export const userAuthSlice = createSlice({
       console.log('Logout Clicked ');
       state.loggedData = null;
       state.token = null;
+      state.userDetails = [];
     },
   },
 

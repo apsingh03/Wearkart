@@ -57,6 +57,8 @@ const ProductsExploreTab = ({navigation}) => {
     state => state.user_favoriteProduct.data?.query,
   );
 
+  const isUserLogged = useSelector(state => state.userAuth.token);
+
   const loggedData = useSelector(state => state.userAuth?.userDetails?.query);
 
   const isLoadingClient_allProductsRedux =
@@ -91,7 +93,10 @@ const ProductsExploreTab = ({navigation}) => {
   async function fetchData() {
     if (isConnected) {
       await dispatch(clientAllListedProductsAsync());
-      await dispatch(getUserFavoriteProductAsync());
+
+      if (isUserLogged !== null) {
+        await dispatch(getUserFavoriteProductAsync());
+      }
     }
   }
 
