@@ -57,8 +57,8 @@ const SignUpLoginPage = () => {
             </div>
             <Formik
               initialValues={{
-                loginEmail: "",
-                loginPassword: "",
+                loginEmail: "admin@gmail.com",
+                loginPassword: "admin",
               }}
               validationSchema={SigninSchema}
               onSubmit={async (values, { setSubmitting }) => {
@@ -137,7 +137,7 @@ const SignUpLoginPage = () => {
                         className="form-control"
                         id="loginEmail"
                         name="loginEmail"
-                        placeholder="admin@gmail.com"
+                        placeholder="Your Email"
                         onClick={() => setLoginErrors({ email: "" })}
                         onChange={handleChange}
                         onBlur={handleBlur}
@@ -179,7 +179,7 @@ const SignUpLoginPage = () => {
                         className="form-control"
                         id="loginPassword"
                         name="loginPassword"
-                        placeholder="admin"
+                        placeholder="Your Password"
                         onClick={() => setLoginErrors({ password: "" })}
                         onChange={handleChange}
                         onBlur={handleBlur}
